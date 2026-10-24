@@ -1,31 +1,68 @@
-// Floating "Where are you heading?" search. Call initSearchBar(features, onSelect) once pins are loaded.
-function initSearchBar(features, onSelect) {
+// Floating search + macqAI bar. Call initSearchBar(features, onSelect, onAsk) once pins are loaded.
+// Typing lists matching buildings plus an "Ask macqAI" row; optional onAsk(text) returns the answer text to show.
+function initSearchBar(features, onSelect, onAsk) {
   const mount = document.getElementById('search-bar-mount');
   mount.innerHTML =
     '<div class="search-bar">' +
     '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="#000" stroke-width="2.5"/><path d="M15 15l9 9" stroke="#000" stroke-width="3"/></svg>' +
-    '<input type="search" placeholder="Where are you heading?" aria-label="Search campus" autocomplete="off">' +
-    '</div><ul class="search-results"></ul>';
+    '<input type="search" placeholder="Search buildings or ask macqAI" aria-label="Search campus or ask macqAI" autocomplete="off">' +
+    '<button class="macqai-info" type="button" aria-label="About macqAI">' +
+    '<svg viewBox="0 0 40 40" width="28" height="28"><circle cx="20" cy="20" r="17" fill="#fff" stroke="#000" stroke-width="3"/><circle cx="20" cy="11" r="2.5" fill="#000"/><path d="M20 17v14M16 17h4M16 31h8" stroke="#000" stroke-width="3" fill="none"/></svg>' +
+    '</button></div><ul class="search-results"></ul><div class="macqai-panel" hidden></div>';
 
   const input = mount.querySelector('input');
   const list = mount.querySelector('.search-results');
+  const panel = mount.querySelector('.macqai-panel');
+  let active = -1;
+
+  const showPanel = (text) => { panel.textContent = text; panel.hidden = false; };
+  const setActive = (i) => {
+    const items = list.children;
+    if (active >= 0 && items[active]) items[active].classList.remove('active');
+    active = i;
+    if (active >= 0 && items[active]) items[active].classList.add('active');
+  };
+  const addRow = (text, className, onPick) => {
+    const li = document.createElement('li');
+    li.textContent = text;
+    if (className) li.className = className;
+    li.addEventListener('click', onPick);
+    list.appendChild(li);
+  };
+  const ask = (q) => {
+    list.innerHTML = '';
+    if (onAsk) Promise.resolve(onAsk(q)).then((answer) => answer && showPanel(answer));
+  };
 
   input.addEventListener('input', () => {
-    const q = input.value.trim().toLowerCase();
+    const q = input.value.trim();
     list.innerHTML = '';
+    active = -1;
     if (!q) return;
     features
-      .filter((f) => f.properties.name.toLowerCase().includes(q))
+      .filter((f) => f.properties.name.toLowerCase().includes(q.toLowerCase()))
       .slice(0, 8)
       .forEach((f) => {
-        const li = document.createElement('li');
-        li.textContent = f.properties.name;
-        li.addEventListener('click', () => {
+        addRow(f.properties.name, '', () => {
           list.innerHTML = '';
+          panel.hidden = true;
           input.value = f.properties.name;
           onSelect(f);
         });
-        list.appendChild(li);
       });
+    addRow('Ask macqAI: ' + q, 'ask-ai', () => ask(q));
+  });
+
+  input.addEventListener('keydown', (e) => {
+    const n = list.children.length;
+    if (!n) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive((active + 1) % n); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((active - 1 + n) % n); }
+    else if (e.key === 'Enter') { e.preventDefault(); list.children[active >= 0 ? active : n - 1].click(); }
+  });
+
+  mount.querySelector('.macqai-info').addEventListener('click', () => {
+    if (panel.hidden) showPanel('macqAI is your campus assistant. Search for a building, or type a question and choose "Ask macqAI".');
+    else panel.hidden = true;
   });
 }

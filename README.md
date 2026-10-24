@@ -103,8 +103,7 @@ npm start   # http://localhost:3001
       └── js/
           ├── components/    # [Reusable UI shared across pages]
           │   ├── nav.js             # [Bottom navigation bar]
-          │   ├── search-bar.js      # [Floating "Where are you heading?" search]
-          │   ├── macqai-widget.js   # [macqAI floating bar & chat overlay]
+          │   ├── search-bar.js      # [Floating building search + "Ask macqAI" bar]
           │   └── card.js            # [Event / society / food card]
           ├── pages/         # [One script per page]
           │   ├── map.js             # [Leaflet map initialization, clustering & pins]
