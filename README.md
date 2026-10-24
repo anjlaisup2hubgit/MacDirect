@@ -27,7 +27,7 @@
 * **Page Inventory & Details (Bottom Navigation Bar):**
   1. **View 1: Your Task Plan (`/index.html` or `/task-plan.html`)** - Icon: User profile / avatar badge. Manages individual student tasks and daily schedules mapped to campus locations.
   2. **View 2: What's Happening (`/events.html`)** - Icon: Calendar with star. Shows real-time campus activities, news updates, and scheduled events.
-  3. **View 3: Your Event Plan (`/event-plan.html`)** - Icon: Clipboard with target icon. Personal agenda tracker and custom checklist for bookmarked events.
+  3. **View 3: Add Event Plan (`/event-plan.html`)** - Icon: Clipboard with pencil. Personal agenda tracker and custom checklist for bookmarked events.
   4. **View 4: Food and Drinks (`/food.html`)** - Icon: Drink cup and burger. Map overlay and directory showing campus dining options, food outlets, and special offers.
   5. **View 5: On-Campus Societies (`/societies.html`)** - Icon: Group of people. Directory and discovery hub for university clubs and student organizations.
 * **Screen Overlays & Floating Map UI Elements:**
@@ -37,7 +37,28 @@
 * **Design Assets & Styling:**
   * Primary Accent / Marker Color: Dark Red `#8B0000` / `#A6192E`
   * Cluster Marker Badges: Purple `#6B21A8` with bold white numbers
-  * Navigation Bar: Clean white bottom bar with high-contrast black line-art icons and titles
+  * Navigation Bar: Clean white bottom bar with high-contrast black line-art icons and titles. Icons come from `MCQ iMap Assets Design.svg`, share one line weight, and are inlined in `public/js/components/nav.js` using `currentColor` so the active page turns Macquarie Red.
+
+---
+
+## 3a. Current Build Status
+**Working now**
+* **Map home page (`/index.html`):** Leaflet map on OpenStreetMap tiles, centred on Wally's Walk and locked to a 1.8 km circle around campus (min zoom 15; dragging stops at the edge).
+* **Building info:** Named building footprints are served by `GET /api/map`, built from `data/map.geojson`. Tapping a building outlines it in blue and opens a bottom info panel with name, address, description and website. Tapping the map or the close button dismisses it.
+* **Search bar:** "Where are you heading?" filters building names (up to 8 matches). Choosing a result zooms to the building and opens its panel.
+* **Bottom navigation:** Five items — Your task plan, What's Happening, Add event plan, Food and drinks, On-campus Societies — with the new icon set and a red active state.
+* **macqAI bar:** Floating input and info button. The info button toggles a short description; submitting a question shows "macqAI is coming soon."
+
+**Not built yet (empty placeholder files)**
+* Pages: `events.html`, `event-plan.html`, `food.html`, `societies.html` and their page scripts, so the nav links to these currently open blank pages.
+* Task plan page script (`tasks.js`), and the map-level society pins and purple clusters.
+* Backend: `routes/*`, MySQL (`db.js`, schema, seed) and the macqAI endpoint. The server currently only serves static files and `/api/map`, and `express` is the only installed dependency.
+
+## 3b. Running Locally
+```bash
+npm install
+npm start   # http://localhost:3001
+```
 
 ---
 
@@ -93,3 +114,12 @@
           │   └── societies.js       # [Society discovery logic]
           └── lib/
               └── api.js             # [fetch wrapper for /api calls]
+
+# Upcoming Features
+
+1. Tasks: the task plan, task locations and a daily schedule.
+2. Events: What’s Happening, event filtering, the event plan and its checklist.
+3. Food and societies: the food directory with a map overlay, and the societies directory with discovery and map pins.
+4. Map: red markers and purple cluster badges.
+5. macqAI: real answers and question logging.
+6. Data and setup: saved data in MySQL and Docker Compose.
