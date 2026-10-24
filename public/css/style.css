@@ -1,0 +1,174 @@
+:root {
+  --mq-red: #A6192E;
+  --pin-red: #8B0000;
+  --cluster-purple: #6B21A8;
+  --nav-height: 84px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #000;
+  background: #fff;
+}
+
+#map {
+  position: fixed;
+  inset: 0 0 var(--nav-height) 0;
+}
+
+/* Floating search bar */
+.search-bar {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #fff;
+  border: 2px solid #000;
+}
+.search-bar svg { flex: none; }
+.search-bar input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  font-size: 14px;
+  text-align: center;
+  background: transparent;
+}
+.search-results {
+  position: fixed;
+  top: 62px;
+  left: 16px;
+  right: 16px;
+  z-index: 1000;
+  max-height: 40vh;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: #fff;
+  border: 2px solid #000;
+}
+.search-results:empty { display: none; }
+.search-results li {
+  padding: 10px 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+.search-results li:last-child { border-bottom: 0; }
+.search-results li:hover { background: #f3e5e8; }
+
+/* macqAI floating bar */
+.macqai {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: calc(var(--nav-height) + 12px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.macqai-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px;
+  font: inherit;
+  font-size: 12px;
+  text-align: center;
+  background: #fff;
+  border: 2px solid #000;
+  outline: 0;
+}
+.macqai-info {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.macqai-panel {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: calc(var(--nav-height) + 64px);
+  z-index: 1000;
+  padding: 12px;
+  font-size: 13px;
+  background: #fff;
+  border: 2px solid #000;
+}
+.macqai-panel[hidden] { display: none; }
+
+/* Bottom navigation */
+#nav-mount {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--nav-height);
+  z-index: 1100;
+  background: #fff;
+}
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  height: 100%;
+  padding-top: 10px;
+}
+.bottom-nav a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 2px;
+  color: #000;
+  font-size: 10px;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+}
+.bottom-nav a.active { color: var(--mq-red); }
+.bottom-nav svg { width: 40px; height: 40px; }
+
+/* Map markers */
+.pin-icon { background: none; border: 0; }
+.pin-icon svg { display: block; }
+
+.cluster-icon { background: none; border: 0; }
+.cluster-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(107, 33, 168, 0.35);
+}
+.cluster-badge span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--cluster-purple);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
