@@ -1,8 +1,8 @@
 const CAMPUS_CENTER = [-33.7744188, 151.1144426]; // Wally's Walk / Sir Christopher Ondaatje Ave T-junction
 
-const CAMPUS_RADIUS_M = 1800;
+const CAMPUS_RADIUS_M = 500;
 
-const map = L.map('map', { zoomControl: false, minZoom: 15 }).setView(CAMPUS_CENTER, 16);
+const map = L.map('map', { zoomControl: false, minZoom: 15 }).setView(CAMPUS_CENTER, 17);
 
 // Leaflet's maxBounds is rectangular, so a circular limit is enforced with a hard clamp.
 function clampToCampus(center) {
