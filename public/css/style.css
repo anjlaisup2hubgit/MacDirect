@@ -282,6 +282,8 @@ html, body {
 .popup-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .popup-head h1 { margin: 0; }
 .popup-close { border: 0; background: none; font-size: 32px; line-height: 1; cursor: pointer; }
+.text-small .societies-popup { zoom: 0.9; }
+.text-large .societies-popup { zoom: 1.15; }
 .card-done { opacity: 0.55; }
 .card-done h2 { text-decoration: line-through; }
 
