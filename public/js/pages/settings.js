@@ -16,6 +16,7 @@
 
   const p = createPopup({ id: 'settings-popup', title: 'User Settings', navHref: '/?tasks', hash: 'tasks' });
   p.results.innerHTML =
+    '<div class="account"></div>' +
     '<form class="event-form">' +
       '<label>Display name<input name="name" maxlength="40" autocomplete="off"></label>' +
       '<label>Text size<select name="textSize">' +
@@ -48,4 +49,35 @@
   });
 
   fill(load());
+
+  // Account block: who is signed in, or a prompt to log in when browsing as a guest.
+  const account = p.results.querySelector('.account');
+  function roleLine() {
+    if (auth.profile && auth.profile.role === 'admin') return 'Admin';
+    const l = auth.leaderships[0];
+    if (!l) return 'Student';
+    const name = l.societies ? l.societies.name : 'a society';
+    if (l.status === 'approved') return `Leader of ${name}`;
+    if (l.status === 'pending') return `Leader request pending for ${name}`;
+    return `Leader request declined for ${name}`;
+  }
+  function renderAccount() {
+    if (auth.user) {
+      const name = (auth.profile && auth.profile.display_name) || 'Signed in';
+      account.innerHTML =
+        `<p><strong>${esc(name)}</strong><br>${esc(auth.user.email)}</p><p>${esc(roleLine())}</p>` +
+        '<button class="form-submit" type="button" data-act="logout">Log out</button>';
+    } else {
+      account.innerHTML =
+        '<p>You are browsing as a guest. Following societies, the event plan and posting events need an account.</p>' +
+        '<button class="form-submit" type="button" data-act="login">Log in or sign up</button>';
+    }
+  }
+  account.addEventListener('click', async (e) => {
+    const act = e.target.dataset.act;
+    if (act === 'login') location.href = '/login.html';
+    if (act === 'logout') { await auth.signOut(); location.href = '/login.html'; }
+  });
+  auth.onChange(renderAccount);
+  auth.ready.then(renderAccount);
 })();

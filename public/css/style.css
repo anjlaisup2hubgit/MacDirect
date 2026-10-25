@@ -338,3 +338,25 @@ html, body {
 .cal-tabs { margin-bottom: 12px; }
 .cal-view[hidden], .agenda-view[hidden] { display: none; }
 .agenda-view .cal-day-title:first-child { margin-top: 0; }
+
+/* Login page and account block */
+.auth-page { display: grid; place-items: center; min-height: 100%; padding: 24px 16px; }
+.auth-card { width: 100%; max-width: 380px; display: grid; gap: 14px; }
+.auth-card h1 { margin: 0; text-align: center; color: var(--mq-red); }
+.auth-tagline { margin: -8px 0 0; text-align: center; font-size: 14px; }
+.auth-tabs { display: flex; gap: 8px; justify-content: center; }
+.auth-check { display: flex !important; align-items: center; gap: 8px; }
+.auth-leader { display: grid; gap: 12px; }
+.auth-leader[hidden], .event-form label[hidden] { display: none; }
+.auth-guest {
+  padding: 12px;
+  font: inherit;
+  color: #000;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.form-msg.error { color: #b3261e; }
+.account { display: grid; gap: 8px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #ddd; font-size: 14px; }
+.account p { margin: 0; }

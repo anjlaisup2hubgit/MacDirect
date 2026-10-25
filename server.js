@@ -1,3 +1,6 @@
+// Load .env (Node 20.6+); silently skip if the file is missing.
+try { process.loadEnvFile(); } catch (err) { /* no .env */ }
+
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
@@ -45,6 +48,11 @@ const buildings = {
 };
 
 app.get('/api/map', (req, res) => res.json(buildings));
+// Public Supabase settings for the browser; the secret key is never sent.
+app.get('/api/config', (req, res) => res.json({
+  supabaseUrl: process.env.SUPABASE_URL || null,
+  supabaseKey: process.env.SUPABASE_PUBLISHABLE_KEY || null,
+}));
 app.use('/api/societies', require('./routes/societies'));
 app.use('/api/food', require('./routes/food'));
 app.use('/api/tasks', require('./routes/tasks'));

@@ -33,7 +33,7 @@ Secrets: `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are public by design. `SU
 | **Admin** | Set up by the project owner | Approves or rejects leader requests (MVP: by editing the request status in the Supabase dashboard). |
 
 ### Planned data model (Supabase)
-* `profiles(id, display_name, role)`
+* `profiles(id, display_name, role)` where role is `student` or `admin`; a leader is a user with an approved `society_leaders` row
 * `societies(id, name, category, description, building, contact, website)`
 * `society_leaders(user_id, society_id, status)` where status is `pending`, `approved` or `rejected`
 * `follows(user_id, society_id)`
@@ -44,7 +44,7 @@ Secrets: `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are public by design. `SU
 
 ## 3. UI/UX Sitemap & Design Specs
 * **Primary Views:** `5 Bottom-Nav Views` plus a login page.
-* **Login (`/login.html`):** Email and password sign-up and login, a "I lead a society" option with a society picker, and a "Continue as guest" button. Logged-in state shows in the nav and settings popup.
+* **Login (`/login.html`):** Email and password sign-up and login, a "I lead a society" option with a society picker, and a "Continue as guest" button. Logged-in state shows in the User Settings popup (name, role, Log out, or Log in for guests). Visitors with no session and no guest choice are sent here first.
 * **Page Inventory & Details (Bottom Navigation Bar):**
   1. **View 1: Your Task Plan (`/index.html` or `/task-plan.html`)** - Icon: User profile / avatar badge. Manages individual student tasks and daily schedules mapped to campus locations. Login required to save.
   2. **View 2: What's Happening (`/events.html`)** - Icon: Calendar with star. Shows campus events from the database, with a "Following" filter and badge. Approved leaders also see a "Post event" form for their society.
@@ -72,7 +72,8 @@ Secrets: `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are public by design. `SU
 * **Placeholder data:** `/api/societies`, `/api/events`, `/api/food` and `/api/tasks` serve static JSON from `data/`. Page scripts for events, event plan, food, societies and user settings exist (settings are saved in `localStorage`).
 
 **Not built yet**
-* Accounts: Supabase project schema, login page, guest view, role gating.
+* Accounts: the login page, guest entry and settings account block are built. Still to do: run the schema on Supabase (SQL in `database/`) and test sign-up end to end.
+* Guest gating (`requireLogin()` prompts on follow, event plan and tasks).
 * Following societies and leader event posting.
 * Moving societies and events from JSON files to Supabase.
 * Page HTML for events, event plan, food and societies is empty or missing.
@@ -113,7 +114,7 @@ npm start   # http://localhost:3000 (set PORT to change)
   │   └── macqai.js          # [macqAI query endpoint & query logging]
   └── public/                # [Frontend static assets]
       ├── index.html         # [Page 1: Map & Task Plan View]
-      ├── login.html         # [Login, sign-up and guest entry]
+      ├── login.html         # [Login, sign-up and guest entry; script: js/pages/login.js]
       ├── events.html        # [Page 2: What's Happening]
       ├── event-plan.html    # [Page 3: Your Event Plan]
       ├── food.html          # [Page 4: Food and Drinks]
@@ -123,7 +124,7 @@ npm start   # http://localhost:3000 (set PORT to change)
       ├── images/            # [Nav icons, map markers, logo]
       └── js/
           ├── components/    # [Reusable UI shared across pages]
-          │   ├── nav.js             # [Bottom navigation bar + login/logout state]
+          │   ├── nav.js             # [Bottom navigation bar]
           │   ├── search-bar.js      # [Floating building search + "Ask macqAI" bar]
           │   ├── popup.js           # [Shared popup panel]
           │   └── card.js            # [Event / society / food card]
@@ -137,8 +138,7 @@ npm start   # http://localhost:3000 (set PORT to change)
           │   └── settings.js        # [User settings popup]
           └── lib/
               ├── api.js             # [fetch wrapper for /api calls]
-              ├── supabase.js        # [Supabase client]
-              └── auth.js            # [Session, role lookup, requireLogin() guest gate]
+              └── auth.js            # [Supabase client, session, role lookup, guest mode]
   ```
 
 # Upcoming Features

@@ -70,3 +70,36 @@ Claude recorded changes and reasoning using the format.
 * The app's name is iMCQ, and the README still described MySQL and Docker, which no longer match the plan.
 * The README is the blueprint, so it needs to describe the roles and data model before they are built.
 * The Supabase key and the old asset filename were left as they are because they are real identifiers.
+
+# Date
+2026-10-25
+
+# Change
+## Done
+* Wrote `database/schema.sql`: profiles, societies, society_leaders, follows and events, with row-level security, a sign-up trigger and grants.
+* Wrote `database/seed.sql` with the 12 sample societies and 5 sample events.
+
+## Not built yet
+* The SQL has not been run against Supabase.
+
+# Reasoning
+* Row-level security enforces the roles, so the browser can talk to Supabase directly.
+* Events are seeded under the first admin because `created_by` must be a real user.
+
+# Date
+2026-10-25
+
+# Change
+## Done
+* Added `public/login.html` and `js/pages/login.js`: log in, sign up (with an optional "I lead a society" request) and "Continue as guest".
+* Added `js/lib/auth.js`: Supabase session, profile and leader status, guest mode, and a redirect to the login page for visitors with neither.
+* Added a `GET /api/config` route and `.env` loading to `server.js`, so the browser gets the Supabase URL and publishable key and never the secret key.
+* Added an account block to the User Settings popup: name, role and Log out, or a Log in button for guests.
+
+## Not built yet
+* Sign-up and leader requests are untested because the schema had not been run on Supabase yet.
+* Guest gating on follow, event plan and tasks (Step 3).
+
+# Reasoning
+* Keys come from `.env` through `/api/config` so they are not hard-coded in the pages.
+* The leader request is stored in sign-up metadata and filed after the first sign-in, because email confirmation means there is no session at sign-up.
