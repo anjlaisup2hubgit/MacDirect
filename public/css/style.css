@@ -265,16 +265,20 @@ html, body {
   left: 12px;
   right: 12px;
   bottom: calc(var(--nav-height) + 12px);
-  max-height: 65vh;
+  max-height: 75vh;
   max-width: 480px;
   margin: 0 auto;
   z-index: 1050;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
 }
 .societies-popup[hidden] { display: none; }
+.popup-island { flex: none; padding: 16px 16px 4px; border-bottom: 1px solid #e5e5e5; }
+.popup-results { min-height: 0; overflow-y: auto; padding: 16px; }
 .popup-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .popup-head h1 { margin: 0; }
 .popup-close { border: 0; background: none; font-size: 32px; line-height: 1; cursor: pointer; }

@@ -1,0 +1,8 @@
+[
+  { "id": 1, "name": "Sample Campus Cafe", "category": "Cafe", "description": "Barista coffee, toasties and pastries. Student discount on any large coffee.", "building": "1CC", "hours": "7:30am - 4:00pm" },
+  { "id": 2, "name": "Sample Noodle Bar", "category": "Asian", "description": "Ramen, pho and rice bowls made fresh to order, with vegetarian options.", "building": "1CC", "hours": "11:00am - 7:00pm" },
+  { "id": 3, "name": "Sample Burger Shack", "category": "Fast food", "description": "Burgers, chips and thick shakes. Combo deal after 3pm.", "building": "18WW (Service Connect)", "hours": "10:30am - 8:00pm" },
+  { "id": 4, "name": "Sample Salad Co.", "category": "Healthy", "description": "Build-your-own salads and grain bowls plus cold-pressed juices.", "building": "16MW (Waranara Library)", "hours": "8:00am - 3:30pm" },
+  { "id": 5, "name": "Sample Pizza Corner", "category": "Fast food", "description": "Wood-fired pizza by the slice or whole, with a free drink on Fridays.", "building": "3IR", "hours": "11:00am - 6:00pm" },
+  { "id": 6, "name": "Sample Bubble Tea", "category": "Drinks", "description": "Milk tea, fruit tea and smoothies with custom sweetness and toppings.", "building": "27WW (Lotus Theatre)", "hours": "10:00am - 6:00pm" }
+]

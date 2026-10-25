@@ -46,6 +46,7 @@ const buildings = {
 
 app.get('/api/map', (req, res) => res.json(buildings));
 app.use('/api/societies', require('./routes/societies'));
+app.use('/api/food', require('./routes/food'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(PORT, () => console.log(`MCQ iMap running at http://localhost:${PORT}`));
