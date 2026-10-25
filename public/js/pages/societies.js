@@ -27,7 +27,7 @@
 
   function setOpen(open) {
     popup.hidden = !open;
-    if (open) document.querySelector('#food-popup .popup-close').click();
+    if (open) document.querySelectorAll('.societies-popup:not(#societies-popup) .popup-close').forEach((b) => b.click());
     if (navLink) navLink.classList.toggle('active', open);
   }
 

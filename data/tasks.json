@@ -1,0 +1,8 @@
+[
+  { "id": 1, "name": "Submit MQBS1000 AS3 report", "category": "Study", "due": "2026-10-30", "done": false },
+  { "id": 2, "name": "Read week 11 lecture notes", "category": "Study", "due": "2026-10-27", "done": false },
+  { "id": 3, "name": "Book group meeting room", "category": "Admin", "due": "2026-10-26", "done": true },
+  { "id": 4, "name": "Update enrolment details", "category": "Admin", "due": "2026-11-02", "done": false },
+  { "id": 5, "name": "Join a society", "category": "Social", "due": "2026-11-05", "done": false },
+  { "id": 6, "name": "Return library books", "category": "Admin", "due": "2026-10-28", "done": false }
+]

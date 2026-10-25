@@ -18,3 +18,22 @@ function foodCard(f) {
     `<p>${esc(f.description)}</p>` +
     `<p>${esc(f.building)} &middot; ${esc(f.hours)}</p></li>`;
 }
+
+function formatDate(iso) {
+  return new Date(iso + 'T00:00').toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+function taskCard(t) {
+  return `<li class="card${t.done ? ' card-done' : ''}" data-id="${t.id}" tabindex="0">` +
+    `<span class="card-tag">${esc(t.category)}</span>` +
+    `<h2>${t.done ? '&#10003; ' : ''}${esc(t.name)}</h2>` +
+    `<p>Due ${esc(formatDate(t.due))}</p></li>`;
+}
+
+function eventCard(e) {
+  return `<li class="card" data-id="${e.id}" tabindex="0">` +
+    `<span class="card-tag">${esc(e.category)}</span>` +
+    `<h2>${esc(e.name)}</h2>` +
+    `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
+    `<p>${esc(e.description)}</p></li>`;
+}

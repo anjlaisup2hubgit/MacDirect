@@ -282,3 +282,29 @@ html, body {
 .popup-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .popup-head h1 { margin: 0; }
 .popup-close { border: 0; background: none; font-size: 32px; line-height: 1; cursor: pointer; }
+.card-done { opacity: 0.55; }
+.card-done h2 { text-decoration: line-through; }
+
+/* Add event form */
+.event-form { display: grid; gap: 12px; }
+.event-form label { display: grid; gap: 4px; font-size: 13px; }
+.event-form input,
+.event-form select,
+.event-form textarea {
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 14px;
+  border: 2px solid #000;
+  background: #fff;
+}
+.form-submit {
+  padding: 12px;
+  font: inherit;
+  color: #fff;
+  background: var(--mq-red);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.form-msg { margin: 0; text-align: center; font-size: 13px; color: #1a7f37; }
+.form-msg[hidden] { display: none; }
