@@ -103,3 +103,19 @@ Claude recorded changes and reasoning using the format.
 # Reasoning
 * Keys come from `.env` through `/api/config` so they are not hard-coded in the pages.
 * The leader request is stored in sign-up metadata and filed after the first sign-in, because email confirmation means there is no session at sign-up.
+
+# Date
+2026-10-25
+
+# Change
+## Done
+* Added `auth.requireLogin(action)`, which shows a "Log in to ..." dialog to guests.
+* Add event plan now shows a "Log in to add event plans" block to guests instead of the form.
+
+## Not built yet
+* Follow buttons (Step 4), which will call `requireLogin`.
+* Gating for tasks, which have no screen yet.
+
+# Reasoning
+* Gating the form up front is clearer than letting a guest fill it in and then refusing.
+* Add event plan is the only save action that exists today, so it is the only one gated.

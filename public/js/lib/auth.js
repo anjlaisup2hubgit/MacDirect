@@ -84,6 +84,24 @@ const auth = (function () {
       if (state.sb) await state.sb.auth.signOut();
     },
     continueAsGuest() { setGuest(true); },
+    // For actions that need an account: returns true when logged in, otherwise shows a
+    // "Log in to <action>" dialog and returns false.
+    requireLogin(action) {
+      if (state.user) return true;
+      const d = document.createElement('dialog');
+      d.className = 'login-prompt';
+      d.innerHTML = `<p>Log in to ${action}.</p><div>` +
+        '<button class="form-submit" type="button" data-go>Log in or sign up</button>' +
+        '<button class="auth-guest" type="button" data-close>Not now</button></div>';
+      d.addEventListener('click', (e) => {
+        if (e.target.dataset.go !== undefined) location.href = '/login.html';
+        if (e.target.dataset.close !== undefined) d.close();
+      });
+      d.addEventListener('close', () => d.remove());
+      document.body.appendChild(d);
+      d.showModal();
+      return false;
+    },
     async listSocieties() {
       if (!state.sb) return [];
       const { data } = await state.sb.from('societies').select('id, name').order('name');

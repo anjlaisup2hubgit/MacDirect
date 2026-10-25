@@ -2,7 +2,10 @@
 (function () {
   const p = createPopup({ id: 'event-plan-popup', title: 'Add Event Plan', navHref: '/?event-plan', hash: 'event-plan' });
   p.results.innerHTML =
-    '<form class="event-form">' +
+    '<div class="account guest-gate" hidden>' +
+      '<p>Log in to add event plans. Guests can browse everything but cannot save.</p>' +
+      '<button class="form-submit" type="button">Log in or sign up</button></div>' +
+    '<form class="event-form" hidden>' +
       '<label>Event name<input name="name" required maxlength="80"></label>' +
       '<label>Category<select name="category">' +
         ['Social', 'Academic', 'Career', 'Community'].map((c) => `<option>${c}</option>`).join('') + '</select></label>' +
@@ -16,6 +19,15 @@
     '</form>';
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
+  const gate = p.results.querySelector('.guest-gate');
+
+  function renderGate() {
+    gate.hidden = !!auth.user;
+    form.hidden = !auth.user;
+  }
+  gate.querySelector('button').addEventListener('click', () => { location.href = '/login.html'; });
+  auth.onChange(renderGate);
+  auth.ready.then(renderGate);
 
   api('/map').then((data) => {
     form.querySelector('datalist').innerHTML =
@@ -29,6 +41,7 @@
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (!auth.requireLogin('add event plans')) return;
     const f = new FormData(form);
     const ev = {
       id: Date.now(),

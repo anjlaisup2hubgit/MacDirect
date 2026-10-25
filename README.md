@@ -73,7 +73,7 @@ Secrets: `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are public by design. `SU
 
 **Not built yet**
 * Accounts: the login page, guest entry and settings account block are built. Still to do: run the schema on Supabase (SQL in `database/`) and test sign-up end to end.
-* Guest gating (`requireLogin()` prompts on follow, event plan and tasks).
+* Guest gating is built for Add event plan and as `auth.requireLogin()`, which the follow buttons will use. Tasks have no screen yet.
 * Following societies and leader event posting.
 * Moving societies and events from JSON files to Supabase.
 * Page HTML for events, event plan, food and societies is empty or missing.

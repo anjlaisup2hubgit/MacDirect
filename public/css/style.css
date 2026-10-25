@@ -360,3 +360,9 @@ html, body {
 .form-msg.error { color: #b3261e; }
 .account { display: grid; gap: 8px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #ddd; font-size: 14px; }
 .account p { margin: 0; }
+
+/* Log in prompt for guests */
+.login-prompt { width: min(320px, calc(100% - 32px)); padding: 20px; border: 2px solid #000; border-radius: 16px; font-size: 15px; }
+.login-prompt::backdrop { background: rgba(0, 0, 0, 0.4); }
+.login-prompt p { margin: 0 0 14px; }
+.login-prompt div { display: grid; gap: 8px; }
