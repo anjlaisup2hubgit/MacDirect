@@ -1,6 +1,68 @@
 
 Claude recorded changes and reasoning using the format.
 
+# HANDOFF (read this first; rewrite it at the end of every session)
+
+## How to resume in a new AI chat
+Paste this as your first message, then attach nothing else:
+> Read README.md, CLAUDE.md and the HANDOFF section at the top of CHANGELOG.md. Continue from "Next step". Ask me before changing the plan.
+
+## Rules for whoever (or whatever) edits this file
+1. At the end of every session, update the HANDOFF section below. Do not leave it stale.
+2. Add a dated entry (Date / Change / Reasoning) under it for what changed. Newest entries go last, as now.
+3. Never write passwords, keys or real user emails here. Name where a secret lives instead (`.env`).
+4. Mark each plan step Done, Partly or Not started, and say how it was verified.
+
+## Project in one paragraph
+iMCQ is a mobile-first Macquarie University campus map (Node/Express serving static HTML/JS, Leaflet map, popups over `index.html`). Goal of the current work: users log in, guests browse through a guest view, society leaders post society events, and users follow societies. Backend is Supabase (Postgres + Auth + row-level security). The browser talks to Supabase directly; Express serves pages, the map, and `GET /api/config` (public URL and publishable key from `.env`).
+
+## Decisions already made (do not re-ask)
+* Backend: Supabase, not MySQL/Docker. The README says so.
+* Name: iMCQ everywhere (package name `imcq`).
+* Leaders: choose a society at sign-up, an admin approves by editing `society_leaders.status` in the Supabase dashboard. No admin screen for the MVP.
+* Guests: can browse everything; follow, event plan, tasks and posting show "Log in to ...".
+* Roles: `profiles.role` is `student` or `admin`. A leader is a user with an approved `society_leaders` row.
+
+## Plan status
+| Step | What | Status |
+| :--- | :--- | :--- |
+| 0 | README + rename to iMCQ | Done |
+| 1 | `database/schema.sql` and `seed.sql` | Done. Run on Supabase; societies (12) and events (5) read back correctly as a logged-out visitor. |
+| 2 | Login page, guest entry, `js/lib/auth.js`, settings account block | Done. Guest path tested in browser. Sign-up and leader request were tested by the project owner (a pending `society_leaders` row appeared). |
+| 3 | Guest gating (`auth.requireLogin()`, Add event plan gate) | Done. Tested as guest and logged in. |
+| 4 | Follow societies (Follow/Following button, "Following" filter) | Not started. **Next step.** |
+| 5 | Leader flow: "Post event" form on What's Happening for approved leaders, edit/delete own events | Not started. |
+| 6 | Events and societies read from Supabase instead of `data/*.json`; remove `routes/societies.js`, `routes/events.js` | Not started. |
+
+## Next step
+Step 4. Add a Follow/Following button to society cards (`public/js/components/card.js` `societyCard`, wired in `public/js/pages/societies.js`). Call `auth.requireLogin('follow societies')` first. Write to the `follows` table through `supabase-js` (RLS allows only the user's own rows). Add a "Following" chip filter. `auth.js` does not yet expose the Supabase client; add a small accessor or a `follow`/`unfollow`/`myFollows` helper there.
+
+## Where things are
+* Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
+* Auth: `public/js/lib/auth.js` (global `auth`: `ready`, `user`, `profile`, `leaderships`, `onChange`, `signIn`, `signUp`, `signOut`, `continueAsGuest`, `requireLogin`, `listSocieties`). Login UI: `public/login.html`, `public/js/pages/login.js`.
+* Database: `database/schema.sql` (tables, RLS, grants, sign-up trigger), `database/seed.sql`. Not applied automatically; run in the Supabase SQL editor.
+* Server: `server.js` loads `.env` and serves `/api/map`, `/api/config`, and the JSON-backed `/api/societies`, `/api/events`, `/api/food`, `/api/tasks`.
+* Secrets: `.env` (gitignored). `.env.example` lists the variable names.
+
+## Running and testing
+* `npm install` then `npm start`. Default port 3000; if busy the dev preview used 3001.
+* Visitors with no session and no guest choice are redirected to `/login.html`. To test as a guest, use "Continue as guest". `localhost` and `127.0.0.1` have separate browser storage, which is a quick way to get a logged-out session without signing anyone out.
+* Do not create accounts on the live Supabase project from automated tests; ask the project owner to sign up manually.
+
+## Known gaps and gotchas
+* Event plans and the Add event plan form still save to `localStorage`, not Supabase.
+* The Display name field in User Settings is browser-only and not linked to `profiles.display_name`.
+* Tasks have no screen yet (so no gating); `routes/tasks.js` and `data/tasks.json` are placeholder data.
+* Sample events seed as the first admin (`created_by` must be a real user), so run `seed.sql` events only after an admin exists. Do not re-run the societies insert (names are unique).
+* Event times in Supabase are `time` values (`12:00:00`); the UI expects strings like `12:00pm`, so format when Step 6 lands.
+* If email confirmation is on in Supabase, sign-up needs a confirm-then-login round trip; the leader request is filed on first login from sign-up metadata.
+* Stale/unused: `Dockerfile`, `docker-compose.yml`, `db.js`, `routes/macqai.js`, `scripts/import-geojson.js` (MySQL-era leftovers).
+* `.claude/launch.json` server name is still `mcq-imap`.
+
+## Last updated
+2026-10-25, after Step 3.
+
+
 # Date
 2026-10-24
 

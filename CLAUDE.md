@@ -63,3 +63,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
+## 5. Session Handoff
+
+At the start of a session, read the HANDOFF section at the top of `CHANGELOG.md` and continue from its "Next step". At the end of a session, update that section (plan status, next step, gotchas) and add a dated entry below it.
