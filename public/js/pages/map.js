@@ -51,29 +51,79 @@ function esc(t) {
   return d.innerHTML;
 }
 
+let societies = [];
+api('/societies').then((data) => { societies = data; }).catch(console.error);
+
+// The panel is full height and slid down so only the head (name and location) peeks above the nav.
+// Dragging the head up reveals the image, description and societies; it snaps to peek or expanded.
+let peekY = 0;
+let expanded = false;
+const panelY = () => (expanded ? 0 : peekY);
+
 function selectBuilding(id, label) {
   if (selected) selected.setStyle(idleStyle);
   selected = layers.get(id);
   selected.setStyle(outlineStyle);
   selected.bringToFront();
   const p = selected.feature.properties;
+  const c = selected.getBounds().getCenter();
+  const here = societies.filter((s) => s.building === p.name);
   panel.innerHTML =
-    '<div class="building-panel-handle"></div>' +
-    '<button class="building-panel-close" aria-label="Close">&times;</button>' +
-    `<h2>${esc(p.name)}</h2>` +
-    (label ? `<p><strong>${esc(label)}</strong> meets here.</p>` : '') +
-    (p.address ? `<p class="building-panel-address">${esc(p.address)}</p>` : '') +
-    `<p>${esc(p.description)}</p>` +
-    (p.website ? `<a href="${esc(p.website)}" target="_blank" rel="noopener">Website</a>` : '');
-  panel.querySelector('.building-panel-close').addEventListener('click', clearSelection);
+    '<div class="building-panel-head">' +
+      '<div class="building-panel-handle"></div>' +
+      `<h2>${esc(p.name)}</h2>` +
+      `<p class="building-panel-address">${p.address ? esc(p.address) + ' &middot; ' : ''}` +
+        `<a href="https://www.google.com/maps/search/?api=1&query=${c.lat},${c.lng}" target="_blank" rel="noopener">Google Maps</a></p>` +
+      (label ? `<p><strong>${esc(label)}</strong> meets here.</p>` : '') +
+    '</div>' +
+    '<div class="building-panel-body">' +
+      '<div class="building-panel-image">No photo available</div>' +
+      `<p>${esc(p.description)}</p>` +
+      (p.website ? `<a href="${esc(p.website)}" target="_blank" rel="noopener">Website</a>` : '') +
+      '<h3>Societies held here</h3>' +
+      (here.length
+        ? '<ul class="building-panel-societies">' +
+          here.map((s) => `<li><strong>${esc(s.name)}</strong><span>${esc(s.category)}</span></li>`).join('') + '</ul>'
+        : '<p>No societies listed here.</p>') +
+    '</div>';
+  panel.querySelector('.building-panel-body').scrollTop = 0;
   panel.classList.add('open');
+  expanded = false;
+  peekY = Math.max(0, panel.offsetHeight - panel.querySelector('.building-panel-head').offsetHeight);
+  panel.style.transform = `translateY(${peekY}px)`;
 }
 
 function clearSelection() {
   if (selected) selected.setStyle(idleStyle);
   selected = null;
   panel.classList.remove('open');
+  panel.style.transform = '';
 }
+
+let drag = null;
+panel.addEventListener('pointerdown', (e) => {
+  if (!e.target.closest('.building-panel-head') || e.target.closest('a')) return;
+  drag = { startY: e.clientY, startPos: panelY(), moved: false };
+  panel.setPointerCapture(e.pointerId);
+  panel.classList.add('dragging');
+});
+panel.addEventListener('pointermove', (e) => {
+  if (!drag) return;
+  const dy = e.clientY - drag.startY;
+  if (Math.abs(dy) > 4) drag.moved = true;
+  panel.style.transform = `translateY(${Math.min(peekY, Math.max(0, drag.startPos + dy))}px)`;
+});
+function endDrag(e) {
+  if (!drag) return;
+  const dy = e.clientY - drag.startY;
+  if (!drag.moved) expanded = !expanded; // a tap on the head toggles
+  else expanded = drag.startPos + dy < peekY / 2;
+  drag = null;
+  panel.classList.remove('dragging');
+  panel.style.transform = `translateY(${panelY()}px)`;
+}
+panel.addEventListener('pointerup', endDrag);
+panel.addEventListener('pointercancel', endDrag);
 
 map.on('click', clearSelection);
 

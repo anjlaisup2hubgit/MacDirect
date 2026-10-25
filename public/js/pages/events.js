@@ -8,6 +8,11 @@
 
   const p = createPopup({ id: 'events-popup', title: "What's Happening", navHref: '/?events', hash: 'events' });
   p.results.innerHTML =
+    '<div class="chips cal-tabs" role="tablist">' +
+      '<button type="button" class="chip active" data-view="cal">Month</button>' +
+      '<button type="button" class="chip" data-view="list">Day</button>' +
+    '</div>' +
+    '<div class="cal-view">' +
     '<div class="cal-nav">' +
       '<button type="button" class="cal-prev" aria-label="Previous month">&lsaquo;</button>' +
       '<strong class="cal-title"></strong>' +
@@ -15,7 +20,13 @@
     '</div>' +
     '<div class="cal-grid"></div>' +
     '<h2 class="cal-day-title"></h2>' +
-    '<ul class="card-list"></ul><p class="empty-msg" hidden></p>';
+    '<ul class="card-list"></ul><p class="empty-msg" hidden></p>' +
+    '</div>' +
+    '<div class="agenda-view" hidden></div>';
+  const calView = p.results.querySelector('.cal-view');
+  const agendaEl = p.results.querySelector('.agenda-view');
+  const tabsEl = p.results.querySelector('.cal-tabs');
+  let agendaEvents = [];
   const titleEl = p.results.querySelector('.cal-title');
   const gridEl = p.results.querySelector('.cal-grid');
   const dayTitleEl = p.results.querySelector('.cal-day-title');
@@ -53,7 +64,34 @@
     listEl.innerHTML = dayEvents.map(eventCard).join('');
     emptyEl.textContent = 'No events on this day.';
     emptyEl.hidden = dayEvents.length > 0;
+
+    agendaEvents = [];
+    let agenda = '';
+    Object.keys(events).sort().forEach((key) => {
+      agenda += `<h2 class="cal-day-title">${esc(formatDate(key))}</h2><ul class="card-list">` +
+        events[key].map((e) => { agendaEvents.push(e); return eventCard(e); }).join('') + '</ul>';
+    });
+    agendaEl.innerHTML = agenda || '<p class="empty-msg">No events found.</p>';
   }
+
+  tabsEl.addEventListener('click', (e) => {
+    const tab = e.target.closest('.chip');
+    if (!tab) return;
+    tabsEl.querySelectorAll('.chip').forEach((c) => c.classList.toggle('active', c === tab));
+    calView.hidden = tab.dataset.view !== 'cal';
+    agendaEl.hidden = tab.dataset.view !== 'list';
+  });
+  agendaEl.addEventListener('click', (e) => {
+    const el = e.target.closest('.card');
+    if (!el) return;
+    const ev = agendaEvents[[...agendaEl.querySelectorAll('.card')].indexOf(el)];
+    if (!ev) return;
+    p.setOpen(false);
+    if (window.focusBuildingByName) window.focusBuildingByName(ev.building, ev.name);
+  });
+  agendaEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
+  });
 
   function shiftMonth(n) {
     month = new Date(month.getFullYear(), month.getMonth() + n, 1);
