@@ -51,7 +51,7 @@ function esc(t) {
   return d.innerHTML;
 }
 
-function selectBuilding(id) {
+function selectBuilding(id, label) {
   if (selected) selected.setStyle(idleStyle);
   selected = layers.get(id);
   selected.setStyle(outlineStyle);
@@ -61,6 +61,7 @@ function selectBuilding(id) {
     '<div class="building-panel-handle"></div>' +
     '<button class="building-panel-close" aria-label="Close">&times;</button>' +
     `<h2>${esc(p.name)}</h2>` +
+    (label ? `<p><strong>${esc(label)}</strong> meets here.</p>` : '') +
     (p.address ? `<p class="building-panel-address">${esc(p.address)}</p>` : '') +
     `<p>${esc(p.description)}</p>` +
     (p.website ? `<a href="${esc(p.website)}" target="_blank" rel="noopener">Website</a>` : '');
@@ -88,8 +89,15 @@ api('/map').then((data) => {
     },
   }).addTo(map);
 
-  initSearchBar(data.features, (f) => {
+  const focusBuilding = (f, label) => {
     map.fitBounds(layers.get(f.id).getBounds(), { maxZoom: 18, paddingBottomRight: [0, 200] });
-    selectBuilding(f.id);
-  });
+    selectBuilding(f.id, label);
+  };
+  initSearchBar(data.features, focusBuilding);
+
+  // Used by the societies popup: show a building, noting which society meets there.
+  window.focusBuildingByName = (name, label) => {
+    const f = data.features.find((x) => x.properties.name === name);
+    if (f) focusBuilding(f, label);
+  };
 }).catch((err) => console.error(err));
