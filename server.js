@@ -51,4 +51,4 @@ app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/events', require('./routes/events'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(PORT, () => console.log(`MCQ iMap running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`iMCQ running at http://localhost:${PORT}`));

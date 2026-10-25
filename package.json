@@ -1,8 +1,8 @@
 {
-  "name": "mcq-imap",
+  "name": "imcq",
   "version": "0.1.0",
   "private": true,
-  "description": "Interactive Macquarie University campus map",
+  "description": "iMCQ: interactive Macquarie University campus map",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

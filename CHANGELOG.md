@@ -57,3 +57,16 @@ Claude recorded changes and reasoning using the format.
 * The README status section tells readers which pages are still blank.
 * The unbuilt list mirrors the empty files and the blueprint in `README.md`.
 * Port 3000 was taken on this machine, so the app runs on 3001.
+
+# Date
+2026-10-25
+
+# Change
+## Done
+* Renamed the app to iMCQ in the README, page title, server log and `package.json`.
+* Rewrote the README MVP for Supabase auth, guest/student/leader/admin roles, society follows and leader event posting.
+
+# Reasoning
+* The app's name is iMCQ, and the README still described MySQL and Docker, which no longer match the plan.
+* The README is the blueprint, so it needs to describe the roles and data model before they are built.
+* The Supabase key and the old asset filename were left as they are because they are real identifiers.
