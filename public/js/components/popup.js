@@ -28,7 +28,10 @@ function createPopup({ id, title, navHref, hash, searchPlaceholder }) {
   (window.popups = window.popups || {})[navHref] = () => setOpen(popup.hidden);
   popup.querySelector('.popup-close').addEventListener('click', () => setOpen(false));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
-  if (new URLSearchParams(location.search).has(hash)) setOpen(true);
+  if (new URLSearchParams(location.search).has(hash)) {
+    setOpen(true);
+    history.replaceState(null, '', location.pathname);
+  }
 
   return { popup, results: popup.querySelector('.popup-results'), setOpen };
 }

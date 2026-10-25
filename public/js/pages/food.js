@@ -64,5 +64,8 @@
     emptyEl.hidden = false;
   });
 
-  if (new URLSearchParams(location.search).has('food')) setOpen(true);
+  if (new URLSearchParams(location.search).has('food')) {
+    setOpen(true);
+    history.replaceState(null, '', location.pathname);
+  }
 })();

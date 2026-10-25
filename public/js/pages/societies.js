@@ -64,5 +64,8 @@
     emptyEl.hidden = false;
   });
 
-  if (new URLSearchParams(location.search).has('societies')) setOpen(true);
+  if (new URLSearchParams(location.search).has('societies')) {
+    setOpen(true);
+    history.replaceState(null, '', location.pathname);
+  }
 })();
