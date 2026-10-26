@@ -31,10 +31,12 @@ function taskCard(t) {
     `<p>Due ${esc(formatDate(t.due))}</p></li>`;
 }
 
-function eventCard(e) {
+function eventCard(e, canEdit) {
   return `<li class="card" data-id="${e.id}" tabindex="0">` +
     `<span class="card-tag">${esc(e.category)}</span>` +
     `<h2>${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
-    `<p>${esc(e.description)}</p></li>`;
+    `<p>${esc(e.description)}</p>` +
+    (canEdit ? '<button type="button" class="follow-btn" data-edit>Edit</button> ' +
+      '<button type="button" class="follow-btn" data-delete>Delete</button>' : '') + '</li>';
 }

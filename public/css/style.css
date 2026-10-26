@@ -358,7 +358,7 @@ html, body {
 .auth-tabs { display: flex; gap: 8px; justify-content: center; }
 .auth-check { display: flex !important; align-items: center; gap: 8px; }
 .auth-leader { display: grid; gap: 12px; }
-.auth-leader[hidden], .event-form label[hidden] { display: none; }
+.auth-leader[hidden], .event-form label[hidden], .event-form[hidden] { display: none; }
 .auth-guest {
   padding: 12px;
   font: inherit;

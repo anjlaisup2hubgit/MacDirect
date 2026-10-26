@@ -115,6 +115,43 @@ const auth = (function () {
         : await q.delete().eq('user_id', state.user.id).eq('society_id', societyId);
       return { error };
     },
+    // Societies the user may post events for.
+    get approvedSocieties() {
+      return state.leaderships.filter((l) => l.status === 'approved')
+        .map((l) => ({ id: l.society_id, name: l.societies && l.societies.name }));
+    },
+    // Events in the shape the UI uses; `time` is display text, `timeValue` is HH:MM for forms.
+    async listEvents() {
+      const { data, error } = await state.sb.from('events')
+        .select('id, society_id, title, category, event_date, event_time, building, description')
+        .order('event_date').order('event_time');
+      if (error) throw error;
+      return data.map((e) => {
+        const [h, m] = e.event_time ? e.event_time.split(':').map(Number) : [null, null];
+        return {
+          id: e.id, societyId: e.society_id, name: e.title, category: e.category, date: e.event_date,
+          timeValue: e.event_time ? e.event_time.slice(0, 5) : '',
+          time: h === null ? '' : `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`,
+          building: e.building || 'TBC', description: e.description,
+        };
+      });
+    },
+    // `ev` uses the form fields; pass `id` to update an existing event.
+    async saveEvent(ev) {
+      const row = {
+        society_id: ev.societyId, title: ev.name, category: ev.category, event_date: ev.date,
+        event_time: ev.time || null, building: ev.building || null, description: ev.description,
+      };
+      const q = state.sb.from('events');
+      const { error } = ev.id
+        ? await q.update(row).eq('id', ev.id)
+        : await q.insert({ ...row, created_by: state.user.id });
+      return { error };
+    },
+    async deleteEvent(id) {
+      const { error } = await state.sb.from('events').delete().eq('id', id);
+      return { error };
+    },
     async listSocieties() {
       if (!state.sb) return [];
       const { data } = await state.sb.from('societies').select('id, name').order('name');

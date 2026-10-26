@@ -29,15 +29,15 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 2 | Login page, guest entry, `js/lib/auth.js`, settings account block | Done. Guest path tested in browser. Sign-up and leader request were tested by the project owner (a pending `society_leaders` row appeared). |
 | 3 | Guest gating (`auth.requireLogin()`, Add event plan gate) | Done. Tested as guest and logged in. |
 | 4 | Follow societies (Follow/Following button, "Following" filter) | Done. Follow/unfollow round-tripped to Supabase as a logged-in user; guest sees "Log in to follow societies". |
-| 5 | Leader flow: "Post event" form on What's Happening for approved leaders, edit/delete own events | Not started. **Next step.** |
-| 6 | Events and societies read from Supabase instead of `data/*.json`; remove `routes/societies.js`, `routes/events.js` | Not started. |
+| 5 | Leader flow: "Post event" form on What's Happening for approved leaders, edit/delete own events | Done. Tested as an approved leader (post, edit, delete; test event removed) and as a guest (no form, no buttons). |
+| 6 | Events and societies read from Supabase instead of `data/*.json`; remove `routes/societies.js`, `routes/events.js` | Partly. Events now load from Supabase (JSON only as fallback when Supabase is not configured). Societies still use JSON; routes not yet removed. **Next step.** |
 
 ## Next step
-Step 5. Add a "Post event" form to What's Happening (`public/js/pages/events.js`) shown only when `auth.leaderships` has an approved row; insert into `events` with `society_id` (RLS enforces leader/admin), plus edit/delete on the leader's own events. Events still come from `/api/events` (JSON) until Step 6, so posted events will not show until then; consider doing Step 6 first or together.
+Finish Step 6. Load societies from Supabase in `public/js/pages/societies.js` (the table has no `building`/`contact`/`website` columns yet, so either add them to `schema.sql` and the seed or keep a JSON lookup for those), then delete `routes/societies.js`, `routes/events.js`, their `server.js` wiring and `data/societies.json`/`data/events.json`. Removing the fallback means the app needs Supabase configured to show events.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
-* Auth: `public/js/lib/auth.js` (global `auth`: `ready`, `user`, `profile`, `leaderships`, `onChange`, `signIn`, `signUp`, `signOut`, `continueAsGuest`, `requireLogin`, `listSocieties`, `myFollows`, `setFollow`). Login UI: `public/login.html`, `public/js/pages/login.js`.
+* Auth: `public/js/lib/auth.js` (global `auth`: `ready`, `user`, `profile`, `leaderships`, `onChange`, `signIn`, `signUp`, `signOut`, `continueAsGuest`, `requireLogin`, `listSocieties`, `myFollows`, `setFollow`, `approvedSocieties`, `listEvents`, `saveEvent`, `deleteEvent`). Login UI: `public/login.html`, `public/js/pages/login.js`.
 * Database: `database/schema.sql` (tables, RLS, grants, sign-up trigger), `database/seed.sql`. Not applied automatically; run in the Supabase SQL editor.
 * Server: `server.js` loads `.env` and serves `/api/map`, `/api/config`, and the JSON-backed `/api/societies`, `/api/events`, `/api/food`.
 * Secrets: `.env` (gitignored). `.env.example` lists the variable names.
@@ -59,4 +59,4 @@ Step 5. Add a "Post event" form to What's Happening (`public/js/pages/events.js`
 * `.claude/launch.json` server name is still `mcq-imap`.
 
 ## Last updated
-2026-10-25, after Step 4.
+2026-10-25, after Step 5.
