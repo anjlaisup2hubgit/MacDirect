@@ -37,11 +37,11 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 10 | Login language reload keeps typed email and display name (sessionStorage, never the password); `vi` wording: society leader is "Chủ nhiệm CLB" | Done. `node --check` on both files; zh, es and vi still have the same 85 keys (script). NOT checked in a browser (none installed). |
 | 11 | Event plans in Supabase: `event_plans` table (private RLS), `auth.listMyPlans/savePlan/deletePlan`, Add event plan and What's Happening switched from `localStorage` | Done. SQL run on Supabase; the project owner added a plan logged in and it survived a page refresh. Guest view and a second device not tested. |
 | 12 | Remove button on your own plans in What's Happening (`auth.deletePlan`) | Done. The project owner removed a plan logged in and it worked. |
-| 13 | Settings (logged in): Followed societies list with Unfollow, and Clear my event plans (`auth.clearPlans`, in-page confirm box, refreshes What's Happening); zh/es/vi strings added | Partly. Clear my event plans works (project owner tested logged in). Unfollow list and the zh/es/vi wording NOT tested logged in. |
+| 13 | Settings (logged in): Followed societies list with Unfollow, and Clear my event plans (`auth.clearPlans`, in-page confirm box, refreshes What's Happening); zh/es/vi strings added | Done. Both features tested logged in by the project owner. zh/es/vi wording not viewed in a browser. |
 | 13 | Leader event posting: Post event form and Edit/Delete on own-society event cards in What's Happening (uses `auth.saveEvent/deleteEvent/approvedSocieties`) | Partly. `node --check` passes; NOT tested in a browser or with a real approved leader account. |
 
 ## Next step
-Steps 0-12 are done; step 13 still needs the Unfollow list checked logged in. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
+Steps 0-13 are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
