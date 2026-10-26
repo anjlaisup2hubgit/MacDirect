@@ -66,4 +66,4 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## 5. Session Handoff
 
-At the start of a session, read the HANDOFF section at the top of `CHANGELOG.md` and continue from its "Next step". At the end of a session, update that section (plan status, next step, gotchas) and add a dated entry below it.
+At the start of a session, read `CHANGELOG.md` and continue from its "Next step". At the end of a session, rewrite that file (plan status, next step, gotchas) so it describes the current state.
