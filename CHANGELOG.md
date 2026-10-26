@@ -18,7 +18,7 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 * Backend: Supabase, not MySQL/Docker. The README says so.
 * Name: iMCQ everywhere (package name `imcq`).
 * Leaders: choose a society at sign-up, an admin approves by editing `society_leaders.status` in the Supabase dashboard. No admin screen for the MVP.
-* Guests: can browse everything; follow, event plan, tasks and posting show "Log in to ...".
+* Guests: can browse everything; follow, event plan and posting show "Log in to ...".
 * Roles: `profiles.role` is `student` or `admin`. A leader is a user with an approved `society_leaders` row.
 
 ## Plan status
@@ -39,7 +39,7 @@ Step 4. Add a Follow/Following button to society cards (`public/js/components/ca
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
 * Auth: `public/js/lib/auth.js` (global `auth`: `ready`, `user`, `profile`, `leaderships`, `onChange`, `signIn`, `signUp`, `signOut`, `continueAsGuest`, `requireLogin`, `listSocieties`). Login UI: `public/login.html`, `public/js/pages/login.js`.
 * Database: `database/schema.sql` (tables, RLS, grants, sign-up trigger), `database/seed.sql`. Not applied automatically; run in the Supabase SQL editor.
-* Server: `server.js` loads `.env` and serves `/api/map`, `/api/config`, and the JSON-backed `/api/societies`, `/api/events`, `/api/food`, `/api/tasks`.
+* Server: `server.js` loads `.env` and serves `/api/map`, `/api/config`, and the JSON-backed `/api/societies`, `/api/events`, `/api/food`.
 * Secrets: `.env` (gitignored). `.env.example` lists the variable names.
 
 ## Running and testing
@@ -50,12 +50,11 @@ Step 4. Add a Follow/Following button to society cards (`public/js/components/ca
 ## Known gaps and gotchas
 * Event plans and the Add event plan form still save to `localStorage`, not Supabase.
 * The Display name field in User Settings is browser-only and not linked to `profiles.display_name`.
-* The Task Plan view is dropped. `routes/tasks.js` and `data/tasks.json` are unused leftovers.
+* The Task Plan view is dropped, and its route, data and the MySQL-era leftovers (Docker files, `db.js`, `macqai.js`, `import-geojson.js`) are deleted.
 * The empty `events.html`, `event-plan.html`, `food.html` were deleted; the icon SVG now lives in `docs/`.
 * Sample events seed as the first admin (`created_by` must be a real user), so run `seed.sql` events only after an admin exists. Do not re-run the societies insert (names are unique).
 * Event times in Supabase are `time` values (`12:00:00`); the UI expects strings like `12:00pm`, so format when Step 6 lands.
 * If email confirmation is on in Supabase, sign-up needs a confirm-then-login round trip; the leader request is filed on first login from sign-up metadata.
-* Stale/unused: `Dockerfile`, `docker-compose.yml`, `db.js`, `routes/macqai.js`, `scripts/import-geojson.js` (MySQL-era leftovers).
 * `.claude/launch.json` server name is still `mcq-imap`.
 
 ## Last updated

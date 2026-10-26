@@ -104,11 +104,7 @@ MCQ iMap/
 ├── routes/                # Express handlers behind /api/...
 │   ├── events.js          # Placeholder JSON (to be removed)
 │   ├── societies.js       # Placeholder JSON (to be removed)
-│   ├── food.js
-│   ├── tasks.js           # Leftover, no screen uses it
-│   └── macqai.js          # Unused leftover
-├── scripts/import-geojson.js, db.js, Dockerfile, docker-compose.yml
-│                          # Unused leftovers from an earlier MySQL setup
+│   └── food.js
 └── public/
     ├── index.html         # The map page; all views open as popups here
     ├── login.html         # Login, sign-up and guest entry

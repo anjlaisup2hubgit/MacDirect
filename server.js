@@ -55,7 +55,6 @@ app.get('/api/config', (req, res) => res.json({
 }));
 app.use('/api/societies', require('./routes/societies'));
 app.use('/api/food', require('./routes/food'));
-app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/events', require('./routes/events'));
 app.use(express.static(path.join(__dirname, 'public')));
 
