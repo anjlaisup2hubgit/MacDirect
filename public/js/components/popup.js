@@ -22,7 +22,10 @@ function createPopup({ id, title, navHref, hash, searchPlaceholder }) {
   function setOpen(open) {
     popup.hidden = !open;
     if (open) document.querySelectorAll(`.societies-popup:not(#${id}) .popup-close`).forEach((b) => b.click());
-    if (navLink) navLink.classList.toggle('active', open);
+    if (navLink) {
+      navLink.classList.toggle('active', open);
+      if (open) navLink.setAttribute('aria-current', 'page'); else navLink.removeAttribute('aria-current');
+    }
   }
 
   (window.popups = window.popups || {})[navHref] = () => setOpen(popup.hidden);

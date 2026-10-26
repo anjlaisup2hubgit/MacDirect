@@ -41,9 +41,10 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 13 | Leader event posting: Post event form and Edit/Delete on own-society event cards in What's Happening (uses `auth.saveEvent/deleteEvent/approvedSocieties`) | Partly. `node --check` passes; NOT tested in a browser or with a real approved leader account. |
 
 | 14 | Login page redesign (Work Sans, card, segmented tabs, 8px radius, translated error messages, language selector at bottom) | Done. Checked in headless Edge at 360px (en, zh, es, vi): no sideways scroll, tap targets >= 44px, translated error messages (via stubbed `auth.signIn`), guest button reaches the map. Real Supabase wrong-password and sign-up not run. |
+| 15 | Navbar redesign + Work Sans on the whole map app (`index.html` loads the font; 12px labels, 36px icons, 8px rounded press/hover, `aria-current` on the open popup's button, centred 560px group at >= 600px; form controls inherit the font) | Done. Checked in the preview at 360px in English: five 72px columns, labels <= 2 lines, no sideways scroll, Societies button turns red. zh/es/vi were <= 2 lines before the last width fix but not re-run; other popups' look under the new font not reviewed; wide-screen layout not viewed. |
 
 ## Next step
-Steps 0-13 are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
+Steps 0-15 are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.

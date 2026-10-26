@@ -28,7 +28,10 @@
   function setOpen(open) {
     popup.hidden = !open;
     if (open) document.querySelectorAll('.societies-popup:not(#food-popup) .popup-close').forEach((b) => b.click());
-    if (navLink) navLink.classList.toggle('active', open);
+    if (navLink) {
+      navLink.classList.toggle('active', open);
+      if (open) navLink.setAttribute('aria-current', 'page'); else navLink.removeAttribute('aria-current');
+    }
   }
 
   window.openFood = () => setOpen(popup.hidden);
