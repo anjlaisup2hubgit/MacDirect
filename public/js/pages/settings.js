@@ -87,9 +87,21 @@
   });
   myData.addEventListener('click', async (e) => {
     if (e.target.dataset.act !== 'clear-plans') return;
-    if (!confirm(t('Delete all your event plans? This cannot be undone.'))) return;
-    const { error } = await auth.clearPlans();
-    if (error) { console.error(error); flash(t('Could not save.'), true); } else flash(t('Saved.'));
+    const d = document.createElement('dialog');
+    d.className = 'login-prompt';
+    d.innerHTML = `<p>${t('Delete all your event plans? This cannot be undone.')}</p><div>` +
+      `<button class="form-submit" type="button" data-yes>${t('Clear my event plans')}</button>` +
+      `<button class="auth-guest" type="button" data-no>${t('Cancel')}</button></div>`;
+    d.addEventListener('close', () => d.remove());
+    d.addEventListener('click', async (ev) => {
+      if (ev.target.dataset.no !== undefined) d.close();
+      if (ev.target.dataset.yes === undefined) return;
+      d.close();
+      const { error } = await auth.clearPlans();
+      if (error) { console.error(error); flash(t('Could not save.'), true); } else flash(t('Saved.'));
+    });
+    document.body.appendChild(d);
+    d.showModal();
   });
   function renderMyData() {
     myData.hidden = !auth.user;
