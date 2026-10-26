@@ -8,7 +8,11 @@
       `<label>${t('Language')}<select name="lang">` +
         Object.entries(I18N_LANGS).map(([v, l]) => `<option value="${v}">${l}</option>`).join('') + '</select></label>' +
       '<p class="form-msg" hidden></p>' +
-    '</form>';
+    '</form>' +
+    '<div class="my-data" hidden>' +
+      `<h3>${t('Followed societies')}</h3><div class="follow-list"></div>` +
+      `<button class="auth-guest" type="button" data-act="clear-plans">${t('Clear my event plans')}</button>` +
+    '</div>';
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
   const nameField = form.querySelector('.name-field');
@@ -61,6 +65,38 @@
     if (act === 'login') location.href = '/login.html';
     if (act === 'logout') { await auth.signOut(); location.href = '/login.html'; }
   });
+
+  // Followed societies and clearing plans: logged-in users only.
+  const myData = p.results.querySelector('.my-data');
+  const followList = myData.querySelector('.follow-list');
+  async function renderFollows() {
+    const [ids, societies] = await Promise.all([auth.myFollows(), auth.listSocieties()]);
+    const followed = societies.filter((s) => ids.includes(s.id));
+    followList.innerHTML = followed.length
+      ? followed.map((s) => `<div class="follow-row"><span>${esc(s.name)}</span>` +
+          `<button class="auth-guest" type="button" data-unfollow="${s.id}">${t('Unfollow')}</button></div>`).join('')
+      : '<p>' + t('You are not following any societies.') + '</p>';
+  }
+  followList.addEventListener('click', async (e) => {
+    const id = e.target.dataset.unfollow;
+    if (!id) return;
+    const { error } = await auth.setFollow(Number(id), false);
+    if (error) { console.error(error); flash(t('Could not save.'), true); return; }
+    flash(t('Saved.'));
+    renderFollows();
+  });
+  myData.addEventListener('click', async (e) => {
+    if (e.target.dataset.act !== 'clear-plans') return;
+    if (!confirm(t('Delete all your event plans? This cannot be undone.'))) return;
+    const { error } = await auth.clearPlans();
+    if (error) { console.error(error); flash(t('Could not save.'), true); } else flash(t('Saved.'));
+  });
+  function renderMyData() {
+    myData.hidden = !auth.user;
+    if (auth.user) renderFollows();
+  }
+  auth.onChange(renderMyData);
+  auth.ready.then(renderMyData);
   auth.onChange(renderAccount);
   auth.ready.then(renderAccount);
 })();

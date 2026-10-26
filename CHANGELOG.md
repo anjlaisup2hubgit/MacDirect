@@ -37,9 +37,10 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 10 | Login language reload keeps typed email and display name (sessionStorage, never the password); `vi` wording: society leader is "Chủ nhiệm CLB" | Done. `node --check` on both files; zh, es and vi still have the same 85 keys (script). NOT checked in a browser (none installed). |
 | 11 | Event plans in Supabase: `event_plans` table (private RLS), `auth.listMyPlans/savePlan/deletePlan`, Add event plan and What's Happening switched from `localStorage` | Done. SQL run on Supabase; the project owner added a plan logged in and it survived a page refresh. Guest view and a second device not tested. |
 | 12 | Remove button on your own plans in What's Happening (`auth.deletePlan`) | Done. The project owner removed a plan logged in and it worked. |
+| 13 | Settings (logged in): Followed societies list with Unfollow, and Clear my event plans (`auth.clearPlans`, confirm dialog); zh/es/vi strings added | Partly. `node --check` passes; as a guest the section is hidden and there are no console errors. Logged-in behaviour NOT tested: ask the project owner to try it. |
 
 ## Next step
-Steps 0-12 are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
+Steps 0-12 are done; step 13 needs a logged-in check by the project owner. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
@@ -66,7 +67,7 @@ Steps 0-12 are done. Remaining items are the gaps below and mcqAI answers (READM
 * `.claude/launch.json` server name is still `mcq-imap`.
 
 ## Last updated
-2026-10-26, after Step 12 (Remove button for plans).
+2026-10-26, after Step 13 (Settings: followed societies, clear plans). The bottom nav was also restyled in the Macquarie theme (CSS only).
 
 ### 2026-10-26 (tester risks, step 10)
 * **Change:** `login.js` saves email and display name to sessionStorage (`imcq-login-*`) just before the language reload, restores them on load and removes them; the password is never stored. `vi` strings 'Leader of', 'Leader request pending/declined for', 'I lead a society', 'Societies held here' reworded.

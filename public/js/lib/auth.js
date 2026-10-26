@@ -189,6 +189,11 @@ const auth = (function () {
       const { error } = await state.sb.from('event_plans').delete().eq('id', id);
       return { error };
     },
+    // Deletes every plan of the logged-in user (row-level security limits it to their own).
+    async clearPlans() {
+      const { error } = await state.sb.from('event_plans').delete().eq('user_id', state.user.id);
+      return { error };
+    },
     async listSocieties() {
       if (!state.sb) return [];
       const { data } = await state.sb.from('societies').select('id, name, category, description, building, contact, website').order('name');
