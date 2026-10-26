@@ -73,6 +73,18 @@
     agendaEl.innerHTML = agenda || `<p class="empty-msg">${t('No events found.')}</p>`;
   }
 
+  // Removes one of the user's own plans when its Remove button is pressed; true if it handled the click.
+  async function removePlan(e, list) {
+    const btn = e.target.closest('[data-remove]');
+    if (!btn) return false;
+    const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
+    if (ev && confirm(t('Remove this plan?'))) {
+      const { error } = await auth.deletePlan(ev.id);
+      if (error) console.error(error); else loadPlans();
+    }
+    return true;
+  }
+
   tabsEl.addEventListener('click', (e) => {
     const tab = e.target.closest('.chip');
     if (!tab) return;
@@ -80,7 +92,8 @@
     calView.hidden = tab.dataset.view !== 'cal';
     agendaEl.hidden = tab.dataset.view !== 'list';
   });
-  agendaEl.addEventListener('click', (e) => {
+  agendaEl.addEventListener('click', async (e) => {
+    if (await removePlan(e, agendaEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = agendaEvents[[...agendaEl.querySelectorAll('.card')].indexOf(el)];
@@ -105,7 +118,8 @@
     selected = day.dataset.date;
     render();
   });
-  listEl.addEventListener('click', (e) => {
+  listEl.addEventListener('click', async (e) => {
+    if (await removePlan(e, dayEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = dayEvents[[...listEl.children].indexOf(el)];

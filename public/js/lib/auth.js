@@ -171,7 +171,7 @@ const auth = (function () {
       return data.map((e) => {
         const [h, m] = e.plan_time ? e.plan_time.split(':').map(Number) : [null, null];
         return {
-          id: e.id, name: e.title, category: e.category, date: e.plan_date,
+          id: e.id, mine: true, name: e.title, category: e.category, date: e.plan_date,
           time: h === null ? '' : `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`,
           building: e.building || 'TBC', description: e.description,
         };

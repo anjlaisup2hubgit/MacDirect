@@ -36,5 +36,6 @@ function eventCard(e) {
     `<span class="card-tag">${esc(e.category)}</span>` +
     `<h2>${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
-    `<p>${esc(e.description)}</p></li>`;
+    `<p>${esc(e.description)}</p>` +
+    (e.mine ? `<button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` : '') + '</li>';
 }

@@ -36,9 +36,10 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 9 | Language select on `login.html` (changing it reloads the page) | Done. Syntax checked only; not yet viewed in a browser (none available in the last session). |
 | 10 | Login language reload keeps typed email and display name (sessionStorage, never the password); `vi` wording: society leader is "Chủ nhiệm CLB" | Done. `node --check` on both files; zh, es and vi still have the same 85 keys (script). NOT checked in a browser (none installed). |
 | 11 | Event plans in Supabase: `event_plans` table (private RLS), `auth.listMyPlans/savePlan/deletePlan`, Add event plan and What's Happening switched from `localStorage` | Done. SQL run on Supabase; the project owner added a plan logged in and it survived a page refresh. Guest view and a second device not tested. |
+| 12 | Remove button on your own plans in What's Happening (`auth.deletePlan`) | Partly. `node --check` passes; NOT tested in a browser. |
 
 ## Next step
-Steps 0-11 are done. Remaining items are the gaps below (e.g. a delete button for plans) and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
+Steps 0-11 are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
@@ -53,7 +54,7 @@ Steps 0-11 are done. Remaining items are the gaps below (e.g. a delete button fo
 * Do not create accounts on the live Supabase project from automated tests; ask the project owner to sign up manually.
 
 ## Known gaps and gotchas
-* Plans saved before step 11 stay in the browser's `localStorage` key `plannedEvents` and are no longer shown. Plans have no delete UI yet (`auth.deletePlan` is unused).
+* Plans saved before step 11 stay in the browser's `localStorage` key `plannedEvents` and are no longer shown.
 * The login page's language select also reloads; typed email and display name survive via sessionStorage, but the password, the active tab and any message do not.
 * Language changes reload the page (`/?tasks`, reopening User Settings). Static HTML uses `data-i18n` attributes; JS-built UI calls `t('English text')`. Database content (societies, events, food, building names/descriptions/addresses) and card dates stay English/en-AU; the calendar month title follows the language. `auth.requireLogin(message)` takes the full English key (e.g. 'Log in to follow societies'), which must exist in the dictionary. Add new UI text to the `zh`, `es` and `vi` dictionaries or it shows in English.
 * `auth.saveEvent`, `auth.deleteEvent` and `auth.approvedSocieties` are unused by the UI since the leader post form was removed. Leaders cannot post events from the app until a new UI is built.
