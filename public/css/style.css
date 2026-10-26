@@ -438,9 +438,6 @@ button, input, select, textarea { font-family: inherit; }
 .account { display: grid; gap: 8px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #ddd; font-size: 14px; }
 .account[hidden] { display: none; }
 .account p { margin: 0; }
-.my-data { display: grid; gap: 12px; font-size: 14px; }
-.my-data[hidden] { display: none; }
-.my-data h3 { margin: 0; font-size: 16px; }
 .follow-list { display: grid; gap: 8px; }
 .follow-list p { margin: 0; }
 

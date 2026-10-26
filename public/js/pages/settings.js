@@ -1,4 +1,4 @@
-// User settings popup: display name (logged-in users, saved to profiles), language, clear plans and log out.
+// User settings popup: display name (logged-in users, saved to profiles), language, calendar view and log out.
 (function () {
   const p = createPopup({ id: 'settings-popup', title: 'User Settings', navHref: '/?tasks', hash: 'tasks' });
   p.results.innerHTML =
@@ -11,9 +11,6 @@
         `<option value="cal">${t('Month')}</option><option value="list">${t('Day')}</option></select></label>` +
       '<p class="form-msg" hidden></p>' +
     '</form>' +
-    '<div class="my-data" hidden>' +
-      `<button class="auth-guest" type="button" data-act="clear-plans">${t('Clear my event plans')}</button>` +
-    '</div>' +
     `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button>`;
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
@@ -78,33 +75,6 @@
     if (act === 'logout') { await auth.signOut(); location.href = '/login.html'; }
   });
 
-  // Clearing plans: logged-in users only. Followed societies are listed in the Societies popup.
-  const myData = p.results.querySelector('.my-data');
-  myData.addEventListener('click', async (e) => {
-    if (e.target.dataset.act !== 'clear-plans') return;
-    const d = document.createElement('dialog');
-    d.className = 'login-prompt';
-    d.innerHTML = `<p>${t('Delete all your event plans? This cannot be undone.')}</p><div>` +
-      `<button class="form-submit" type="button" data-yes>${t('Clear my event plans')}</button>` +
-      `<button class="auth-guest" type="button" data-no>${t('Cancel')}</button></div>`;
-    d.addEventListener('close', () => d.remove());
-    d.addEventListener('click', async (ev) => {
-      if (ev.target.dataset.no !== undefined) d.close();
-      if (ev.target.dataset.yes === undefined) return;
-      d.close();
-      const { error } = await auth.clearPlans();
-      if (error) { console.error(error); flash(t('Could not save.'), true); return; }
-      flash(t('Saved.'));
-      window.dispatchEvent(new Event('events-changed')); // Calendar reloads its plans
-    });
-    document.body.appendChild(d);
-    d.showModal();
-  });
-  function renderMyData() {
-    myData.hidden = !auth.user;
-  }
-  auth.onChange(renderMyData);
-  auth.ready.then(renderMyData);
   auth.onChange(renderAccount);
   auth.ready.then(renderAccount);
 })();

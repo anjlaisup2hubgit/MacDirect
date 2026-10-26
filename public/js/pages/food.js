@@ -2,27 +2,18 @@
 (function () {
   const popup = document.getElementById('food-popup');
   const searchInput = popup.querySelector('.page-search');
-  const chipsEl = popup.querySelector('.chips');
   const listEl = popup.querySelector('.card-list');
   const emptyEl = popup.querySelector('.empty-msg');
   const navLink = document.querySelector('.bottom-nav a[href="/?food"]');
 
   let items = [];
-  let category = 'All';
 
   function render() {
     const q = searchInput.value.trim().toLowerCase();
     const shown = items.filter((s) =>
-      (category === 'All' || s.category === category) &&
       (s.name + ' ' + s.description + ' ' + hashtagsOf(s).join(' ')).toLowerCase().includes(q.replace(/^#/, '')));
     listEl.innerHTML = shown.map(foodCard).join('');
     emptyEl.hidden = shown.length > 0;
-  }
-
-  function renderChips() {
-    const cats = ['All', ...new Set(items.map((s) => s.category))];
-    chipsEl.innerHTML = cats.map((c) =>
-      `<button type="button" class="chip${c === category ? ' active' : ''}" data-cat="${esc(c)}">${esc(t(c))}</button>`).join('');
   }
 
   function setOpen(open) {
@@ -42,13 +33,6 @@
   searchInput.addEventListener('input', render);
   popup.querySelector('.popup-close').addEventListener('click', () => setOpen(false));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
-  chipsEl.addEventListener('click', (e) => {
-    const chip = e.target.closest('.chip');
-    if (!chip) return;
-    category = chip.dataset.cat;
-    renderChips();
-    render();
-  });
   listEl.addEventListener('click', (e) => {
     const card = e.target.closest('.card');
     if (!card || e.target.closest('.hours')) return; // opening hours just expand
@@ -62,7 +46,6 @@
 
   api('/food').then((data) => {
     items = data;
-    renderChips();
     render();
   }).catch((err) => {
     console.error(err);

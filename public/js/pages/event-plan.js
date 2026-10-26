@@ -1,5 +1,6 @@
 // Add event plan popup: one event form. A private plan or, for approved society leaders, a society event.
-// Both can carry a photo and show up in the Calendar. Leaders also get a Cover photo tab (cover image and hashtags).
+// Both can carry a photo and show up in the Calendar. Leaders also get an Edit events tab (edit or delete the events
+// they posted) and a Cover photo tab (cover image and hashtags).
 (function () {
   const p = createPopup({ id: 'event-plan-popup', title: 'Add Event Plan', navHref: '/?event-plan', hash: 'event-plan' });
   p.results.innerHTML =
@@ -8,6 +9,7 @@
       '<button class="form-submit" type="button">' + t('Log in or sign up') + '</button></div>' +
     '<div class="chips mode-tabs" role="group" hidden>' +
       '<button type="button" class="chip active" data-mode="event">' + t('Add event') + '</button>' +
+      '<button type="button" class="chip" data-mode="manage">' + t('Edit events') + '</button>' +
       '<button type="button" class="chip" data-mode="cover">' + t('Cover photo') + '</button></div>' +
     '<form class="event-form" hidden>' +
       '<label class="ev-target" hidden>' + t('Add for') + '<select name="target"></select></label>' +
@@ -26,6 +28,9 @@
       '<button class="auth-guest" type="button" data-cancel hidden>' + t('Cancel') + '</button>' +
       '<p class="form-msg" hidden></p>' +
     '</form>' +
+    '<section class="manage-section" hidden>' +
+      '<ul class="card-list"></ul><p class="empty-msg" hidden>' + t('Your society has not posted any events yet.') + '</p>' +
+    '</section>' +
     '<section class="event-form cover-section" hidden>' +
       '<h3>' + t('Society cover photo') + '</h3>' +
       '<label class="cover-society">' + t('Society') + '<select name="society"></select></label>' +
@@ -124,6 +129,33 @@
     window.dispatchEvent(new Event('society-images-changed')); // Societies popup reloads its list
   });
 
+  // Edit events tab: the events posted by the leader's societies, with Edit and Delete.
+  const manage = p.results.querySelector('.manage-section');
+  const manageList = manage.querySelector('.card-list');
+  const manageEmpty = manage.querySelector('.empty-msg');
+  let manageEvents = [];
+  async function renderManage() {
+    const mine = auth.user ? auth.approvedSocieties.map((s) => s.id) : [];
+    if (!mine.length) return;
+    try {
+      manageEvents = (await auth.listEvents()).filter((ev) => mine.includes(ev.societyId)).map((ev) => ({ ...ev, canEdit: true }));
+    } catch (err) { console.error(err); return; }
+    manageList.innerHTML = manageEvents.map(eventCard).join('');
+    manageEmpty.hidden = manageEvents.length > 0;
+  }
+  manageList.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-edit], [data-delete]');
+    if (!btn) return;
+    const ev = manageEvents[[...manageList.children].indexOf(btn.closest('.card'))];
+    if (!ev) return;
+    if (btn.hasAttribute('data-edit')) { window.editSocietyEvent(ev); return; }
+    if (!confirm(t('Delete this event?'))) return;
+    const { error } = await auth.deleteEvent(ev.id);
+    if (error) { console.error(error); return; }
+    window.dispatchEvent(new Event('events-changed'));
+  });
+  window.addEventListener('events-changed', renderManage);
+
   tabs.addEventListener('click', (e) => {
     const b = e.target.closest('[data-mode]');
     if (!b) return;
@@ -139,6 +171,8 @@
     tabs.querySelectorAll('.chip').forEach((b) => b.classList.toggle('active', b.dataset.mode === mode));
     form.hidden = !auth.user || mode !== 'event';
     cover.hidden = !mine.length || mode !== 'cover';
+    manage.hidden = !mine.length || mode !== 'manage';
+    if (mode === 'manage') renderManage();
     const keep = targetSelect.value;
     targetSelect.innerHTML = (editing ? '' : `<option value="me">${t('Just me (private)')}</option>`) +
       mine.map((s) => `<option value="${s.id}">${esc(s.name || '')}</option>`).join('');

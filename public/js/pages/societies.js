@@ -2,13 +2,11 @@
 (function () {
   const popup = document.getElementById('societies-popup');
   const searchInput = popup.querySelector('.page-search');
-  const chipsEl = popup.querySelector('.chips');
   const listEl = popup.querySelector('.card-list');
   const emptyEl = popup.querySelector('.empty-msg');
   const navLink = document.querySelector('.bottom-nav a[href="/?societies"]');
 
   let societies = [];
-  let category = 'All';
   let follows = new Set();
   let images = {};
 
@@ -20,16 +18,9 @@
   function render() {
     const q = searchInput.value.trim().toLowerCase();
     const shown = societies.filter((s) =>
-      (category === 'All' || (category === 'Following' ? follows.has(s.id) : s.category === category)) &&
       (s.name + ' ' + s.description + ' ' + hashtagsOf(s).join(' ')).toLowerCase().includes(q.replace(/^#/, '')));
     listEl.innerHTML = shown.map((s) => societyCard(s, follows.has(s.id), images[s.id] || dummyImage(s))).join('');
     emptyEl.hidden = shown.length > 0;
-  }
-
-  function renderChips() {
-    const cats = ['All', 'Following', ...new Set(societies.map((s) => s.category))];
-    chipsEl.innerHTML = cats.map((c) =>
-      `<button type="button" class="chip${c === category ? ' active' : ''}" data-cat="${esc(c)}">${esc(t(c))}</button>`).join('');
   }
 
   function setOpen(open) {
@@ -49,13 +40,6 @@
   searchInput.addEventListener('input', render);
   popup.querySelector('.popup-close').addEventListener('click', () => setOpen(false));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
-  chipsEl.addEventListener('click', (e) => {
-    const chip = e.target.closest('.chip');
-    if (!chip) return;
-    category = chip.dataset.cat;
-    renderChips();
-    render();
-  });
   listEl.addEventListener('click', async (e) => {
     const card = e.target.closest('.card');
     if (!card) return;
@@ -85,7 +69,6 @@
     societies = data;
     follows = new Set(ids);
     images = imgs;
-    renderChips();
     render();
   }).catch((err) => {
     console.error(err);
