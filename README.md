@@ -117,4 +117,7 @@ MCQ iMap/
 
 ## 9. Roadmap
 
-1. **mcqAI:** real answers and question logging.
+1. **Event plans in Supabase:** replace the `localStorage` plans with an `event_plans` table (private to each user, row-level security), with `listMyPlans`, `savePlan` and `deletePlan` helpers in `auth.js`.
+2. **Events from societies you follow:** a "Following" filter on What's Happening. Needs a link from events to societies (check whether `events` has a `society_id` column).
+3. **mcqAI:** real answers and question logging. Needs an AI provider decision, a `POST /api/ask` route (key stays in `.env`), a `questions` table, search-bar wiring, and rate limiting.
+4. **Food from Supabase (low priority):** move the last static JSON source into the database.
