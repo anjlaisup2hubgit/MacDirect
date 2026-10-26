@@ -98,7 +98,9 @@
       if (ev.target.dataset.yes === undefined) return;
       d.close();
       const { error } = await auth.clearPlans();
-      if (error) { console.error(error); flash(t('Could not save.'), true); } else flash(t('Saved.'));
+      if (error) { console.error(error); flash(t('Could not save.'), true); return; }
+      flash(t('Saved.'));
+      window.dispatchEvent(new Event('events-changed')); // What's Happening reloads its plans
     });
     document.body.appendChild(d);
     d.showModal();
