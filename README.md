@@ -32,7 +32,7 @@ npm start              # http://localhost:3000 (set PORT to change)
 * **Guest gating:** actions that need an account show "Log in to use this".
 * **Views:** five popups over the map (below). Societies and events are read from Supabase; only food is still static JSON.
 
-For what is being built next, see [CHANGELOG.md](CHANGELOG.md). Not built yet: map pins for societies with purple clusters, and macqAI answers.
+For what is being built next, see [CHANGELOG.md](CHANGELOG.md). Not built yet: macqAI answers.
 
 ## 4. Users and roles
 
@@ -58,8 +58,7 @@ The five views open as popups on the map page (`index.html`). The nav labels bel
 **Colours**
 
 * Macquarie Red `#A6192E` for the accent and active nav item.
-* Dark red `#8B0000` for map pins.
-* Purple `#6B21A8` with bold white numbers for clustered pins (planned).
+* Dark red `#8B0000` for accents.
 
 **Icons.** The bottom-nav icons share one line weight and are inlined in `public/js/components/nav.js` using `currentColor`, so the active item turns Macquarie Red. The source artwork is [docs/MCQ iMap Assets Design.svg](docs/MCQ%20iMap%20Assets%20Design.svg).
 
@@ -70,7 +69,7 @@ The five views open as popups on the map page (`index.html`). The nav labels bel
 | Database and auth | Supabase (Postgres + Auth) | Stores societies, events, follows and leader requests; email and password login. Row-level security (rules in the database that decide who can read and write each row) protects the data. |
 | Backend | Node.js with Express | Serves the pages, the map API and `GET /api/config` (public Supabase URL and publishable key). |
 | Frontend | Plain HTML, CSS and JavaScript, plus supabase-js from a CDN | The browser talks to Supabase directly using the publishable key. |
-| Map | Leaflet | Map rendering. Leaflet.markercluster (grouping nearby pins into numbered badges) is planned but not installed. |
+| Map | Leaflet | Map rendering. |
 | Packages | npm | Backend dependencies (only Express so far). |
 
 ## 7. Data model
@@ -115,5 +114,4 @@ MCQ iMap/
 
 ## 9. Roadmap
 
-1. **Map:** society pins with red markers and purple cluster badges.
-2. **macqAI:** real answers and question logging.
+1. **macqAI:** real answers and question logging.

@@ -33,7 +33,7 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 6 | Events and societies read from Supabase instead of `data/*.json`; remove `routes/societies.js`, `routes/events.js` | Done. Societies, events and the map's "Societies held here" list load from Supabase; JSON routes and files deleted. Checked as a guest (12 societies, 5 events, building panel). |
 
 ## Next step
-All six steps are done. Remaining items are the gaps below plus the README roadmap: society pins on the map (red markers, purple clusters) and macqAI answers. Ask the project owner which to take next.
+All six steps are done. Remaining items are the gaps below and macqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
