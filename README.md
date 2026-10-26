@@ -4,6 +4,8 @@ iMCQ is a mobile-first campus map for Macquarie University students. It shows bu
 
 Current progress and the next task live in [CHANGELOG.md](CHANGELOG.md).
 
+**Branches:** `main` is the full app. `pre-database` is the earlier version from before the Supabase database, login and users were added (commit `5c1faf9`). It is kept for a separate developer to work from. Get it with `git fetch origin` then `git checkout pre-database`.
+
 ## 1. Overview
 
 * **Audience:** new students unfamiliar with campus, society leaders, and the general student population.
