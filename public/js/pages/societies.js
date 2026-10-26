@@ -57,6 +57,7 @@
       const { error } = await auth.setFollow(s.id, on);
       if (error) { console.error(error); return; }
       on ? follows.add(s.id) : follows.delete(s.id);
+      window.dispatchEvent(new Event('events-changed')); // Calendar reloads its followed events
       render();
       return;
     }

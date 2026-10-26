@@ -1,12 +1,24 @@
-// What's Happening popup over the map: a month calendar of society events.
+// Calendar popup over the map (logged-in users only): events of the societies you follow, plus your own plans.
+// Month or Day view is chosen in User Settings (localStorage imcq-cal-view).
 // Pressing a day lists its events; pressing an event shows its building on the map.
 // Approved society leaders can also post, edit and delete events for their own society here.
 // Plans added through the Add event plan popup are private to the logged-in user (Supabase).
 (function () {
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-  const p = createPopup({ id: 'events-popup', title: "What's Happening", navHref: '/?events', hash: 'events' });
+  const p = createPopup({ id: 'events-popup', title: 'Calendar', navHref: '/?events', hash: 'events' });
+  const openPopup = window.popups['/?events'];
+  // Guests are asked to log in instead of opening the calendar. Closing is always allowed.
+  window.popups['/?events'] = () => {
+    if (p.popup.hidden && !auth.user && !auth.requireLogin('Log in to view the calendar')) return;
+    openPopup();
+  };
   p.results.innerHTML =
+    '<div class="account guest-gate" hidden>' +
+      '<p>' + t('Log in to view the calendar') + '.</p>' +
+      '<button class="form-submit" type="button">' + t('Log in or sign up') + '</button></div>' +
+    '<div class="cal-body">' +
+    '<p class="empty-msg follow-hint" hidden></p>' +
     '<button type="button" class="follow-btn post-btn" hidden>' + t('Post event') + '</button>' +
     '<form class="event-form leader-form" hidden>' +
       '<label>' + t('Society') + '<select name="society"></select></label>' +
@@ -22,10 +34,6 @@
       '<button class="auth-guest" type="button" data-cancel>' + t('Cancel') + '</button>' +
       '<p class="form-msg" hidden></p>' +
     '</form>' +
-    '<div class="chips cal-tabs" role="tablist">' +
-      '<button type="button" class="chip active" data-view="cal">' + t('Month') + '</button>' +
-      '<button type="button" class="chip" data-view="list">' + t('Day') + '</button>' +
-    '</div>' +
     '<div class="cal-view">' +
     '<div class="cal-nav">' +
       '<button type="button" class="cal-prev" aria-label="' + t('Previous month') + '">&lsaquo;</button>' +
@@ -36,10 +44,13 @@
     '<h2 class="cal-day-title"></h2>' +
     '<ul class="card-list"></ul><p class="empty-msg" hidden></p>' +
     '</div>' +
-    '<div class="agenda-view" hidden></div>';
+    '<div class="agenda-view" hidden></div>' +
+    '</div>';
   const calView = p.results.querySelector('.cal-view');
   const agendaEl = p.results.querySelector('.agenda-view');
-  const tabsEl = p.results.querySelector('.cal-tabs');
+  const gate = p.results.querySelector('.guest-gate');
+  const bodyEl = p.results.querySelector('.cal-body');
+  const hintEl = p.results.querySelector('.follow-hint');
   let agendaEvents = [];
   const titleEl = p.results.querySelector('.cal-title');
   const gridEl = p.results.querySelector('.cal-grid');
@@ -55,6 +66,8 @@
   let month = new Date(today.getFullYear(), today.getMonth(), 1);
   let selected = iso(today);
   let base = [];
+  let follows = new Set();
+  let ready = false; // true once auth has loaded, so a logged-in user never sees the gate flash
   let plans = [];
   let dayEvents = [];
 
@@ -65,6 +78,16 @@
   };
 
   function render() {
+    const guest = ready && !auth.user;
+    gate.hidden = !guest;
+    bodyEl.hidden = guest;
+    if (guest) return;
+    let view = 'cal';
+    try { if (localStorage.getItem('imcq-cal-view') === 'list') view = 'list'; } catch (err) { /* storage blocked: Month */ }
+    calView.hidden = view !== 'cal';
+    agendaEl.hidden = view !== 'list';
+    hintEl.textContent = t('You are not following any societies.') + ' ' + t('Follow societies to see their events here.');
+    hintEl.hidden = follows.size > 0;
     const leaderIds = auth.approvedSocieties.map((s) => s.id);
     base.forEach((e) => { e.canEdit = leaderIds.includes(e.societyId); });
     postBtn.hidden = !leaderIds.length;
@@ -179,13 +202,7 @@
       data.features.map((f) => `<option value="${esc(f.properties.name)}">`).join('');
   }).catch(console.error);
 
-  tabsEl.addEventListener('click', (e) => {
-    const tab = e.target.closest('.chip');
-    if (!tab) return;
-    tabsEl.querySelectorAll('.chip').forEach((c) => c.classList.toggle('active', c === tab));
-    calView.hidden = tab.dataset.view !== 'cal';
-    agendaEl.hidden = tab.dataset.view !== 'list';
-  });
+  gate.querySelector('button').addEventListener('click', () => { location.href = '/login.html'; });
   agendaEl.addEventListener('click', async (e) => {
     if (await removePlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
     const el = e.target.closest('.card');
@@ -226,10 +243,13 @@
   });
 
   const loadPlans = () => auth.listMyPlans().then((data) => { plans = auth.user ? data : []; render(); }).catch(console.error);
-  window.addEventListener('events-changed', loadPlans);
+  window.addEventListener('events-changed', () => { loadPlans(); loadEvents(); });
   auth.onChange(loadPlans);
+  auth.ready.then(() => { ready = true; render(); });
   render();
-  const loadEvents = () => auth.ready.then(() => auth.listEvents()).then((data) => { base = data; render(); })
+  // Only events of followed societies are shown; own plans are not filtered. Guests load nothing.
+  const loadEvents = () => auth.ready.then(() => (auth.user ? Promise.all([auth.listEvents(), auth.myFollows()]) : [[], []]))
+    .then(([data, ids]) => { follows = new Set(ids); base = data.filter((e) => follows.has(e.societyId)); render(); })
     .catch((err) => { console.error(err); emptyEl.textContent = t('Could not load events.'); emptyEl.hidden = false; });
   loadEvents();
   auth.ready.then(loadPlans);

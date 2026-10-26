@@ -7,6 +7,8 @@
       `<label class="name-field" hidden>${t('Display name')}<input name="name" maxlength="40" autocomplete="off"></label>` +
       `<label>${t('Language')}<select name="lang">` +
         Object.entries(I18N_LANGS).map(([v, l]) => `<option value="${v}">${l}</option>`).join('') + '</select></label>' +
+      `<label class="view-field" hidden>${t('Calendar view')}<select name="view">` +
+        `<option value="cal">${t('Month')}</option><option value="list">${t('Day')}</option></select></label>` +
       '<p class="form-msg" hidden></p>' +
     '</form>' +
     '<div class="my-data" hidden>' +
@@ -16,7 +18,9 @@
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
   const nameField = form.querySelector('.name-field');
+  const viewField = form.querySelector('.view-field');
   form.elements.lang.value = i18nLang();
+  try { form.elements.view.value = localStorage.getItem('imcq-cal-view') === 'list' ? 'list' : 'cal'; } catch (err) { /* storage blocked: keep Month */ }
 
   function flash(text, isError) {
     msg.textContent = text;
@@ -29,6 +33,12 @@
     if (e.target.name === 'lang') {
       setLang(e.target.value);
       location.href = '/?tasks'; // reload so every popup is rebuilt in the new language; reopens this popup
+    } else if (e.target.name === 'view') {
+      try {
+        localStorage.setItem('imcq-cal-view', e.target.value);
+        flash(t('Saved.'));
+        window.dispatchEvent(new Event('events-changed')); // Calendar switches to the chosen view
+      } catch (err) { console.error(err); flash(t('Could not save.'), true); }
     } else if (e.target.name === 'name') {
       const { error } = await auth.updateDisplayName(e.target.value.trim());
       if (error) { console.error(error); flash(t('Could not save.'), true); } else flash(t('Saved.'));
@@ -48,6 +58,7 @@
   }
   function renderAccount() {
     nameField.hidden = !auth.user;
+    viewField.hidden = !auth.user;
     if (auth.user) {
       form.elements.name.value = (auth.profile && auth.profile.display_name) || '';
       const name = (auth.profile && auth.profile.display_name) || t('Signed in');
@@ -56,7 +67,7 @@
         '<button class="form-submit" type="button" data-act="logout">' + t('Log out') + '</button>';
     } else {
       account.innerHTML =
-        '<p>' + t('You are browsing as a guest. Following societies and the event plan need an account.') + '</p>' +
+        '<p>' + t('You are browsing as a guest. Following societies, the calendar and the event plan need an account.') + '</p>' +
         '<button class="form-submit" type="button" data-act="login">' + t('Log in or sign up') + '</button>';
     }
   }
@@ -83,6 +94,7 @@
     const { error } = await auth.setFollow(Number(id), false);
     if (error) { console.error(error); flash(t('Could not save.'), true); return; }
     flash(t('Saved.'));
+    window.dispatchEvent(new Event('events-changed')); // Calendar reloads its followed events
     renderFollows();
   });
   myData.addEventListener('click', async (e) => {
@@ -100,7 +112,7 @@
       const { error } = await auth.clearPlans();
       if (error) { console.error(error); flash(t('Could not save.'), true); return; }
       flash(t('Saved.'));
-      window.dispatchEvent(new Event('events-changed')); // What's Happening reloads its plans
+      window.dispatchEvent(new Event('events-changed')); // Calendar reloads its plans
     });
     document.body.appendChild(d);
     d.showModal();

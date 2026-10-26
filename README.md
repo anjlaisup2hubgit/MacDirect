@@ -53,7 +53,7 @@ The five views open as popups on the map page (`index.html`). The nav labels bel
 | Nav label | Opens | Login needed | Status |
 | :--- | :--- | :--- | :--- |
 | User settings | Account details, display name (logged in), language, Log in / Log out | No | Working |
-| What's Happening | Campus events in a month calendar and day list | No | Working |
+| Calendar | Events of societies you follow plus your own plans, in a month calendar or day list (Month or Day chosen in User settings) | Yes | Working |
 | Add event plan | Personal agenda for bookmarked events | Yes | Working, saved to Supabase (`event_plans`, private to each user) |
 | Food and drinks | Directory of campus dining options | No | Working with JSON data |
 | On-campus Societies | Directory of societies, with Follow buttons | To follow | Working |
@@ -117,6 +117,5 @@ MCQ iMap/
 
 ## 9. Roadmap
 
-1. **Events from societies you follow:** a "Following" filter on What's Happening. Needs a link from events to societies (check whether `events` has a `society_id` column).
-2. **mcqAI:** real answers and question logging. Needs an AI provider decision, a `POST /api/ask` route (key stays in `.env`), a `questions` table, search-bar wiring, and rate limiting.
-3. **Food from Supabase (low priority):** move the last static JSON source into the database.
+1. **mcqAI:** real answers and question logging. Needs an AI provider decision, a `POST /api/ask` route (key stays in `.env`), a `questions` table, search-bar wiring, and rate limiting.
+2. **Food from Supabase (low priority):** move the last static JSON source into the database.

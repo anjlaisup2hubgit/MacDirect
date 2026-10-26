@@ -1,4 +1,4 @@
-// Add event plan popup: saves a private plan to Supabase so it shows up in What's Happening.
+// Add event plan popup: saves a private plan to Supabase so it shows up in the Calendar.
 (function () {
   const p = createPopup({ id: 'event-plan-popup', title: 'Add Event Plan', navHref: '/?event-plan', hash: 'event-plan' });
   p.results.innerHTML =
@@ -58,7 +58,7 @@
     } else {
       window.dispatchEvent(new Event('events-changed'));
       form.reset();
-      msg.textContent = t("Added! Find it in What's Happening.");
+      msg.textContent = t('Added! Find it in Calendar.');
     }
     msg.hidden = false;
   });
