@@ -34,9 +34,10 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 7 | Settings: Display name linked to `profiles.display_name` (logged in only), Text size removed, Language select (English, 简体中文, Español, Tiếng Việt), leader post form removed, macqAI renamed mcqAI | Done. Checked as a guest in a browser. Display name saving (logged in) not tested. |
 | 8 | Vietnamese (`vi`) added to `i18n.js` and the events month title | Done. Key coverage checked against `zh` and `es` by script; not yet viewed in a browser. |
 | 9 | Language select on `login.html` (changing it reloads the page) | Done. Syntax checked only; not yet viewed in a browser (none available in the last session). |
+| 10 | Login language reload keeps typed email and display name (sessionStorage, never the password); `vi` wording: society leader is "Chủ nhiệm CLB" | Done. `node --check` on both files; zh, es and vi still have the same 85 keys (script). NOT checked in a browser (none installed). |
 
 ## Next step
-All nine steps are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
+All ten steps are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
@@ -52,6 +53,7 @@ All nine steps are done. Remaining items are the gaps below and mcqAI answers (R
 
 ## Known gaps and gotchas
 * Event plans and the Add event plan form still save to `localStorage`, not Supabase.
+* The login page's language select also reloads; typed email and display name survive via sessionStorage, but the password, the active tab and any message do not.
 * Language changes reload the page (`/?tasks`, reopening User Settings). Static HTML uses `data-i18n` attributes; JS-built UI calls `t('English text')`. Database content (societies, events, food, building names/descriptions/addresses) and card dates stay English/en-AU; the calendar month title follows the language. `auth.requireLogin(message)` takes the full English key (e.g. 'Log in to follow societies'), which must exist in the dictionary. Add new UI text to the `zh`, `es` and `vi` dictionaries or it shows in English.
 * `auth.saveEvent`, `auth.deleteEvent` and `auth.approvedSocieties` are unused by the UI since the leader post form was removed. Leaders cannot post events from the app until a new UI is built.
 * The Task Plan view is dropped, and its route, data and the MySQL-era leftovers (Docker files, `db.js`, the old AI route, `import-geojson.js`) are deleted.
@@ -62,7 +64,11 @@ All nine steps are done. Remaining items are the gaps below and mcqAI answers (R
 * `.claude/launch.json` server name is still `mcq-imap`.
 
 ## Last updated
-2026-10-26, after Step 9 (language select on the login page).
+2026-10-26, after Step 10 (login language reload keeps typed fields; Vietnamese leader wording).
+
+### 2026-10-26 (tester risks, step 10)
+* **Change:** `login.js` saves email and display name to sessionStorage (`imcq-login-*`) just before the language reload, restores them on load and removes them; the password is never stored. `vi` strings 'Leader of', 'Leader request pending/declined for', 'I lead a society', 'Societies held here' reworded.
+* **Reasoning:** the reload wiped typed input. Not restored: the sign-up/log-in tab (page reopens on Log in, so a typed display name sits in a hidden field until the user clicks Sign up) and any shown message. Not checked in a browser.
 
 ### 2026-10-26
 * **Change:** Display name linked to `profiles`, Text size and its CSS removed, language switching added (`i18n.js`), leader post/edit/delete UI removed from What's Happening, macqAI renamed mcqAI (including CSS class names `mcqai-*`).

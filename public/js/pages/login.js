@@ -29,7 +29,20 @@
   const langSelect = document.getElementById('lang-select');
   langSelect.innerHTML = Object.entries(I18N_LANGS).map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
   langSelect.value = i18nLang();
-  langSelect.addEventListener('change', () => { setLang(langSelect.value); location.reload(); }); // reload rebuilds the page text in the new language
+  // Keep email and display name across the language reload (never the password).
+  const KEPT = ['email', 'displayName'];
+  try {
+    KEPT.forEach((name) => {
+      const saved = sessionStorage.getItem('imcq-login-' + name);
+      if (saved !== null) form.elements[name].value = saved;
+      sessionStorage.removeItem('imcq-login-' + name);
+    });
+  } catch (e) { /* storage unavailable */ }
+  langSelect.addEventListener('change', () => {
+    try { KEPT.forEach((name) => sessionStorage.setItem('imcq-login-' + name, form.elements[name].value)); } catch (e) { /* storage unavailable */ }
+    setLang(langSelect.value);
+    location.reload(); // reload rebuilds the page text in the new language
+  });
 
   tabs.forEach((tab) => tab.addEventListener('click', () => setMode(tab.dataset.mode)));
   form.elements.isLeader.addEventListener('change', syncLeaderField);
