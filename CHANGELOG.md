@@ -50,7 +50,8 @@ Step 4. Add a Follow/Following button to society cards (`public/js/components/ca
 ## Known gaps and gotchas
 * Event plans and the Add event plan form still save to `localStorage`, not Supabase.
 * The Display name field in User Settings is browser-only and not linked to `profiles.display_name`.
-* Tasks have no screen yet (so no gating); `routes/tasks.js` and `data/tasks.json` are placeholder data.
+* The Task Plan view is dropped. `routes/tasks.js` and `data/tasks.json` are unused leftovers.
+* The empty `events.html`, `event-plan.html`, `food.html` were deleted; the icon SVG now lives in `docs/`.
 * Sample events seed as the first admin (`created_by` must be a real user), so run `seed.sql` events only after an admin exists. Do not re-run the societies insert (names are unique).
 * Event times in Supabase are `time` values (`12:00:00`); the UI expects strings like `12:00pm`, so format when Step 6 lands.
 * If email confirmation is on in Supabase, sign-up needs a confirm-then-login round trip; the leader request is filed on first login from sign-up metadata.
