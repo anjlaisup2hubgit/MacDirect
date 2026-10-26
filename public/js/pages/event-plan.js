@@ -1,4 +1,4 @@
-// Add event plan popup: saves a new event to localStorage so it shows up in What's Happening.
+// Add event plan popup: saves a private plan to Supabase so it shows up in What's Happening.
 (function () {
   const p = createPopup({ id: 'event-plan-popup', title: 'Add Event Plan', navHref: '/?event-plan', hash: 'event-plan' });
   p.results.innerHTML =
@@ -34,31 +34,26 @@
       data.features.map((f) => `<option value="${esc(f.properties.name)}">`).join('');
   }).catch(console.error);
 
-  function formatTime(hhmm) {
-    const [h, m] = hhmm.split(':').map(Number);
-    return `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`;
-  }
-
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!auth.requireLogin('Log in to add event plans')) return;
     const f = new FormData(form);
-    const ev = {
-      id: Date.now(),
+    const { error } = await auth.savePlan({
       name: f.get('name').trim(),
       category: f.get('category'),
       date: f.get('date'),
-      time: f.get('time') ? formatTime(f.get('time')) : '',
-      building: f.get('building').trim() || 'TBC',
+      time: f.get('time'),
+      building: f.get('building').trim(),
       description: f.get('description').trim() || 'No description.',
-    };
-    try {
-      const all = JSON.parse(localStorage.getItem('plannedEvents')) || [];
-      localStorage.setItem('plannedEvents', JSON.stringify(all.concat(ev)));
-    } catch (err) { console.error(err); }
-    window.dispatchEvent(new Event('events-changed'));
-    form.reset();
-    msg.textContent = t("Added! Find it in What's Happening.");
+    });
+    if (error) {
+      console.error(error);
+      msg.textContent = t('Could not save.');
+    } else {
+      window.dispatchEvent(new Event('events-changed'));
+      form.reset();
+      msg.textContent = t("Added! Find it in What's Happening.");
+    }
     msg.hidden = false;
   });
 })();

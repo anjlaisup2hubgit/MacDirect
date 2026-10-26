@@ -51,6 +51,20 @@ create table public.events (
   created_at  timestamptz not null default now()
 );
 
+-- A user's private agenda entries (the Add event plan popup).
+create table public.event_plans (
+  id          bigint generated always as identity primary key,
+  user_id     uuid not null references public.profiles (id) on delete cascade,
+  title       text not null,
+  category    text not null,
+  plan_date   date not null,
+  plan_time   time,
+  building    text,
+  description text not null default '',
+  created_at  timestamptz not null default now()
+);
+
+create index event_plans_user_idx on public.event_plans (user_id, plan_date);
 create index events_date_idx on public.events (event_date);
 create index events_society_idx on public.events (society_id);
 create index follows_society_idx on public.follows (society_id);
@@ -99,6 +113,7 @@ alter table public.societies       enable row level security;
 alter table public.society_leaders enable row level security;
 alter table public.follows         enable row level security;
 alter table public.events          enable row level security;
+alter table public.event_plans     enable row level security;
 
 -- profiles: read your own, edit only your display name (role is admin-set).
 create policy "profiles read own or admin" on public.profiles
@@ -131,6 +146,14 @@ create policy "follows add own" on public.follows
 create policy "follows remove own" on public.follows
   for delete to authenticated using (user_id = auth.uid());
 
+-- event_plans: private to each user.
+create policy "plans read own" on public.event_plans
+  for select to authenticated using (user_id = auth.uid());
+create policy "plans add own" on public.event_plans
+  for insert to authenticated with check (user_id = auth.uid());
+create policy "plans remove own" on public.event_plans
+  for delete to authenticated using (user_id = auth.uid());
+
 -- events: public read; approved leaders manage their own society's events; admin manages all.
 create policy "events public read" on public.events
   for select to anon, authenticated using (true);
@@ -153,6 +176,7 @@ create policy "events leader delete" on public.events
 grant select on public.societies, public.events to anon;
 grant select, insert, update, delete on public.societies, public.events to authenticated;
 grant select, insert, update, delete on public.society_leaders, public.follows to authenticated;
+grant select, insert, delete on public.event_plans to authenticated;
 grant select on public.profiles to authenticated;
 grant update (display_name) on public.profiles to authenticated;
 

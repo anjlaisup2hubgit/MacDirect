@@ -1,10 +1,8 @@
 // What's Happening popup over the map: a month calendar of society events.
 // Pressing a day lists its events; pressing an event shows its building on the map.
-// Events added through the Add event plan popup are kept in localStorage.
+// Plans added through the Add event plan popup are private to the logged-in user (Supabase).
 (function () {
-  const STORE = 'plannedEvents';
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  const planned = () => { try { return JSON.parse(localStorage.getItem(STORE)) || []; } catch (e) { return []; } };
 
   const p = createPopup({ id: 'events-popup', title: "What's Happening", navHref: '/?events', hash: 'events' });
   p.results.innerHTML =
@@ -37,11 +35,12 @@
   let month = new Date(today.getFullYear(), today.getMonth(), 1);
   let selected = iso(today);
   let base = [];
+  let plans = [];
   let dayEvents = [];
 
   const byDate = () => {
     const map = {};
-    base.concat(planned()).forEach((e) => { (map[e.date] = map[e.date] || []).push(e); });
+    base.concat(plans).forEach((e) => { (map[e.date] = map[e.date] || []).push(e); });
     return map;
   };
 
@@ -118,8 +117,11 @@
     if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
   });
 
-  window.addEventListener('events-changed', render);
+  const loadPlans = () => auth.listMyPlans().then((data) => { plans = data; render(); }).catch(console.error);
+  window.addEventListener('events-changed', loadPlans);
+  auth.onChange(loadPlans);
   render();
   auth.ready.then(() => auth.listEvents()).then((data) => { base = data; render(); })
     .catch((err) => { console.error(err); emptyEl.textContent = t('Could not load events.'); emptyEl.hidden = false; });
+  auth.ready.then(loadPlans);
 })();

@@ -161,6 +161,34 @@ const auth = (function () {
       const { error } = await state.sb.from('events').delete().eq('id', id);
       return { error };
     },
+    // The logged-in user's private plans, in the same shape as listEvents (empty for guests).
+    async listMyPlans() {
+      if (!state.user) return [];
+      const { data, error } = await state.sb.from('event_plans')
+        .select('id, title, category, plan_date, plan_time, building, description')
+        .order('plan_date').order('plan_time');
+      if (error) throw error;
+      return data.map((e) => {
+        const [h, m] = e.plan_time ? e.plan_time.split(':').map(Number) : [null, null];
+        return {
+          id: e.id, name: e.title, category: e.category, date: e.plan_date,
+          time: h === null ? '' : `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`,
+          building: e.building || 'TBC', description: e.description,
+        };
+      });
+    },
+    // `plan` uses the form fields; `time` is HH:MM or empty.
+    async savePlan(plan) {
+      const { error } = await state.sb.from('event_plans').insert({
+        user_id: state.user.id, title: plan.name, category: plan.category, plan_date: plan.date,
+        plan_time: plan.time || null, building: plan.building || null, description: plan.description,
+      });
+      return { error };
+    },
+    async deletePlan(id) {
+      const { error } = await state.sb.from('event_plans').delete().eq('id', id);
+      return { error };
+    },
     async listSocieties() {
       if (!state.sb) return [];
       const { data } = await state.sb.from('societies').select('id, name, category, description, building, contact, website').order('name');

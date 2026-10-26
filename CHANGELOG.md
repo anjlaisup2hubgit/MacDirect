@@ -35,13 +35,14 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 8 | Vietnamese (`vi`) added to `i18n.js` and the events month title | Done. Key coverage checked against `zh` and `es` by script; not yet viewed in a browser. |
 | 9 | Language select on `login.html` (changing it reloads the page) | Done. Syntax checked only; not yet viewed in a browser (none available in the last session). |
 | 10 | Login language reload keeps typed email and display name (sessionStorage, never the password); `vi` wording: society leader is "Chủ nhiệm CLB" | Done. `node --check` on both files; zh, es and vi still have the same 85 keys (script). NOT checked in a browser (none installed). |
+| 11 | Event plans in Supabase: `event_plans` table (private RLS), `auth.listMyPlans/savePlan/deletePlan`, Add event plan and What's Happening switched from `localStorage` | Partly. `node --check` passes. `event_plans` block in `schema.sql` NOT yet run on Supabase; not tested in a browser. |
 
 ## Next step
-All ten steps are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
+Run the `event_plans` parts of `database/schema.sql` in the Supabase SQL editor (table, index, RLS, policies, grant), then test Add event plan as a logged-in user and as a guest. Then the remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
-* Auth: `public/js/lib/auth.js` (global `auth`: `ready`, `user`, `profile`, `leaderships`, `onChange`, `signIn`, `signUp`, `signOut`, `continueAsGuest`, `requireLogin`, `listSocieties`, `myFollows`, `setFollow`, `approvedSocieties`, `listEvents`, `saveEvent`, `deleteEvent`, `updateDisplayName`). Language: `public/js/lib/i18n.js` (`t(key)`, `i18nLang()`, `setLang()`; keys are English text, dictionary has `zh`, `es` and `vi`). Login UI: `public/login.html`, `public/js/pages/login.js`.
+* Auth: `public/js/lib/auth.js` (global `auth`: `ready`, `user`, `profile`, `leaderships`, `onChange`, `signIn`, `signUp`, `signOut`, `continueAsGuest`, `requireLogin`, `listSocieties`, `myFollows`, `setFollow`, `approvedSocieties`, `listEvents`, `saveEvent`, `deleteEvent`, `updateDisplayName`, `listMyPlans`, `savePlan`, `deletePlan`). Language: `public/js/lib/i18n.js` (`t(key)`, `i18nLang()`, `setLang()`; keys are English text, dictionary has `zh`, `es` and `vi`). Login UI: `public/login.html`, `public/js/pages/login.js`.
 * Database: `database/schema.sql` (tables, RLS, grants, sign-up trigger), `database/seed.sql`. Not applied automatically; run in the Supabase SQL editor.
 * Server: `server.js` loads `.env` and serves `/api/map`, `/api/config` and the JSON-backed `/api/food`.
 * Secrets: `.env` (gitignored). `.env.example` lists the variable names.
@@ -52,7 +53,7 @@ All ten steps are done. Remaining items are the gaps below and mcqAI answers (RE
 * Do not create accounts on the live Supabase project from automated tests; ask the project owner to sign up manually.
 
 ## Known gaps and gotchas
-* Event plans and the Add event plan form still save to `localStorage`, not Supabase.
+* Plans saved before step 11 stay in the browser's `localStorage` key `plannedEvents` and are no longer shown. Plans have no delete UI yet (`auth.deletePlan` is unused).
 * The login page's language select also reloads; typed email and display name survive via sessionStorage, but the password, the active tab and any message do not.
 * Language changes reload the page (`/?tasks`, reopening User Settings). Static HTML uses `data-i18n` attributes; JS-built UI calls `t('English text')`. Database content (societies, events, food, building names/descriptions/addresses) and card dates stay English/en-AU; the calendar month title follows the language. `auth.requireLogin(message)` takes the full English key (e.g. 'Log in to follow societies'), which must exist in the dictionary. Add new UI text to the `zh`, `es` and `vi` dictionaries or it shows in English.
 * `auth.saveEvent`, `auth.deleteEvent` and `auth.approvedSocieties` are unused by the UI since the leader post form was removed. Leaders cannot post events from the app until a new UI is built.
@@ -64,7 +65,7 @@ All ten steps are done. Remaining items are the gaps below and mcqAI answers (RE
 * `.claude/launch.json` server name is still `mcq-imap`.
 
 ## Last updated
-2026-10-26, after Step 10 (login language reload keeps typed fields; Vietnamese leader wording).
+2026-10-26, after Step 11 (event plans moved to Supabase).
 
 ### 2026-10-26 (tester risks, step 10)
 * **Change:** `login.js` saves email and display name to sessionStorage (`imcq-login-*`) just before the language reload, restores them on load and removes them; the password is never stored. `vi` strings 'Leader of', 'Leader request pending/declined for', 'I lead a society', 'Societies held here' reworded.
