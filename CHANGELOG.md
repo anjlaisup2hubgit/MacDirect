@@ -38,6 +38,7 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 11 | Event plans in Supabase: `event_plans` table (private RLS), `auth.listMyPlans/savePlan/deletePlan`, Add event plan and What's Happening switched from `localStorage` | Done. SQL run on Supabase; the project owner added a plan logged in and it survived a page refresh. Guest view and a second device not tested. |
 | 12 | Remove button on your own plans in What's Happening (`auth.deletePlan`) | Done. The project owner removed a plan logged in and it worked. |
 | 13 | Settings (logged in): Followed societies list with Unfollow, and Clear my event plans (`auth.clearPlans`, confirm dialog); zh/es/vi strings added | Partly. `node --check` passes; as a guest the section is hidden and there are no console errors. Logged-in behaviour NOT tested: ask the project owner to try it. |
+| 13 | Leader event posting: Post event form and Edit/Delete on own-society event cards in What's Happening (uses `auth.saveEvent/deleteEvent/approvedSocieties`) | Partly. `node --check` passes; NOT tested in a browser or with a real approved leader account. |
 
 ## Next step
 Steps 0-12 are done; step 13 needs a logged-in check by the project owner. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.

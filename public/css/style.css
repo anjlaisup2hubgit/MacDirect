@@ -297,6 +297,10 @@ html, body {
   cursor: pointer;
 }
 .follow-btn.following { background: var(--mq-red); color: #fff; }
+.card-actions { display: flex; gap: 8px; }
+.post-btn { margin: 0 0 12px; }
+.post-btn[hidden] { display: none; }
+.leader-form { margin-bottom: 16px; }
 .empty-msg { text-align: center; color: #666; font-size: 14px; }
 .empty-msg[hidden] { display: none; }
 

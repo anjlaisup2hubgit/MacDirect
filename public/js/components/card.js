@@ -37,5 +37,7 @@ function eventCard(e) {
     `<h2>${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
     `<p>${esc(e.description)}</p>` +
-    (e.mine ? `<button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` : '') + '</li>';
+    (e.mine ? `<button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` : '') +
+    (e.canEdit ? `<div class="card-actions"><button type="button" class="follow-btn" data-edit>${t('Edit')}</button>` +
+      `<button type="button" class="follow-btn" data-delete>${t('Delete')}</button></div>` : '') + '</li>';
 }
