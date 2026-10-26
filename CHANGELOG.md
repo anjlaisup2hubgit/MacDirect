@@ -33,9 +33,10 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 6 | Events and societies read from Supabase instead of `data/*.json`; remove `routes/societies.js`, `routes/events.js` | Done. Societies, events and the map's "Societies held here" list load from Supabase; JSON routes and files deleted. Checked as a guest (12 societies, 5 events, building panel). |
 | 7 | Settings: Display name linked to `profiles.display_name` (logged in only), Text size removed, Language select (English, 简体中文, Español, Tiếng Việt), leader post form removed, macqAI renamed mcqAI | Done. Checked as a guest in a browser. Display name saving (logged in) not tested. |
 | 8 | Vietnamese (`vi`) added to `i18n.js` and the events month title | Done. Key coverage checked against `zh` and `es` by script; not yet viewed in a browser. |
+| 9 | Language select on `login.html` (changing it reloads the page) | Done. Syntax checked only; not yet viewed in a browser (none available in the last session). |
 
 ## Next step
-All eight steps are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
+All nine steps are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
@@ -61,7 +62,7 @@ All eight steps are done. Remaining items are the gaps below and mcqAI answers (
 * `.claude/launch.json` server name is still `mcq-imap`.
 
 ## Last updated
-2026-10-26, after Step 8 (Vietnamese added).
+2026-10-26, after Step 9 (language select on the login page).
 
 ### 2026-10-26
 * **Change:** Display name linked to `profiles`, Text size and its CSS removed, language switching added (`i18n.js`), leader post/edit/delete UI removed from What's Happening, macqAI renamed mcqAI (including CSS class names `mcqai-*`).

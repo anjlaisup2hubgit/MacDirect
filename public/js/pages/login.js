@@ -26,6 +26,11 @@
     form.querySelector('[data-leader]').hidden = !form.elements.isLeader.checked;
   }
 
+  const langSelect = document.getElementById('lang-select');
+  langSelect.innerHTML = Object.entries(I18N_LANGS).map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
+  langSelect.value = i18nLang();
+  langSelect.addEventListener('change', () => { setLang(langSelect.value); location.reload(); }); // reload rebuilds the page text in the new language
+
   tabs.forEach((tab) => tab.addEventListener('click', () => setMode(tab.dataset.mode)));
   form.elements.isLeader.addEventListener('change', syncLeaderField);
 
