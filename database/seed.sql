@@ -29,3 +29,21 @@ from (values
 ) as e(society_name, title, category, event_date, event_time, building, description)
 left join public.societies s on s.name = e.society_name
 cross join lateral (select id from public.profiles where role = 'admin' order by created_at limit 1) a;
+
+-- Sample hashtags (run after the "Hashtags and event posters" block of schema.sql).
+update public.societies s set hashtags = h.tags
+from (values
+  ('Sample Robotics Society', array['robotics','engineering','workshops']),
+  ('Sample Chinese Students Association', array['culture','language','social']),
+  ('Sample Indian Society', array['culture','festivals','food']),
+  ('Sample Futsal Club', array['sport','futsal','social']),
+  ('Sample Dance Society', array['dance','arts','performance']),
+  ('Sample Film and Media Society', array['film','arts','movienights']),
+  ('Sample Business Society', array['business','networking','careers']),
+  ('Sample Volunteers Network', array['volunteering','charity','community']),
+  ('Sample Sustainability Collective', array['sustainability','community','green']),
+  ('Sample Board Games Club', array['boardgames','social','casual']),
+  ('Sample Law Students Society', array['law','moot','careers']),
+  ('Sample Pride Collective', array['pride','community','support'])
+) as h(name, tags)
+where s.name = h.name;

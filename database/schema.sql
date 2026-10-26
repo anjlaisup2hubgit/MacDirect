@@ -240,6 +240,20 @@ create policy "society images storage delete" on storage.objects
       case when (storage.foldername(name))[1] ~ '^[0-9]+$' then (storage.foldername(name))[1]::bigint end))
   );
 
+-- Hashtags and event posters ---------------------------------------------------
+-- Societies carry several hashtags (lower case, no #). Leaders may change only that column.
+-- Event posters reuse the society-images bucket under <society_id>/events/, so the
+-- Storage rules above already cover them. Safe to run again.
+alter table public.societies add column if not exists hashtags text[] not null default '{}';
+alter table public.events add column if not exists image_path text;
+
+drop policy if exists "societies leader update" on public.societies;
+create policy "societies leader update" on public.societies
+  for update to authenticated
+  using (public.is_leader_of(id)) with check (public.is_leader_of(id));
+revoke update on public.societies from authenticated;
+grant update (hashtags) on public.societies to authenticated;
+
 -- Making yourself the first admin (SQL editor only, after signing up once):
 --   update public.profiles set role = 'admin' where id = '<your auth.users id>';
 -- Approving a leader request (the MVP "admin screen"):

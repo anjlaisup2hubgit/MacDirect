@@ -14,7 +14,7 @@
     const q = searchInput.value.trim().toLowerCase();
     const shown = items.filter((s) =>
       (category === 'All' || s.category === category) &&
-      (s.name + ' ' + s.description).toLowerCase().includes(q));
+      (s.name + ' ' + s.description + ' ' + hashtagsOf(s).join(' ')).toLowerCase().includes(q.replace(/^#/, '')));
     listEl.innerHTML = shown.map(foodCard).join('');
     emptyEl.hidden = shown.length > 0;
   }

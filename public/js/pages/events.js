@@ -1,7 +1,7 @@
 // Calendar popup over the map (logged-in users only): events of the societies you follow, plus your own plans.
 // Month or Day view is chosen in User Settings (localStorage imcq-cal-view).
 // Pressing a day lists its events; pressing an event shows its building on the map.
-// Approved society leaders can also post, edit and delete events for their own society here.
+// Approved society leaders can edit and delete their society's events here (posting is in the Add event plan popup).
 // Plans added through the Add event plan popup are private to the logged-in user (Supabase).
 (function () {
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -14,21 +14,6 @@
       '<button class="form-submit" type="button">' + t('Log in or sign up') + '</button></div>' +
     '<div class="cal-body">' +
     '<p class="empty-msg follow-hint" hidden></p>' +
-    '<button type="button" class="follow-btn post-btn" hidden>' + t('Post event') + '</button>' +
-    '<form class="event-form leader-form" hidden>' +
-      '<label>' + t('Society') + '<select name="society"></select></label>' +
-      '<label>' + t('Event name') + '<input name="name" required maxlength="80"></label>' +
-      '<label>' + t('Category') + '<select name="category">' +
-        ['Social', 'Academic', 'Career', 'Community'].map((c) => `<option value="${c}">${t(c)}</option>`).join('') + '</select></label>' +
-      '<label>' + t('Date') + '<input name="date" type="date" required></label>' +
-      '<label>' + t('Time') + '<input name="time" type="time" value="12:00"></label>' +
-      '<label>' + t('Building') + '<input name="building" list="leader-buildings" placeholder="' + t('e.g. 1CC') + '"></label>' +
-      '<datalist id="leader-buildings"></datalist>' +
-      '<label>' + t('Description') + '<textarea name="description" rows="3" maxlength="200"></textarea></label>' +
-      '<button class="form-submit" type="submit">' + t('Save event') + '</button>' +
-      '<button class="auth-guest" type="button" data-cancel>' + t('Cancel') + '</button>' +
-      '<p class="form-msg" hidden></p>' +
-    '</form>' +
     '<div class="cal-view">' +
     '<div class="cal-nav">' +
       '<button type="button" class="cal-prev" aria-label="' + t('Previous month') + '">&lsaquo;</button>' +
@@ -52,11 +37,6 @@
   const dayTitleEl = p.results.querySelector('.cal-day-title');
   const listEl = p.results.querySelector('.card-list');
   const emptyEl = p.results.querySelector('.empty-msg');
-  const postBtn = p.results.querySelector('.post-btn');
-  const form = p.results.querySelector('.leader-form');
-  const formMsg = form.querySelector('.form-msg');
-  let editing = null; // the event being edited, or null when posting a new one
-
   const today = new Date();
   let month = new Date(today.getFullYear(), today.getMonth(), 1);
   let selected = iso(today);
@@ -85,8 +65,6 @@
     hintEl.hidden = follows.size > 0;
     const leaderIds = auth.approvedSocieties.map((s) => s.id);
     base.forEach((e) => { e.canEdit = leaderIds.includes(e.societyId); });
-    postBtn.hidden = !leaderIds.length;
-    if (!leaderIds.length) form.hidden = true;
     const events = byDate();
     titleEl.textContent = month.toLocaleDateString({ en: 'en-AU', zh: 'zh-CN', es: 'es', vi: 'vi' }[i18nLang()], { month: 'long', year: 'numeric' });
     const lead = (month.getDay() + 6) % 7; // week starts Monday
@@ -127,75 +105,19 @@
     return true;
   }
 
-  function openForm(ev) {
-    editing = ev || null;
-    const socs = auth.approvedSocieties;
-    const sel = form.elements.society;
-    sel.innerHTML = socs.map((s) => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
-    sel.closest('label').hidden = socs.length < 2;
-    form.reset();
-    if (ev) {
-      sel.value = ev.societyId;
-      form.elements.name.value = ev.name;
-      form.elements.category.value = ev.category;
-      form.elements.date.value = ev.date;
-      form.elements.time.value = ev.timeValue;
-      form.elements.building.value = ev.building === 'TBC' ? '' : ev.building;
-      form.elements.description.value = ev.description;
-    }
-    formMsg.hidden = true;
-    form.hidden = false;
-    form.scrollIntoView({ block: 'nearest' });
-  }
-
   // Handles Edit and Delete on a society event card; true if it handled the click.
   async function leaderAction(e, list) {
     const btn = e.target.closest('[data-edit], [data-delete]');
     if (!btn) return false;
     const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
     if (!ev || !ev.canEdit) return true;
-    if (btn.hasAttribute('data-edit')) { openForm(ev); return true; }
+    if (btn.hasAttribute('data-edit')) { if (window.editSocietyEvent) window.editSocietyEvent(ev); return true; }
     if (confirm(t('Delete this event?'))) {
       const { error } = await auth.deleteEvent(ev.id);
       if (error) console.error(error); else loadEvents();
     }
     return true;
   }
-
-  postBtn.addEventListener('click', () => openForm());
-  form.querySelector('[data-cancel]').addEventListener('click', () => { form.hidden = true; });
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const f = new FormData(form);
-    const submit = form.querySelector('.form-submit');
-    submit.disabled = true; // stops a double tap saving the event twice
-    let error;
-    try {
-      ({ error } = await auth.saveEvent({
-        id: editing ? editing.id : undefined,
-        societyId: Number(f.get('society')),
-        name: f.get('name').trim(),
-        category: f.get('category'),
-        date: f.get('date'),
-        time: f.get('time'),
-        building: f.get('building').trim(),
-        description: f.get('description').trim(),
-      }));
-    } catch (err) { error = err; }
-    submit.disabled = false;
-    if (error) {
-      console.error(error);
-      formMsg.textContent = t('Could not save.');
-      formMsg.hidden = false;
-    } else {
-      form.hidden = true;
-      loadEvents();
-    }
-  });
-  api('/map').then((data) => {
-    form.querySelector('datalist').innerHTML =
-      data.features.map((f) => `<option value="${esc(f.properties.name)}">`).join('');
-  }).catch(console.error);
 
   gate.querySelector('button').addEventListener('click', () => { location.href = '/login.html'; });
   agendaEl.addEventListener('click', async (e) => {

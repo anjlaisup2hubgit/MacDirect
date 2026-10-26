@@ -301,6 +301,7 @@ button, input, select, textarea { font-family: inherit; }
   border-radius: 999px;
 }
 .card .hashtags { margin: 8px 0 0; font-size: 13px; color: var(--mq-red); }
+.event-poster { height: auto; max-height: 360px; object-fit: contain; background: #f3f3f3; }
 .follow-btn {
   margin-top: 10px;
   padding: 5px 14px;

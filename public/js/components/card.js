@@ -4,21 +4,37 @@ function esc(t) {
   return d.innerHTML;
 }
 
+// Hashtags of a society or food outlet; the category stands in until some are set.
+function hashtagsOf(item) {
+  const tags = item.hashtags && item.hashtags.length ? item.hashtags : [item.category];
+  return tags.map((h) => String(h).toLowerCase().replace(/[^a-z0-9]+/g, '')).filter(Boolean);
+}
+
+// Turns typed text such as "#social, Board Games" into clean tags (at most 5, 24 characters each).
+function parseHashtags(text) {
+  const tags = text.split(/[\s,]+/).map((h) => h.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 24)).filter(Boolean);
+  return [...new Set(tags)].slice(0, 5);
+}
+
+function hashtagLine(item) {
+  return `<p class="hashtags">${hashtagsOf(item).map((h) => '#' + esc(h)).join(' ')}</p>`;
+}
+
 function societyCard(s, following, imageUrl) {
   return `<li class="card" data-id="${s.id}" tabindex="0">` +
     (imageUrl ? `<img class="society-cover" src="${esc(imageUrl)}" alt="${esc(s.name)}" loading="lazy">` : '') +
     `<h2>${esc(s.name)}</h2>` +
     `<p>${esc(s.description)}</p>` +
-    `<p class="hashtags">#${esc(s.category.toLowerCase().replace(/\s+/g, ''))}</p>` +
+    hashtagLine(s) +
     `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button></li>`;
 }
 
 function foodCard(f) {
   return `<li class="card" data-id="${f.id}" tabindex="0">` +
-    `<span class="card-tag">${esc(f.category)}</span>` +
     `<h2>${esc(f.name)}</h2>` +
     `<p>${esc(f.description)}</p>` +
-    `<p>${esc(f.building)} &middot; ${esc(f.hours)}</p></li>`;
+    `<p>${esc(f.building)} &middot; ${esc(f.hours)}</p>` +
+    hashtagLine(f) + '</li>';
 }
 
 function formatDate(iso) {
@@ -34,6 +50,7 @@ function taskCard(t) {
 
 function eventCard(e) {
   return `<li class="card" data-id="${e.id}" tabindex="0">` +
+    (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : '') +
     `<span class="card-tag">${esc(e.category)}</span>` +
     `<h2>${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +

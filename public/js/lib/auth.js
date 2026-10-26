@@ -5,6 +5,14 @@ const auth = (function () {
   const state = { sb: null, user: null, profile: null, leaderships: [] };
   const listeners = [];
 
+  const IMAGE_EXTS = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+  // English i18n key describing what is wrong with an image file, or '' when it is fine.
+  const imageError = (file) => {
+    if (!file || !IMAGE_EXTS[file.type]) return 'Choose a JPEG, PNG or WebP image.';
+    return file.size > 5 * 1024 * 1024 ? 'The image must be 5 MB or smaller.' : '';
+  };
+  const posterUrl = (path) => state.sb.storage.from('society-images').getPublicUrl(path).data.publicUrl;
+
   const isGuest = () => { try { return localStorage.getItem(GUEST_KEY) === '1'; } catch (err) { return false; } };
   function setGuest(on) {
     try { on ? localStorage.setItem(GUEST_KEY, '1') : localStorage.removeItem(GUEST_KEY); } catch (err) { console.error(err); }
@@ -131,9 +139,10 @@ const auth = (function () {
     },
     // Events in the shape the UI uses; `time` is display text, `timeValue` is HH:MM for forms.
     async listEvents() {
-      const { data, error } = await state.sb.from('events')
-        .select('id, society_id, title, category, event_date, event_time, building, description')
-        .order('event_date').order('event_time');
+      const cols = 'id, society_id, title, category, event_date, event_time, building, description';
+      const order = (q) => q.order('event_date').order('event_time');
+      let { data, error } = await order(state.sb.from('events').select(cols + ', image_path'));
+      if (error) ({ data, error } = await order(state.sb.from('events').select(cols))); // image_path column not added yet
       if (error) throw error;
       return data.map((e) => {
         const [h, m] = e.event_time ? e.event_time.split(':').map(Number) : [null, null];
@@ -142,23 +151,45 @@ const auth = (function () {
           timeValue: e.event_time ? e.event_time.slice(0, 5) : '',
           time: h === null ? '' : `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`,
           building: e.building || 'TBC', description: e.description,
+          imageUrl: e.image_path ? posterUrl(e.image_path) : '',
         };
       });
     },
     // `ev` uses the form fields; pass `id` to update an existing event.
-    async saveEvent(ev) {
+    // `file` is an optional poster image; `ev.removeImage` drops the current one.
+    async saveEvent(ev, file) {
       const row = {
         society_id: ev.societyId, title: ev.name, category: ev.category, event_date: ev.date,
         event_time: ev.time || null, building: ev.building || null, description: ev.description,
       };
+      const bucket = state.sb.storage.from('society-images');
+      let path = null;
+      if (file) {
+        const key = imageError(file);
+        if (key) return { error: Object.assign(new Error(key), { userMessage: key }) };
+        path = `${ev.societyId}/events/${crypto.randomUUID()}.${IMAGE_EXTS[file.type]}`;
+        const up = await bucket.upload(path, file, { contentType: file.type });
+        if (up.error) return { error: up.error };
+        row.image_path = path;
+      } else if (ev.removeImage) {
+        row.image_path = null;
+      }
+      let old = null;
+      if (ev.id && 'image_path' in row) {
+        ({ data: old } = await state.sb.from('events').select('image_path').eq('id', ev.id).maybeSingle());
+      }
       const q = state.sb.from('events');
       const { error } = ev.id
         ? await q.update(row).eq('id', ev.id)
         : await q.insert({ ...row, created_by: state.user.id });
-      return { error };
+      if (error) { if (path) await bucket.remove([path]); return { error }; }
+      if (old && old.image_path) await bucket.remove([old.image_path]);
+      return { error: null };
     },
     async deleteEvent(id) {
+      const { data: old } = await state.sb.from('events').select('image_path').eq('id', id).maybeSingle();
       const { error } = await state.sb.from('events').delete().eq('id', id);
+      if (!error && old && old.image_path) await state.sb.storage.from('society-images').remove([old.image_path]);
       return { error };
     },
     // The logged-in user's private plans, in the same shape as listEvents (empty for guests).
@@ -204,12 +235,10 @@ const auth = (function () {
     },
     // Replaces the society's cover image. On a bad file, error.userMessage is an English i18n key.
     async uploadSocietyImage(societyId, file) {
-      const exts = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
-      const bad = (key) => ({ error: Object.assign(new Error(key), { userMessage: key }) });
-      if (!file || !exts[file.type]) return bad('Choose a JPEG, PNG or WebP image.');
-      if (file.size > 5 * 1024 * 1024) return bad('The image must be 5 MB or smaller.');
+      const key = imageError(file);
+      if (key) return { error: Object.assign(new Error(key), { userMessage: key }) };
       const bucket = state.sb.storage.from('society-images');
-      const path = `${societyId}/${crypto.randomUUID()}.${exts[file.type]}`;
+      const path = `${societyId}/${crypto.randomUUID()}.${IMAGE_EXTS[file.type]}`;
       const up = await bucket.upload(path, file, { contentType: file.type });
       if (up.error) return { error: up.error };
       const { data: old } = await state.sb.from('society_images').select('path').eq('society_id', societyId).maybeSingle();
@@ -228,8 +257,15 @@ const auth = (function () {
     },
     async listSocieties() {
       if (!state.sb) return [];
-      const { data } = await state.sb.from('societies').select('id, name, category, description, building, contact, website').order('name');
+      const cols = 'id, name, category, description, building, contact, website';
+      let { data, error } = await state.sb.from('societies').select(cols + ', hashtags').order('name');
+      if (error) ({ data } = await state.sb.from('societies').select(cols).order('name')); // hashtags column not added yet
       return data || [];
+    },
+    // `tags` is an array of clean tags (see parseHashtags). Leaders may change only this column.
+    async updateSocietyHashtags(societyId, tags) {
+      const { data, error } = await state.sb.from('societies').update({ hashtags: tags }).eq('id', societyId).select('id');
+      return { error: error || (data && data.length ? null : new Error('Could not save.')) };
     },
   };
 })();

@@ -21,7 +21,7 @@
     const q = searchInput.value.trim().toLowerCase();
     const shown = societies.filter((s) =>
       (category === 'All' || (category === 'Following' ? follows.has(s.id) : s.category === category)) &&
-      (s.name + ' ' + s.description).toLowerCase().includes(q));
+      (s.name + ' ' + s.description + ' ' + hashtagsOf(s).join(' ')).toLowerCase().includes(q.replace(/^#/, '')));
     listEl.innerHTML = shown.map((s) => societyCard(s, follows.has(s.id), images[s.id] || dummyImage(s))).join('');
     emptyEl.hidden = shown.length > 0;
   }
