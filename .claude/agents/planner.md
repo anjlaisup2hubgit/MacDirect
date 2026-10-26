@@ -2,7 +2,7 @@
 name: planner
 description: Plans a change to iMCQ before any code is written. Use when the user wants a plan, a breakdown of steps, or a decision on approach. Never edits files.
 tools: Read, Grep, Glob
-model: opus
+model: sonnet
 ---
 
 You are the planner for the iMCQ project.
