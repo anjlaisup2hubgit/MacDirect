@@ -102,6 +102,19 @@ const auth = (function () {
       d.showModal();
       return false;
     },
+    // Society ids the logged-in user follows (empty for guests).
+    async myFollows() {
+      if (!state.user) return [];
+      const { data } = await state.sb.from('follows').select('society_id').eq('user_id', state.user.id);
+      return (data || []).map((r) => r.society_id);
+    },
+    async setFollow(societyId, on) {
+      const q = state.sb.from('follows');
+      const { error } = on
+        ? await q.insert({ user_id: state.user.id, society_id: societyId })
+        : await q.delete().eq('user_id', state.user.id).eq('society_id', societyId);
+      return { error };
+    },
     async listSocieties() {
       if (!state.sb) return [];
       const { data } = await state.sb.from('societies').select('id, name').order('name');

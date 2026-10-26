@@ -4,11 +4,12 @@ function esc(t) {
   return d.innerHTML;
 }
 
-function societyCard(s) {
+function societyCard(s, following) {
   return `<li class="card" data-id="${s.id}" tabindex="0">` +
     `<span class="card-tag">${esc(s.category)}</span>` +
     `<h2>${esc(s.name)}</h2>` +
-    `<p>${esc(s.description)}</p></li>`;
+    `<p>${esc(s.description)}</p>` +
+    `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${following ? 'Following' : 'Follow'}</button></li>`;
 }
 
 function foodCard(f) {

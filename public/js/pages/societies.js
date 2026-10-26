@@ -9,18 +9,19 @@
 
   let societies = [];
   let category = 'All';
+  let follows = new Set();
 
   function render() {
     const q = searchInput.value.trim().toLowerCase();
     const shown = societies.filter((s) =>
-      (category === 'All' || s.category === category) &&
+      (category === 'All' || (category === 'Following' ? follows.has(s.id) : s.category === category)) &&
       (s.name + ' ' + s.description).toLowerCase().includes(q));
-    listEl.innerHTML = shown.map(societyCard).join('');
+    listEl.innerHTML = shown.map((s) => societyCard(s, follows.has(s.id))).join('');
     emptyEl.hidden = shown.length > 0;
   }
 
   function renderChips() {
-    const cats = ['All', ...new Set(societies.map((s) => s.category))];
+    const cats = ['All', 'Following', ...new Set(societies.map((s) => s.category))];
     chipsEl.innerHTML = cats.map((c) =>
       `<button type="button" class="chip${c === category ? ' active' : ''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
   }
@@ -43,10 +44,19 @@
     renderChips();
     render();
   });
-  listEl.addEventListener('click', (e) => {
+  listEl.addEventListener('click', async (e) => {
     const card = e.target.closest('.card');
     if (!card) return;
     const s = societies.find((x) => x.id === Number(card.dataset.id));
+    if (e.target.closest('[data-follow]')) {
+      if (!auth.requireLogin('follow societies')) return;
+      const on = !follows.has(s.id);
+      const { error } = await auth.setFollow(s.id, on);
+      if (error) { console.error(error); return; }
+      on ? follows.add(s.id) : follows.delete(s.id);
+      render();
+      return;
+    }
     setOpen(false);
     if (window.focusBuildingByName) window.focusBuildingByName(s.building, s.name);
   });
@@ -54,8 +64,9 @@
     if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
   });
 
-  api('/societies').then((data) => {
+  Promise.all([api('/societies'), auth.ready.then(() => auth.myFollows())]).then(([data, ids]) => {
     societies = data;
+    follows = new Set(ids);
     renderChips();
     render();
   }).catch((err) => {

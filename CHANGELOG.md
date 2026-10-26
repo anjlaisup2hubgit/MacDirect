@@ -28,16 +28,16 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 1 | `database/schema.sql` and `seed.sql` | Done. Run on Supabase; societies (12) and events (5) read back correctly as a logged-out visitor. |
 | 2 | Login page, guest entry, `js/lib/auth.js`, settings account block | Done. Guest path tested in browser. Sign-up and leader request were tested by the project owner (a pending `society_leaders` row appeared). |
 | 3 | Guest gating (`auth.requireLogin()`, Add event plan gate) | Done. Tested as guest and logged in. |
-| 4 | Follow societies (Follow/Following button, "Following" filter) | Not started. **Next step.** |
-| 5 | Leader flow: "Post event" form on What's Happening for approved leaders, edit/delete own events | Not started. |
+| 4 | Follow societies (Follow/Following button, "Following" filter) | Done. Follow/unfollow round-tripped to Supabase as a logged-in user; guest sees "Log in to follow societies". |
+| 5 | Leader flow: "Post event" form on What's Happening for approved leaders, edit/delete own events | Not started. **Next step.** |
 | 6 | Events and societies read from Supabase instead of `data/*.json`; remove `routes/societies.js`, `routes/events.js` | Not started. |
 
 ## Next step
-Step 4. Add a Follow/Following button to society cards (`public/js/components/card.js` `societyCard`, wired in `public/js/pages/societies.js`). Call `auth.requireLogin('follow societies')` first. Write to the `follows` table through `supabase-js` (RLS allows only the user's own rows). Add a "Following" chip filter. `auth.js` does not yet expose the Supabase client; add a small accessor or a `follow`/`unfollow`/`myFollows` helper there.
+Step 5. Add a "Post event" form to What's Happening (`public/js/pages/events.js`) shown only when `auth.leaderships` has an approved row; insert into `events` with `society_id` (RLS enforces leader/admin), plus edit/delete on the leader's own events. Events still come from `/api/events` (JSON) until Step 6, so posted events will not show until then; consider doing Step 6 first or together.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
-* Auth: `public/js/lib/auth.js` (global `auth`: `ready`, `user`, `profile`, `leaderships`, `onChange`, `signIn`, `signUp`, `signOut`, `continueAsGuest`, `requireLogin`, `listSocieties`). Login UI: `public/login.html`, `public/js/pages/login.js`.
+* Auth: `public/js/lib/auth.js` (global `auth`: `ready`, `user`, `profile`, `leaderships`, `onChange`, `signIn`, `signUp`, `signOut`, `continueAsGuest`, `requireLogin`, `listSocieties`, `myFollows`, `setFollow`). Login UI: `public/login.html`, `public/js/pages/login.js`.
 * Database: `database/schema.sql` (tables, RLS, grants, sign-up trigger), `database/seed.sql`. Not applied automatically; run in the Supabase SQL editor.
 * Server: `server.js` loads `.env` and serves `/api/map`, `/api/config`, and the JSON-backed `/api/societies`, `/api/events`, `/api/food`.
 * Secrets: `.env` (gitignored). `.env.example` lists the variable names.
@@ -48,6 +48,7 @@ Step 4. Add a Follow/Following button to society cards (`public/js/components/ca
 * Do not create accounts on the live Supabase project from automated tests; ask the project owner to sign up manually.
 
 ## Known gaps and gotchas
+* Follow uses society ids from `data/societies.json` as Supabase ids; this holds only while the seeded `societies` ids are 1-12 in the same order. Step 6 removes the assumption.
 * Event plans and the Add event plan form still save to `localStorage`, not Supabase.
 * The Display name field in User Settings is browser-only and not linked to `profiles.display_name`.
 * The Task Plan view is dropped, and its route, data and the MySQL-era leftovers (Docker files, `db.js`, `macqai.js`, `import-geojson.js`) are deleted.
@@ -58,4 +59,4 @@ Step 4. Add a Follow/Following button to society cards (`public/js/components/ca
 * `.claude/launch.json` server name is still `mcq-imap`.
 
 ## Last updated
-2026-10-25, after Step 3.
+2026-10-25, after Step 4.

@@ -268,6 +268,17 @@ html, body {
   background: #f3e5e8;
   border-radius: 999px;
 }
+.follow-btn {
+  margin-top: 10px;
+  padding: 5px 14px;
+  font-size: 13px;
+  border: 1.5px solid var(--mq-red);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--mq-red);
+  cursor: pointer;
+}
+.follow-btn.following { background: var(--mq-red); color: #fff; }
 .empty-msg { text-align: center; color: #666; font-size: 14px; }
 .empty-msg[hidden] { display: none; }
 
