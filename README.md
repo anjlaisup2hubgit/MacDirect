@@ -43,7 +43,7 @@ For what is being built next, see [CHANGELOG.md](CHANGELOG.md). Not built yet: m
 | :--- | :--- | :--- |
 | Guest | "Continue as guest" on the login page | Browse the map, events, food and societies. Nothing is saved. |
 | Student | Signs up with email and password | Everything a guest can, plus follow societies and keep an event plan. |
-| Society leader | Requests a society at sign-up; an admin approves | Everything a student can. Posting events from the app is not available yet; the database rules still allow it. |
+| Society leader | Requests a society at sign-up; an admin approves | Everything a student can, plus upload one cover photo for their society (Add event plan popup). Posting events from the app is not available yet; the database rules still allow it. |
 | Admin | Set up by the project owner | Approves or rejects leader requests by editing the request status in the Supabase dashboard (no admin screen yet). |
 
 ## 5. Screens and design
@@ -84,6 +84,7 @@ The SQL is in `database/schema.sql` (tables, security rules, sign-up trigger) an
 * `society_leaders(user_id, society_id, status)` where status is `pending`, `approved` or `rejected`.
 * `follows(user_id, society_id)`
 * `events(id, society_id, title, category, date, time, building, description, created_by)`
+* `society_images(society_id, path, created_by)`: one cover image per society. The file sits in the public Supabase Storage bucket `society-images` at `<society_id>/<random>.jpg|png|webp` (5 MB limit, JPEG/PNG/WebP only). Anyone can see it; only that society's approved leaders (and admins) can upload or remove it. Run the new block of `database/schema.sql` by hand to create the bucket, table and rules.
 
 Security rules: anyone can read societies and events; users manage only their own follows; only approved leaders can add events for their own society.
 

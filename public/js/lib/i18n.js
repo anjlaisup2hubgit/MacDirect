@@ -41,6 +41,7 @@ const I18N = {
     'Google Maps': '谷歌地图', 'meets here.': '在此聚会。', 'No photo available': '暂无照片', 'Website': '网站',
     'Societies held here': '在此的社团', 'No societies listed here.': '此处没有列出社团。',
     'Social': '社交', 'Academic': '学术', 'Career': '职业', 'Community': '社区', 'e.g. 1CC': '例如 1CC', 'a society': '某社团',
+    'Society cover photo': '社团封面照片', 'Choose image (JPEG, PNG or WebP, up to 5 MB)': '选择图片（JPEG、PNG 或 WebP，最大 5 MB）', 'Choose a JPEG, PNG or WebP image.': '请选择 JPEG、PNG 或 WebP 图片。', 'The image must be 5 MB or smaller.': '图片不能超过 5 MB。',
   },
   es: {
     'User settings': 'Ajustes', 'User Settings': 'Ajustes',
@@ -79,6 +80,7 @@ const I18N = {
     'Google Maps': 'Google Maps', 'meets here.': 'se reúne aquí.', 'No photo available': 'Sin foto disponible', 'Website': 'Sitio web',
     'Societies held here': 'Sociedades en este lugar', 'No societies listed here.': 'No hay sociedades aquí.',
     'Social': 'Social', 'Academic': 'Académico', 'Career': 'Profesional', 'Community': 'Comunidad', 'e.g. 1CC': 'p. ej. 1CC', 'a society': 'una sociedad',
+    'Society cover photo': 'Foto de portada del club', 'Choose image (JPEG, PNG or WebP, up to 5 MB)': 'Elegir imagen (JPEG, PNG o WebP, hasta 5 MB)', 'Choose a JPEG, PNG or WebP image.': 'Elige una imagen JPEG, PNG o WebP.', 'The image must be 5 MB or smaller.': 'La imagen debe pesar 5 MB o menos.',
   },
   vi: {
     'User settings': 'Cài đặt', 'User Settings': 'Cài đặt',
@@ -117,6 +119,7 @@ const I18N = {
     'Google Maps': 'Google Maps', 'meets here.': 'họp tại đây.', 'No photo available': 'Chưa có ảnh', 'Website': 'Trang web',
     'Societies held here': 'Các câu lạc bộ tại đây', 'No societies listed here.': 'Không có câu lạc bộ nào tại đây.',
     'Social': 'Giao lưu', 'Academic': 'Học thuật', 'Career': 'Nghề nghiệp', 'Community': 'Cộng đồng', 'e.g. 1CC': 'ví dụ 1CC', 'a society': 'một câu lạc bộ',
+    'Society cover photo': 'Ảnh bìa câu lạc bộ', 'Choose image (JPEG, PNG or WebP, up to 5 MB)': 'Chọn ảnh (JPEG, PNG hoặc WebP, tối đa 5 MB)', 'Choose a JPEG, PNG or WebP image.': 'Hãy chọn ảnh JPEG, PNG hoặc WebP.', 'The image must be 5 MB or smaller.': 'Ảnh phải từ 5 MB trở xuống.',
   },
 };
 

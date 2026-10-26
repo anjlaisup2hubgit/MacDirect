@@ -16,14 +16,76 @@
       '<label>' + t('Description') + '<textarea name="description" rows="3" maxlength="200"></textarea></label>' +
       '<button class="form-submit" type="submit">' + t('Add event') + '</button>' +
       '<p class="form-msg" hidden></p>' +
-    '</form>';
+    '</form>' +
+    '<section class="event-form cover-section" hidden>' +
+      '<h3>' + t('Society cover photo') + '</h3>' +
+      '<label class="cover-society">' + t('Society') + '<select name="society"></select></label>' +
+      '<img class="cover-preview" alt="" hidden>' +
+      '<label>' + t('Choose image (JPEG, PNG or WebP, up to 5 MB)') + '<input name="cover" type="file" accept="image/jpeg,image/png,image/webp"></label>' +
+      '<button class="auth-guest" type="button" data-remove-cover hidden>' + t('Remove') + '</button>' +
+      '<p class="form-msg" hidden></p>' +
+    '</section>';
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
   const gate = p.results.querySelector('.guest-gate');
 
+  const cover = p.results.querySelector('.cover-section');
+  const coverSelect = cover.querySelector('select');
+  const coverImg = cover.querySelector('.cover-preview');
+  const coverFile = cover.querySelector('input[type="file"]');
+  const coverRemove = cover.querySelector('[data-remove-cover]');
+  const coverMsg = cover.querySelector('.form-msg');
+  let coverUrls = {};
+
+  function flash(text, isError) {
+    coverMsg.textContent = text;
+    coverMsg.classList.toggle('error', !!isError);
+    coverMsg.hidden = false;
+  }
+  function showCover() {
+    const url = coverUrls[coverSelect.value];
+    coverImg.hidden = !url;
+    if (url) { coverImg.src = url; coverImg.alt = coverSelect.selectedOptions[0].textContent; }
+    coverRemove.hidden = !url;
+  }
+  async function renderCover() {
+    const mine = auth.user ? auth.approvedSocieties : [];
+    cover.hidden = !mine.length;
+    if (!mine.length) return;
+    const keep = coverSelect.value;
+    coverSelect.innerHTML = mine.map((s) => `<option value="${s.id}">${esc(s.name || '')}</option>`).join('');
+    if (keep) coverSelect.value = keep;
+    cover.querySelector('.cover-society').hidden = mine.length < 2;
+    try { coverUrls = await auth.listSocietyImages(); } catch (err) { console.error(err); }
+    showCover();
+  }
+  coverSelect.addEventListener('change', () => { coverMsg.hidden = true; showCover(); });
+  coverFile.addEventListener('change', async () => {
+    const file = coverFile.files[0];
+    if (!file) return;
+    coverFile.disabled = true;
+    const { error, url } = await auth.uploadSocietyImage(Number(coverSelect.value), file);
+    coverFile.disabled = false;
+    coverFile.value = '';
+    if (error) { console.error(error); flash(error.userMessage ? t(error.userMessage) : t('Could not save.'), true); return; }
+    coverUrls[coverSelect.value] = url;
+    showCover();
+    window.dispatchEvent(new Event('society-images-changed'));
+    flash(t('Saved.'));
+  });
+  coverRemove.addEventListener('click', async () => {
+    const { error } = await auth.deleteSocietyImage(Number(coverSelect.value));
+    if (error) { console.error(error); flash(t('Could not save.'), true); return; }
+    delete coverUrls[coverSelect.value];
+    showCover();
+    window.dispatchEvent(new Event('society-images-changed'));
+    flash(t('Saved.'));
+  });
+
   function renderGate() {
     gate.hidden = !!auth.user;
     form.hidden = !auth.user;
+    renderCover();
   }
   gate.querySelector('button').addEventListener('click', () => { location.href = '/login.html'; });
   auth.onChange(renderGate);

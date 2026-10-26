@@ -10,13 +10,14 @@
   let societies = [];
   let category = 'All';
   let follows = new Set();
+  let images = {};
 
   function render() {
     const q = searchInput.value.trim().toLowerCase();
     const shown = societies.filter((s) =>
       (category === 'All' || (category === 'Following' ? follows.has(s.id) : s.category === category)) &&
       (s.name + ' ' + s.description).toLowerCase().includes(q));
-    listEl.innerHTML = shown.map((s) => societyCard(s, follows.has(s.id))).join('');
+    listEl.innerHTML = shown.map((s) => societyCard(s, follows.has(s.id), images[s.id])).join('');
     emptyEl.hidden = shown.length > 0;
   }
 
@@ -68,9 +69,14 @@
     if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
   });
 
-  Promise.all([auth.ready.then(() => auth.listSocieties()), auth.ready.then(() => auth.myFollows())]).then(([data, ids]) => {
+  window.addEventListener('society-images-changed', () => {
+    auth.listSocietyImages().then((map) => { images = map; render(); }).catch(console.error);
+  });
+
+  Promise.all([auth.ready.then(() => auth.listSocieties()), auth.ready.then(() => auth.myFollows()), auth.ready.then(() => auth.listSocietyImages())]).then(([data, ids, imgs]) => {
     societies = data;
     follows = new Set(ids);
+    images = imgs;
     renderChips();
     render();
   }).catch((err) => {

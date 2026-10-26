@@ -194,6 +194,38 @@ const auth = (function () {
       const { error } = await state.sb.from('event_plans').delete().eq('user_id', state.user.id);
       return { error };
     },
+    // Cover images: { societyId: public URL } for every society that has one (readable by guests).
+    async listSocietyImages() {
+      if (!state.sb) return {};
+      const { data } = await state.sb.from('society_images').select('society_id, path');
+      const map = {};
+      (data || []).forEach((r) => { map[r.society_id] = state.sb.storage.from('society-images').getPublicUrl(r.path).data.publicUrl; });
+      return map;
+    },
+    // Replaces the society's cover image. On a bad file, error.userMessage is an English i18n key.
+    async uploadSocietyImage(societyId, file) {
+      const exts = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+      const bad = (key) => ({ error: Object.assign(new Error(key), { userMessage: key }) });
+      if (!file || !exts[file.type]) return bad('Choose a JPEG, PNG or WebP image.');
+      if (file.size > 5 * 1024 * 1024) return bad('The image must be 5 MB or smaller.');
+      const bucket = state.sb.storage.from('society-images');
+      const path = `${societyId}/${crypto.randomUUID()}.${exts[file.type]}`;
+      const up = await bucket.upload(path, file, { contentType: file.type });
+      if (up.error) return { error: up.error };
+      const { data: old } = await state.sb.from('society_images').select('path').eq('society_id', societyId).maybeSingle();
+      const { error } = await state.sb.from('society_images')
+        .upsert({ society_id: societyId, path, created_by: state.user.id }, { onConflict: 'society_id' });
+      if (error) { await bucket.remove([path]); return { error }; }
+      if (old && old.path !== path) await bucket.remove([old.path]);
+      return { error: null, url: bucket.getPublicUrl(path).data.publicUrl };
+    },
+    async deleteSocietyImage(societyId) {
+      const { data: old } = await state.sb.from('society_images').select('path').eq('society_id', societyId).maybeSingle();
+      const { error } = await state.sb.from('society_images').delete().eq('society_id', societyId);
+      if (error) return { error };
+      if (old) await state.sb.storage.from('society-images').remove([old.path]);
+      return { error: null };
+    },
     async listSocieties() {
       if (!state.sb) return [];
       const { data } = await state.sb.from('societies').select('id, name, category, description, building, contact, website').order('name');

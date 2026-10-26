@@ -4,8 +4,9 @@ function esc(t) {
   return d.innerHTML;
 }
 
-function societyCard(s, following) {
+function societyCard(s, following, imageUrl) {
   return `<li class="card" data-id="${s.id}" tabindex="0">` +
+    (imageUrl ? `<img class="society-cover" src="${esc(imageUrl)}" alt="${esc(s.name)}" loading="lazy">` : '') +
     `<span class="card-tag">${esc(s.category)}</span>` +
     `<h2>${esc(s.name)}</h2>` +
     `<p>${esc(s.description)}</p>` +

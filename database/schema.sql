@@ -180,6 +180,66 @@ grant select, insert, delete on public.event_plans to authenticated;
 grant select on public.profiles to authenticated;
 grant update (display_name) on public.profiles to authenticated;
 
+-- Society cover images -------------------------------------------------------
+-- One cover image per society, kept in a public Storage bucket. Safe to run again.
+-- Files live at <society_id>/<random name>.<ext>; the first folder is the society.
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('society-images', 'society-images', true, 5242880, array['image/jpeg', 'image/png', 'image/webp'])
+on conflict (id) do update
+  set public = true, file_size_limit = 5242880, allowed_mime_types = array['image/jpeg', 'image/png', 'image/webp'];
+
+create table if not exists public.society_images (
+  society_id bigint primary key references public.societies (id) on delete cascade,
+  path       text not null,
+  created_by uuid references public.profiles (id) on delete set null,
+  created_at timestamptz not null default now()
+);
+
+alter table public.society_images enable row level security;
+
+drop policy if exists "society images public read" on public.society_images;
+create policy "society images public read" on public.society_images
+  for select to anon, authenticated using (true);
+drop policy if exists "society images leader insert" on public.society_images;
+create policy "society images leader insert" on public.society_images
+  for insert to authenticated with check (public.is_leader_of(society_id) or public.is_admin());
+drop policy if exists "society images leader update" on public.society_images;
+create policy "society images leader update" on public.society_images
+  for update to authenticated
+  using (public.is_leader_of(society_id) or public.is_admin())
+  with check (public.is_leader_of(society_id) or public.is_admin());
+drop policy if exists "society images leader delete" on public.society_images;
+create policy "society images leader delete" on public.society_images
+  for delete to authenticated using (public.is_leader_of(society_id) or public.is_admin());
+
+grant select on public.society_images to anon;
+grant select, insert, update, delete on public.society_images to authenticated;
+
+-- Storage rules: a leader (or admin) can touch only files under their own society's folder.
+-- The regex check stops a non-numeric folder name from causing a cast error.
+drop policy if exists "society images storage read" on storage.objects;
+create policy "society images storage read" on storage.objects
+  for select to authenticated using (
+    bucket_id = 'society-images'
+    and (public.is_admin() or public.is_leader_of(
+      case when (storage.foldername(name))[1] ~ '^[0-9]+$' then (storage.foldername(name))[1]::bigint end))
+  );
+drop policy if exists "society images storage insert" on storage.objects;
+create policy "society images storage insert" on storage.objects
+  for insert to authenticated with check (
+    bucket_id = 'society-images'
+    and (public.is_admin() or public.is_leader_of(
+      case when (storage.foldername(name))[1] ~ '^[0-9]+$' then (storage.foldername(name))[1]::bigint end))
+  );
+drop policy if exists "society images storage delete" on storage.objects;
+create policy "society images storage delete" on storage.objects
+  for delete to authenticated using (
+    bucket_id = 'society-images'
+    and (public.is_admin() or public.is_leader_of(
+      case when (storage.foldername(name))[1] ~ '^[0-9]+$' then (storage.foldername(name))[1]::bigint end))
+  );
+
 -- Making yourself the first admin (SQL editor only, after signing up once):
 --   update public.profiles set role = 'admin' where id = '<your auth.users id>';
 -- Approving a leader request (the MVP "admin screen"):
