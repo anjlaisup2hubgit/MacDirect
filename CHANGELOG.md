@@ -40,6 +40,8 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 13 | Settings (logged in): Followed societies list with Unfollow, and Clear my event plans (`auth.clearPlans`, in-page confirm box, refreshes What's Happening); zh/es/vi strings added | Done. Both features tested logged in by the project owner. zh/es/vi wording not viewed in a browser. |
 | 13 | Leader event posting: Post event form and Edit/Delete on own-society event cards in What's Happening (uses `auth.saveEvent/deleteEvent/approvedSocieties`) | Partly. `node --check` passes; NOT tested in a browser or with a real approved leader account. |
 
+| 14 | Login page redesign (Work Sans, card, segmented tabs, 8px radius, translated error messages, language selector at bottom) | Done. Checked in headless Edge at 360px (en, zh, es, vi): no sideways scroll, tap targets >= 44px, translated error messages (via stubbed `auth.signIn`), guest button reaches the map. Real Supabase wrong-password and sign-up not run. |
+
 ## Next step
 Steps 0-13 are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
 
@@ -81,3 +83,7 @@ Steps 0-13 are done. Remaining items are the gaps below and mcqAI answers (READM
 ### 2026-10-26 (tester findings 5-7)
 * **Change:** Building panel, Category options (values stay English), "e.g. 1CC", "a society" now use `t()` with zh/es entries; events month title uses the language locale; `requireLogin` callers pass full sentences; login.js arrow parameter renamed `tab`.
 * **Reasoning:** remove untranslated visible English and a shadowed global `t`. Checked as a guest in headless Chrome (en, zh, es); month title and logged-in flows not checked.
+
+### 2026-10-26 (login redesign)
+* **Change:** `login.html`, `login.js`, "Login page" block of `style.css` and `i18n.js`. Key 'I lead a society (an admin will approve this)' replaced by 'I lead a society' + 'An admin will approve this'; new keys for the 4 mapped errors, 'Please wait...' and 'or'. Larger sizes are scoped to `.auth-card`. Raw Supabase `error.message` is no longer shown (matched on 'invalid login credentials', 'already registered', 'at least 6 characters').
+* **Reasoning:** approved design. Gotcha: grid columns on `.auth-page`, `.auth-card` and `.event-form` need `minmax(0, 1fr)` or inputs overflow at 360px.

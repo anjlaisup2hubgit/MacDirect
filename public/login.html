@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>iMCQ - Log in</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="auth-page">
@@ -11,13 +14,9 @@
     <h1>iMCQ</h1>
     <p class="auth-tagline" data-i18n="Your Macquarie campus map">Your Macquarie campus map</p>
 
-    <div class="event-form">
-      <label><span data-i18n="Language">Language</span><select id="lang-select"></select></label>
-    </div>
-
     <div class="auth-tabs" role="tablist">
-      <button type="button" role="tab" class="chip active" data-mode="login" data-i18n="Log in">Log in</button>
-      <button type="button" role="tab" class="chip" data-mode="signup" data-i18n="Sign up">Sign up</button>
+      <button type="button" role="tab" class="chip active" aria-selected="true" data-mode="login" data-i18n="Log in">Log in</button>
+      <button type="button" role="tab" class="chip" aria-selected="false" data-mode="signup" data-i18n="Sign up">Sign up</button>
     </div>
 
     <form class="event-form" id="auth-form">
@@ -25,14 +24,19 @@
       <label><span data-i18n="Email">Email</span><input name="email" type="email" required autocomplete="email"></label>
       <label><span data-i18n="Password">Password</span><input name="password" type="password" required minlength="6" autocomplete="current-password"></label>
       <div data-signup hidden class="auth-leader">
-        <label class="auth-check"><input type="checkbox" name="isLeader"> <span data-i18n="I lead a society (an admin will approve this)">I lead a society (an admin will approve this)</span></label>
+        <label class="auth-check"><input type="checkbox" name="isLeader"> <span><span data-i18n="I lead a society">I lead a society</span><small data-i18n="An admin will approve this">An admin will approve this</small></span></label>
         <label data-leader hidden><span data-i18n="Society">Society</span><select name="societyId"></select></label>
       </div>
       <button class="form-submit" type="submit">Log in</button>
-      <p class="form-msg" hidden></p>
+      <p class="form-msg" role="alert" hidden></p>
     </form>
 
+    <p class="auth-or" data-i18n="or">or</p>
     <button class="auth-guest" type="button" data-i18n="Continue as guest">Continue as guest</button>
+
+    <div class="event-form auth-lang">
+      <label><span data-i18n="Language">Language</span><select id="lang-select"></select></label>
+    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>

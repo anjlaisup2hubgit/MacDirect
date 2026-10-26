@@ -11,11 +11,24 @@
     msg.textContent = text;
     msg.classList.toggle('error', !!isError);
     msg.hidden = false;
+    msg.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  // Map known Supabase errors to translated text; never show the raw message.
+  function friendly(error) {
+    const m = ((error && error.message) || '').toLowerCase();
+    if (m.includes('invalid login credentials')) return t('Wrong email or password.');
+    if (m.includes('already registered') || m.includes('already been registered')) return t('This email is already registered. Try logging in.');
+    if (m.includes('at least 6 characters')) return t('Password must be at least 6 characters.');
+    return t('Something went wrong. Please try again.');
   }
 
   function setMode(next) {
     mode = next;
-    tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.mode === mode));
+    tabs.forEach((tab) => {
+      tab.classList.toggle('active', tab.dataset.mode === mode);
+      tab.setAttribute('aria-selected', tab.dataset.mode === mode);
+    });
     form.querySelectorAll('[data-signup]').forEach((el) => { el.hidden = mode !== 'signup'; });
     submit.textContent = t(mode === 'signup' ? 'Sign up' : 'Log in');
     form.elements.password.autocomplete = mode === 'signup' ? 'new-password' : 'current-password';
@@ -56,12 +69,13 @@
     e.preventDefault();
     if (!auth.configured) return say(t('Login is not set up yet. You can continue as a guest.'), true);
     submit.disabled = true;
+    submit.textContent = t('Please wait...');
     const email = form.elements.email.value.trim();
     const password = form.elements.password.value;
 
     if (mode === 'login') {
       const { error } = await auth.signIn(email, password);
-      if (error) say(error.message, true);
+      if (error) say(friendly(error), true);
       else location.href = '/';
     } else {
       const isLeader = form.elements.isLeader.checked;
@@ -70,11 +84,12 @@
         displayName: form.elements.displayName.value.trim(),
         societyId: isLeader ? form.elements.societyId.value : null,
       });
-      if (error) say(error.message, true);
+      if (error) say(friendly(error), true);
       else if (needsConfirmation) say(t('Check your email to confirm your account, then log in.'));
       else location.href = '/';
     }
     submit.disabled = false;
+    submit.textContent = t(mode === 'signup' ? 'Sign up' : 'Log in');
   });
 
   auth.ready.then(async () => {
