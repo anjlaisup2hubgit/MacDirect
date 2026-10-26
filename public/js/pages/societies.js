@@ -64,7 +64,7 @@
     if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
   });
 
-  Promise.all([api('/societies'), auth.ready.then(() => auth.myFollows())]).then(([data, ids]) => {
+  Promise.all([auth.ready.then(() => auth.listSocieties()), auth.ready.then(() => auth.myFollows())]).then(([data, ids]) => {
     societies = data;
     follows = new Set(ids);
     renderChips();

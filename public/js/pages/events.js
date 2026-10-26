@@ -210,8 +210,7 @@
   render();
   auth.ready.then(() => {
     renderPanel();
-    // Supabase is the source of events; the JSON file is only a fallback when it is not configured.
-    return auth.configured ? auth.listEvents() : api('/events');
+    return auth.listEvents();
   }).then((data) => { base = data; render(); })
     .catch((err) => { console.error(err); emptyEl.textContent = 'Could not load events.'; emptyEl.hidden = false; });
 })();

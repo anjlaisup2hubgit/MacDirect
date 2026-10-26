@@ -52,7 +52,7 @@ function esc(t) {
 }
 
 let societies = [];
-api('/societies').then((data) => { societies = data; }).catch(console.error);
+auth.ready.then(() => auth.listSocieties()).then((data) => { societies = data; }).catch(console.error);
 
 // The panel is full height and slid down so only the head (name and location) peeks above the nav.
 // Dragging the head up reveals the image, description and societies; it snaps to peek or expanded.

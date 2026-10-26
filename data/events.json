@@ -1,7 +1,0 @@
-[
-  { "id": 1, "name": "Sample Welcome BBQ", "category": "Social", "date": "2026-10-27", "time": "12:00pm", "building": "1CC", "description": "Free sausage sizzle and live music on the lawn." },
-  { "id": 2, "name": "Sample Careers Fair", "category": "Career", "date": "2026-10-28", "time": "10:00am", "building": "3IR", "description": "Meet graduate employers and pick up internship opportunities." },
-  { "id": 3, "name": "Sample Study Skills Workshop", "category": "Academic", "date": "2026-10-29", "time": "2:00pm", "building": "16MW (Waranara Library)", "description": "Exam preparation tips and time management strategies." },
-  { "id": 4, "name": "Sample Movie Night", "category": "Social", "date": "2026-10-30", "time": "6:30pm", "building": "21WW (Macquarie Theatre)", "description": "Student-run screening with popcorn provided." },
-  { "id": 5, "name": "Sample Volunteering Drive", "category": "Community", "date": "2026-11-03", "time": "11:00am", "building": "18WW (Service Connect)", "description": "Sign up for local community volunteering projects." }
-]

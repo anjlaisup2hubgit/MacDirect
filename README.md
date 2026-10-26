@@ -30,9 +30,9 @@ npm start              # http://localhost:3000 (set PORT to change)
 * **Search bar:** one bar reading "Search buildings or ask macqAI". Typing filters building names (up to 8 matches) and zooms to the one you pick. "Ask macqAI" does nothing yet.
 * **Accounts:** email and password sign-up and login, guest mode, and an "I lead a society" request at sign-up.
 * **Guest gating:** actions that need an account show "Log in to use this".
-* **Views:** five popups over the map (below). Societies and events are still read from static JSON in `data/`.
+* **Views:** five popups over the map (below). Societies and events are read from Supabase; only food is still static JSON.
 
-For what is being built next, see [CHANGELOG.md](CHANGELOG.md). Not built yet: following societies, leader event posting, moving data to Supabase, map pins for societies with purple clusters, and macqAI answers.
+For what is being built next, see [CHANGELOG.md](CHANGELOG.md). Not built yet: map pins for societies with purple clusters, and macqAI answers.
 
 ## 4. Users and roles
 
@@ -50,10 +50,10 @@ The five views open as popups on the map page (`index.html`). The nav labels bel
 | Nav label | Opens | Login needed | Status |
 | :--- | :--- | :--- | :--- |
 | User settings | Account details, Log in / Log out | No | Working |
-| What's Happening | Campus events, with a "Following" filter; leaders also get a "Post event" form | To follow or post | Working with JSON data; following and posting not built |
+| What's Happening | Campus events, with a "Following" filter; leaders also get a "Post event" form | To follow or post | Working |
 | Add event plan | Personal agenda for bookmarked events | Yes | Working, saved in the browser only (`localStorage`) |
 | Food and drinks | Directory of campus dining options | No | Working with JSON data |
-| On-campus Societies | Directory of societies, with Follow buttons | To follow | Directory working; Follow not built |
+| On-campus Societies | Directory of societies, with Follow buttons | To follow | Working |
 
 **Colours**
 
@@ -96,14 +96,12 @@ MCQ iMap/
 ├── server.js              # Backend entry point and routes
 ├── data/
 │   ├── map.geojson        # OpenStreetMap campus data
-│   └── *.json             # Temporary seed data, to be replaced by Supabase tables
+│   └── food.json          # Food and drinks directory (static)
 ├── database/
 │   ├── schema.sql         # Supabase tables and row-level security
 │   └── seed.sql           # Sample societies and events
 ├── docs/                  # Design assets, assignment brief, screenshots
 ├── routes/                # Express handlers behind /api/...
-│   ├── events.js          # Placeholder JSON (to be removed)
-│   ├── societies.js       # Placeholder JSON (to be removed)
 │   └── food.js
 └── public/
     ├── index.html         # The map page; all views open as popups here
@@ -117,8 +115,5 @@ MCQ iMap/
 
 ## 9. Roadmap
 
-1. **Following:** Follow/Following on societies and a "Following" filter on societies and events.
-2. **Society leaders:** leader requests at sign-up, admin approval, and a post/edit/delete events form limited to their own society.
-3. **Data in Supabase:** societies and events read from the database so posted events appear immediately.
-4. **Map:** society pins with red markers and purple cluster badges.
-5. **macqAI:** real answers and question logging.
+1. **Map:** society pins with red markers and purple cluster badges.
+2. **macqAI:** real answers and question logging.

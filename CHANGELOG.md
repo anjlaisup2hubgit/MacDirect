@@ -30,16 +30,16 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 3 | Guest gating (`auth.requireLogin()`, Add event plan gate) | Done. Tested as guest and logged in. |
 | 4 | Follow societies (Follow/Following button, "Following" filter) | Done. Follow/unfollow round-tripped to Supabase as a logged-in user; guest sees "Log in to follow societies". |
 | 5 | Leader flow: "Post event" form on What's Happening for approved leaders, edit/delete own events | Done. Tested as an approved leader (post, edit, delete; test event removed) and as a guest (no form, no buttons). |
-| 6 | Events and societies read from Supabase instead of `data/*.json`; remove `routes/societies.js`, `routes/events.js` | Partly. Events now load from Supabase (JSON only as fallback when Supabase is not configured). Societies still use JSON; routes not yet removed. **Next step.** |
+| 6 | Events and societies read from Supabase instead of `data/*.json`; remove `routes/societies.js`, `routes/events.js` | Done. Societies, events and the map's "Societies held here" list load from Supabase; JSON routes and files deleted. Checked as a guest (12 societies, 5 events, building panel). |
 
 ## Next step
-Finish Step 6. Load societies from Supabase in `public/js/pages/societies.js` (the table has no `building`/`contact`/`website` columns yet, so either add them to `schema.sql` and the seed or keep a JSON lookup for those), then delete `routes/societies.js`, `routes/events.js`, their `server.js` wiring and `data/societies.json`/`data/events.json`. Removing the fallback means the app needs Supabase configured to show events.
+All six steps are done. Remaining items are the gaps below plus the README roadmap: society pins on the map (red markers, purple clusters) and macqAI answers. Ask the project owner which to take next.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
 * Auth: `public/js/lib/auth.js` (global `auth`: `ready`, `user`, `profile`, `leaderships`, `onChange`, `signIn`, `signUp`, `signOut`, `continueAsGuest`, `requireLogin`, `listSocieties`, `myFollows`, `setFollow`, `approvedSocieties`, `listEvents`, `saveEvent`, `deleteEvent`). Login UI: `public/login.html`, `public/js/pages/login.js`.
 * Database: `database/schema.sql` (tables, RLS, grants, sign-up trigger), `database/seed.sql`. Not applied automatically; run in the Supabase SQL editor.
-* Server: `server.js` loads `.env` and serves `/api/map`, `/api/config`, and the JSON-backed `/api/societies`, `/api/events`, `/api/food`.
+* Server: `server.js` loads `.env` and serves `/api/map`, `/api/config` and the JSON-backed `/api/food`.
 * Secrets: `.env` (gitignored). `.env.example` lists the variable names.
 
 ## Running and testing
@@ -48,7 +48,6 @@ Finish Step 6. Load societies from Supabase in `public/js/pages/societies.js` (t
 * Do not create accounts on the live Supabase project from automated tests; ask the project owner to sign up manually.
 
 ## Known gaps and gotchas
-* Follow uses society ids from `data/societies.json` as Supabase ids; this holds only while the seeded `societies` ids are 1-12 in the same order. Step 6 removes the assumption.
 * Event plans and the Add event plan form still save to `localStorage`, not Supabase.
 * The Display name field in User Settings is browser-only and not linked to `profiles.display_name`.
 * The Task Plan view is dropped, and its route, data and the MySQL-era leftovers (Docker files, `db.js`, `macqai.js`, `import-geojson.js`) are deleted.
@@ -59,4 +58,4 @@ Finish Step 6. Load societies from Supabase in `public/js/pages/societies.js` (t
 * `.claude/launch.json` server name is still `mcq-imap`.
 
 ## Last updated
-2026-10-25, after Step 5.
+2026-10-25, after Step 6.

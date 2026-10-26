@@ -154,7 +154,7 @@ const auth = (function () {
     },
     async listSocieties() {
       if (!state.sb) return [];
-      const { data } = await state.sb.from('societies').select('id, name').order('name');
+      const { data } = await state.sb.from('societies').select('id, name, category, description, building, contact, website').order('name');
       return data || [];
     },
   };
