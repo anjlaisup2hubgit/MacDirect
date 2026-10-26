@@ -7,9 +7,9 @@ function esc(t) {
 function societyCard(s, following, imageUrl) {
   return `<li class="card" data-id="${s.id}" tabindex="0">` +
     (imageUrl ? `<img class="society-cover" src="${esc(imageUrl)}" alt="${esc(s.name)}" loading="lazy">` : '') +
-    `<span class="card-tag">${esc(s.category)}</span>` +
     `<h2>${esc(s.name)}</h2>` +
     `<p>${esc(s.description)}</p>` +
+    `<p class="hashtags">#${esc(s.category.toLowerCase().replace(/\s+/g, ''))}</p>` +
     `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button></li>`;
 }
 

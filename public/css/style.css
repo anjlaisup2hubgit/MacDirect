@@ -300,6 +300,7 @@ button, input, select, textarea { font-family: inherit; }
   background: #f3e5e8;
   border-radius: 999px;
 }
+.card .hashtags { margin: 8px 0 0; font-size: 13px; color: var(--mq-red); }
 .follow-btn {
   margin-top: 10px;
   padding: 5px 14px;
