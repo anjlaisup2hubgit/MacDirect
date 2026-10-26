@@ -36,6 +36,7 @@ function hoursByDay(hours) {
   const out = {};
   Object.entries(hours || {}).forEach(([k, v]) => {
     const [a, b] = k.split('-');
+    if (WEEK.indexOf(a) < 0 || WEEK.indexOf(b || a) < 0) return;
     for (let d = WEEK.indexOf(a); d <= WEEK.indexOf(b || a); d++) out[WEEK[d]] = v;
   });
   return out;

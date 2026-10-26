@@ -25,7 +25,16 @@ from (values
   (null,                              'Sample Careers Fair',           'Career',   '2026-10-28', '10:00', '3IR',                          'Meet graduate employers and pick up internship opportunities.'),
   (null,                              'Sample Study Skills Workshop',  'Academic', '2026-10-29', '14:00', '16MW (Waranara Library)',      'Exam preparation tips and time management strategies.'),
   ('Sample Film and Media Society',   'Sample Movie Night',            'Social',   '2026-10-30', '18:30', '21WW (Macquarie Theatre)',     'Student-run screening with popcorn provided.'),
-  ('Sample Volunteers Network',       'Sample Volunteering Drive',     'Community','2026-11-03', '11:00', '18WW (Service Connect)',       'Sign up for local community volunteering projects.'),
+  ('Sample Volunteers Network',       'Sample Volunteering Drive',     'Community','2026-11-03', '11:00', '18WW (Service Connect)',       'Sign up for local community volunteering projects.')
+) as e(society_name, title, category, event_date, event_time, building, description)
+left join public.societies s on s.name = e.society_name
+cross join lateral (select id from public.profiles where role = 'admin' order by created_at limit 1) a;
+
+-- More sample events (12). Run this block on its own if you already ran the five above;
+-- the societies must exist first. Running it twice duplicates these 12.
+insert into public.events (society_id, title, category, event_date, event_time, building, description, created_by)
+select s.id, e.title, e.category, e.event_date::date, e.event_time::time, e.building, e.description, a.id
+from (values
   ('Sample Robotics Society', 'Sample Robot Build Night', 'Academic', '2026-10-27', '18:00', '16MW (Waranara Library)', 'Hands-on robot building. Parts provided, beginners welcome.'),
   ('Sample Chinese Students Association', 'Sample Mid-Autumn Lantern Night', 'Social', '2026-10-29', '17:30', '1CC', 'Lanterns, mooncakes and games on the lawn.'),
   ('Sample Indian Society', 'Sample Diwali Celebration', 'Social', '2026-11-05', '18:00', '1CC', 'Food, music and dance to celebrate the festival of lights.'),

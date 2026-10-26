@@ -62,7 +62,7 @@
     calView.hidden = view !== 'cal';
     agendaEl.hidden = view !== 'list';
     hintEl.textContent = t('You are not following any societies.') + ' ' + t('Follow societies to see their events here.');
-    hintEl.hidden = follows.size > 0;
+    hintEl.hidden = follows.size > 0 || auth.approvedSocieties.length > 0;
     const leaderIds = auth.approvedSocieties.map((s) => s.id);
     base.forEach((e) => { e.canEdit = leaderIds.includes(e.societyId); });
     const events = byDate();

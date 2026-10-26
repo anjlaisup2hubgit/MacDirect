@@ -260,6 +260,10 @@ drop policy if exists "plan images storage insert" on storage.objects;
 create policy "plan images storage insert" on storage.objects
   for insert to authenticated with check (
     bucket_id = 'society-images' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists "plan images storage read" on storage.objects;
+create policy "plan images storage read" on storage.objects
+  for select to authenticated using (
+    bucket_id = 'society-images' and (storage.foldername(name))[1] = auth.uid()::text);
 drop policy if exists "plan images storage delete" on storage.objects;
 create policy "plan images storage delete" on storage.objects
   for delete to authenticated using (
