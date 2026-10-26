@@ -2,7 +2,7 @@
 // missing translation falls back to English. The choice is stored in localStorage and
 // applied on page load; changing it reloads the page. Database content is not translated.
 // Static HTML is translated through data-i18n (text) and data-i18n-attr="attr:Text|attr:Text".
-const I18N_LANGS = { en: 'English', zh: '简体中文', es: 'Español' };
+const I18N_LANGS = { en: 'English', zh: '简体中文', es: 'Español', vi: 'Tiếng Việt' };
 const I18N = {
   zh: {
     'User settings': '用户设置', 'User Settings': '用户设置',
@@ -70,6 +70,39 @@ const I18N = {
     'Societies held here': 'Sociedades en este lugar', 'No societies listed here.': 'No hay sociedades aquí.',
     'Social': 'Social', 'Academic': 'Académico', 'Career': 'Profesional', 'Community': 'Comunidad', 'e.g. 1CC': 'p. ej. 1CC', 'a society': 'una sociedad',
   },
+  vi: {
+    'User settings': 'Cài đặt', 'User Settings': 'Cài đặt',
+    "What's Happening": 'Sự kiện', 'Add event plan': 'Thêm kế hoạch', 'Add Event Plan': 'Thêm kế hoạch sự kiện',
+    'Food and drinks': 'Ăn uống', 'Food and Drinks': 'Ăn uống',
+    'On-campus Societies': 'Câu lạc bộ', 'Search societies': 'Tìm câu lạc bộ', 'Search food and drinks': 'Tìm đồ ăn thức uống',
+    'Filter by category': 'Lọc theo danh mục', 'Close': 'Đóng',
+    'No societies found.': 'Không tìm thấy câu lạc bộ.', 'No food outlets found.': 'Không tìm thấy quán ăn.',
+    'Could not load societies.': 'Không thể tải câu lạc bộ.', 'Could not load food outlets.': 'Không thể tải quán ăn.',
+    'All': 'Tất cả', 'Following': 'Đang theo dõi', 'Follow': 'Theo dõi',
+    'Month': 'Tháng', 'Day': 'Ngày', 'Previous month': 'Tháng trước', 'Next month': 'Tháng sau',
+    'No events on this day.': 'Không có sự kiện trong ngày này.', 'No events found.': 'Không tìm thấy sự kiện.', 'Could not load events.': 'Không thể tải sự kiện.',
+    'Mon': 'T2', 'Tue': 'T3', 'Wed': 'T4', 'Thu': 'T5', 'Fri': 'T6', 'Sat': 'T7', 'Sun': 'CN',
+    'Display name': 'Tên hiển thị', 'Language': 'Ngôn ngữ', 'Saved.': 'Đã lưu.', 'Could not save.': 'Không thể lưu.',
+    'Signed in': 'Đã đăng nhập', 'Admin': 'Quản trị viên', 'Student': 'Sinh viên', 'Log out': 'Đăng xuất',
+    'Leader of': 'Trưởng nhóm của', 'Leader request pending for': 'Yêu cầu làm trưởng nhóm đang chờ duyệt cho', 'Leader request declined for': 'Yêu cầu làm trưởng nhóm bị từ chối cho',
+    'You are browsing as a guest. Following societies and the event plan need an account.': 'Bạn đang xem với tư cách khách. Theo dõi câu lạc bộ và kế hoạch sự kiện cần có tài khoản.',
+    'Log in or sign up': 'Đăng nhập hoặc đăng ký', 'Not now': 'Để sau',
+    'Log in to follow societies': 'Đăng nhập để theo dõi câu lạc bộ', 'Log in to add event plans': 'Đăng nhập để thêm kế hoạch sự kiện',
+    'Log in to add event plans. Guests can browse everything but cannot save.': 'Đăng nhập để thêm kế hoạch sự kiện. Khách có thể xem mọi thứ nhưng không thể lưu.',
+    'Event name': 'Tên sự kiện', 'Category': 'Danh mục', 'Date': 'Ngày', 'Time': 'Giờ', 'Building': 'Tòa nhà', 'Description': 'Mô tả',
+    'Add event': 'Thêm sự kiện', "Added! Find it in What's Happening.": 'Đã thêm! Xem trong mục Sự kiện.',
+    'Log in': 'Đăng nhập', 'Sign up': 'Đăng ký', 'Email': 'Email', 'Password': 'Mật khẩu', 'Society': 'Câu lạc bộ',
+    'I lead a society (an admin will approve this)': 'Tôi là trưởng một câu lạc bộ (quản trị viên sẽ duyệt)',
+    'Continue as guest': 'Tiếp tục với tư cách khách', 'Your Macquarie campus map': 'Bản đồ khuôn viên Macquarie của bạn',
+    'Login is not set up yet. You can continue as a guest.': 'Đăng nhập chưa được thiết lập. Bạn có thể tiếp tục với tư cách khách.',
+    'Check your email to confirm your account, then log in.': 'Hãy kiểm tra email để xác nhận tài khoản, rồi đăng nhập.',
+    'Search buildings or ask mcqAI': 'Tìm tòa nhà hoặc hỏi mcqAI', 'Search campus or ask mcqAI': 'Tìm trong khuôn viên hoặc hỏi mcqAI',
+    'About mcqAI': 'Giới thiệu mcqAI', 'Ask mcqAI': 'Hỏi mcqAI',
+    'mcqAI is your campus assistant. Search for a building, or type a question and choose "Ask mcqAI".': 'mcqAI là trợ lý khuôn viên của bạn. Hãy tìm một tòa nhà, hoặc nhập câu hỏi và chọn "Hỏi mcqAI".',
+    'Google Maps': 'Google Maps', 'meets here.': 'họp tại đây.', 'No photo available': 'Chưa có ảnh', 'Website': 'Trang web',
+    'Societies held here': 'Câu lạc bộ tại đây', 'No societies listed here.': 'Không có câu lạc bộ nào tại đây.',
+    'Social': 'Giao lưu', 'Academic': 'Học thuật', 'Career': 'Nghề nghiệp', 'Community': 'Cộng đồng', 'e.g. 1CC': 'ví dụ 1CC', 'a society': 'một câu lạc bộ',
+  },
 };
 
 function i18nLang() {
@@ -84,7 +117,7 @@ function t(key) {
 }
 
 (function () {
-  document.documentElement.lang = { en: 'en', zh: 'zh-CN', es: 'es' }[i18nLang()];
+  document.documentElement.lang = { en: 'en', zh: 'zh-CN', es: 'es', vi: 'vi' }[i18nLang()];
   document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-attr]').forEach((el) => {
     el.dataset.i18nAttr.split('|').forEach((pair) => {

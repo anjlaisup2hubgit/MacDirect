@@ -32,7 +32,7 @@ npm start              # http://localhost:3000 (set PORT to change)
 * **Search bar:** one bar reading "Search buildings or ask mcqAI". Typing filters building names (up to 8 matches) and zooms to the one you pick. "Ask mcqAI" does nothing yet.
 * **Accounts:** email and password sign-up and login, guest mode, and an "I lead a society" request at sign-up.
 * **Guest gating:** actions that need an account show "Log in to use this".
-* **Languages:** English, 简体中文 and Español, chosen in User settings and stored in `localStorage`. Changing it reloads the page. Society, event and food content from the database stays in English.
+* **Languages:** English, 简体中文, Español and Tiếng Việt, chosen in User settings and stored in `localStorage`. Changing it reloads the page. Society, event and food content from the database stays in English.
 * **Views:** five popups over the map (below). Societies and events are read from Supabase; only food is still static JSON.
 
 For what is being built next, see [CHANGELOG.md](CHANGELOG.md). Not built yet: mcqAI answers.
