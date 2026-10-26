@@ -117,7 +117,7 @@
     if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
   });
 
-  const loadPlans = () => auth.listMyPlans().then((data) => { plans = data; render(); }).catch(console.error);
+  const loadPlans = () => auth.listMyPlans().then((data) => { plans = auth.user ? data : []; render(); }).catch(console.error);
   window.addEventListener('events-changed', loadPlans);
   auth.onChange(loadPlans);
   render();

@@ -38,14 +38,20 @@
     e.preventDefault();
     if (!auth.requireLogin('Log in to add event plans')) return;
     const f = new FormData(form);
-    const { error } = await auth.savePlan({
-      name: f.get('name').trim(),
-      category: f.get('category'),
-      date: f.get('date'),
-      time: f.get('time'),
-      building: f.get('building').trim(),
-      description: f.get('description').trim() || 'No description.',
-    });
+    const submit = form.querySelector('.form-submit');
+    submit.disabled = true; // stops a double tap saving the plan twice
+    let error;
+    try {
+      ({ error } = await auth.savePlan({
+        name: f.get('name').trim(),
+        category: f.get('category'),
+        date: f.get('date'),
+        time: f.get('time'),
+        building: f.get('building').trim(),
+        description: f.get('description').trim(),
+      }));
+    } catch (err) { error = err; }
+    submit.disabled = false;
     if (error) {
       console.error(error);
       msg.textContent = t('Could not save.');
