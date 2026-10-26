@@ -52,7 +52,7 @@
         '<button class="form-submit" type="button" data-act="logout">' + t('Log out') + '</button>';
     } else {
       account.innerHTML =
-        '<p>' + t('You are browsing as a guest. Following societies, the event plan and posting events need an account.') + '</p>' +
+        '<p>' + t('You are browsing as a guest. Following societies and the event plan need an account.') + '</p>' +
         '<button class="form-submit" type="button" data-act="login">' + t('Log in or sign up') + '</button>';
     }
   }

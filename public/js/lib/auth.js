@@ -103,7 +103,8 @@ const auth = (function () {
       return false;
     },
     async updateDisplayName(name) {
-      const { error } = await state.sb.from('profiles').update({ display_name: name }).eq('id', state.user.id);
+      let { data, error } = await state.sb.from('profiles').update({ display_name: name }).eq('id', state.user.id).select();
+      if (!error && (!data || !data.length)) error = new Error('Could not save your display name.');
       if (!error) {
         state.profile = { ...state.profile, display_name: name };
         listeners.forEach((cb) => cb());

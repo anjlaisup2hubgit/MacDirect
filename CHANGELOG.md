@@ -12,13 +12,13 @@ Paste this as your first message, then attach nothing else:
 4. Mark each plan step Done, Partly or Not started, and say how it was verified.
 
 ## Project in one paragraph
-iMCQ is a mobile-first Macquarie University campus map (Node/Express serving static HTML/JS, Leaflet map, popups over `index.html`). Goal of the current work: users log in, guests browse through a guest view, society leaders post society events, and users follow societies. Backend is Supabase (Postgres + Auth + row-level security). The browser talks to Supabase directly; Express serves pages, the map, and `GET /api/config` (public URL and publishable key from `.env`).
+iMCQ is a mobile-first Macquarie University campus map (Node/Express serving static HTML/JS, Leaflet map, popups over `index.html`). Goal of the current work: users log in, guests browse through a guest view, and users follow societies. Leader event posting is paused and currently has no UI (`auth.saveEvent`/`deleteEvent` remain, unused). Backend is Supabase (Postgres + Auth + row-level security). The browser talks to Supabase directly; Express serves pages, the map, and `GET /api/config` (public URL and publishable key from `.env`).
 
 ## Decisions already made (do not re-ask)
 * Backend: Supabase, not MySQL/Docker. The README says so.
 * Name: iMCQ everywhere (package name `imcq`).
 * Leaders: choose a society at sign-up, an admin approves by editing `society_leaders.status` in the Supabase dashboard. No admin screen for the MVP.
-* Guests: can browse everything; follow, event plan and posting show "Log in to ...".
+* Guests: can browse everything; follow and event plan show "Log in to ...". Leader event posting is paused and currently has no UI (`auth.saveEvent`/`deleteEvent` remain, unused).
 * Roles: `profiles.role` is `student` or `admin`. A leader is a user with an approved `society_leaders` row.
 
 ## Plan status
@@ -31,7 +31,7 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 4 | Follow societies (Follow/Following button, "Following" filter) | Done. Follow/unfollow round-tripped to Supabase as a logged-in user; guest sees "Log in to follow societies". |
 | 5 | Leader flow: "Post event" form on What's Happening for approved leaders, edit/delete own events | Done, then the form and Edit/Delete buttons were removed from the UI (step 7). `auth.saveEvent`/`deleteEvent` and the database rules remain, currently unused by any page. |
 | 6 | Events and societies read from Supabase instead of `data/*.json`; remove `routes/societies.js`, `routes/events.js` | Done. Societies, events and the map's "Societies held here" list load from Supabase; JSON routes and files deleted. Checked as a guest (12 societies, 5 events, building panel). |
-| 7 | Settings: Display name linked to `profiles.display_name` (logged in only), Text size removed, Language select (English, 简体中文, Español), leader post form removed, mcqAI renamed mcqAI | Done. Checked as a guest in a browser. Display name saving (logged in) not tested. |
+| 7 | Settings: Display name linked to `profiles.display_name` (logged in only), Text size removed, Language select (English, 简体中文, Español), leader post form removed, macqAI renamed mcqAI | Done. Checked as a guest in a browser. Display name saving (logged in) not tested. |
 
 ## Next step
 All seven steps are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
@@ -63,5 +63,5 @@ All seven steps are done. Remaining items are the gaps below and mcqAI answers (
 2026-10-26, after Step 7.
 
 ### 2026-10-26
-* **Change:** Display name linked to `profiles`, Text size and its CSS removed, language switching added (`i18n.js`), leader post/edit/delete UI removed from What's Happening, mcqAI renamed mcqAI (including CSS class names `mcqai-*`).
+* **Change:** Display name linked to `profiles`, Text size and its CSS removed, language switching added (`i18n.js`), leader post/edit/delete UI removed from What's Happening, macqAI renamed mcqAI (including CSS class names `mcqai-*`).
 * **Reasoning:** project owner request. Language reloads the page because it is the simplest way to rebuild every popup; English text as keys keeps the dictionary small.

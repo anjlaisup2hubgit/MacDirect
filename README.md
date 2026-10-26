@@ -1,6 +1,6 @@
 # iMCQ - Macquarie University campus map
 
-iMCQ is a mobile-first campus map for Macquarie University students. It shows buildings, lets students find and follow societies, and lets society leaders hold events.
+iMCQ is a mobile-first campus map for Macquarie University students. It shows buildings, lets students find and follow societies. Leader event posting is paused and currently has no UI (`auth.saveEvent`/`deleteEvent` remain, unused).
 
 Current progress and the next task live in [CHANGELOG.md](CHANGELOG.md).
 
