@@ -90,9 +90,9 @@ const auth = (function () {
       if (state.user) return true;
       const d = document.createElement('dialog');
       d.className = 'login-prompt';
-      d.innerHTML = `<p>Log in to ${action}.</p><div>` +
-        '<button class="form-submit" type="button" data-go>Log in or sign up</button>' +
-        '<button class="auth-guest" type="button" data-close>Not now</button></div>';
+      d.innerHTML = `<p>${t('Log in to ' + action)}.</p><div>` +
+        `<button class="form-submit" type="button" data-go>${t('Log in or sign up')}</button>` +
+        `<button class="auth-guest" type="button" data-close>${t('Not now')}</button></div>`;
       d.addEventListener('click', (e) => {
         if (e.target.dataset.go !== undefined) location.href = '/login.html';
         if (e.target.dataset.close !== undefined) d.close();
@@ -101,6 +101,14 @@ const auth = (function () {
       document.body.appendChild(d);
       d.showModal();
       return false;
+    },
+    async updateDisplayName(name) {
+      const { error } = await state.sb.from('profiles').update({ display_name: name }).eq('id', state.user.id);
+      if (!error) {
+        state.profile = { ...state.profile, display_name: name };
+        listeners.forEach((cb) => cb());
+      }
+      return { error };
     },
     // Society ids the logged-in user follows (empty for guests).
     async myFollows() {

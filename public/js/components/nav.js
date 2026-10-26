@@ -9,7 +9,7 @@
   const here = location.pathname;
   const links = items.map((i) =>
     `<a href="${i.href}"${here === i.href ? ' class="active"' : ''}>` +
-    `<svg viewBox="0 0 40 40" aria-hidden="true">${i.icon}</svg><span>${i.label}</span></a>`
+    `<svg viewBox="0 0 40 40" aria-hidden="true">${i.icon}</svg><span>${t(i.label)}</span></a>`
   ).join('');
   document.getElementById('nav-mount').innerHTML = `<div class="bottom-nav">${links}</div>`;
   const societiesLink = document.querySelector('.bottom-nav a[href="/?societies"]');

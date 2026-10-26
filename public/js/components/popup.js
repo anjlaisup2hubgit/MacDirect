@@ -7,8 +7,8 @@ function createPopup({ id, title, navHref, hash, searchPlaceholder }) {
   popup.hidden = true;
   popup.innerHTML =
     '<div class="popup-island">' +
-      `<div class="popup-head"><h1>${esc(title)}</h1>` +
-      '<button class="popup-close" type="button" aria-label="Close">&times;</button></div>' +
+      `<div class="popup-head"><h1>${esc(t(title))}</h1>` +
+      `<button class="popup-close" type="button" aria-label="${esc(t('Close'))}">&times;</button></div>` +
       (searchPlaceholder
         ? `<input class="page-search" type="search" placeholder="${esc(searchPlaceholder)}" aria-label="${esc(searchPlaceholder)}" autocomplete="off">` +
           '<div class="chips" role="group" aria-label="Filter by category"></div>'

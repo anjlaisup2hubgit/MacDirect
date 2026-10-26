@@ -9,7 +9,7 @@ function societyCard(s, following) {
     `<span class="card-tag">${esc(s.category)}</span>` +
     `<h2>${esc(s.name)}</h2>` +
     `<p>${esc(s.description)}</p>` +
-    `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${following ? 'Following' : 'Follow'}</button></li>`;
+    `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button></li>`;
 }
 
 function foodCard(f) {
@@ -31,12 +31,10 @@ function taskCard(t) {
     `<p>Due ${esc(formatDate(t.due))}</p></li>`;
 }
 
-function eventCard(e, canEdit) {
+function eventCard(e) {
   return `<li class="card" data-id="${e.id}" tabindex="0">` +
     `<span class="card-tag">${esc(e.category)}</span>` +
     `<h2>${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
-    `<p>${esc(e.description)}</p>` +
-    (canEdit ? '<button type="button" class="follow-btn" data-edit>Edit</button> ' +
-      '<button type="button" class="follow-btn" data-delete>Delete</button>' : '') + '</li>';
+    `<p>${esc(e.description)}</p></li>`;
 }

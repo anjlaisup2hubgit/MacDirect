@@ -22,7 +22,7 @@
   function renderChips() {
     const cats = ['All', ...new Set(items.map((s) => s.category))];
     chipsEl.innerHTML = cats.map((c) =>
-      `<button type="button" class="chip${c === category ? ' active' : ''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+      `<button type="button" class="chip${c === category ? ' active' : ''}" data-cat="${esc(c)}">${esc(t(c))}</button>`).join('');
   }
 
   function setOpen(open) {
@@ -60,7 +60,7 @@
     render();
   }).catch((err) => {
     console.error(err);
-    emptyEl.textContent = 'Could not load food outlets.';
+    emptyEl.textContent = t('Could not load food outlets.');
     emptyEl.hidden = false;
   });
 

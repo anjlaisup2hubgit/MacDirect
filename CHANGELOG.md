@@ -29,15 +29,16 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 | 2 | Login page, guest entry, `js/lib/auth.js`, settings account block | Done. Guest path tested in browser. Sign-up and leader request were tested by the project owner (a pending `society_leaders` row appeared). |
 | 3 | Guest gating (`auth.requireLogin()`, Add event plan gate) | Done. Tested as guest and logged in. |
 | 4 | Follow societies (Follow/Following button, "Following" filter) | Done. Follow/unfollow round-tripped to Supabase as a logged-in user; guest sees "Log in to follow societies". |
-| 5 | Leader flow: "Post event" form on What's Happening for approved leaders, edit/delete own events | Done. Tested as an approved leader (post, edit, delete; test event removed) and as a guest (no form, no buttons). |
+| 5 | Leader flow: "Post event" form on What's Happening for approved leaders, edit/delete own events | Done, then the form and Edit/Delete buttons were removed from the UI (step 7). `auth.saveEvent`/`deleteEvent` and the database rules remain, currently unused by any page. |
 | 6 | Events and societies read from Supabase instead of `data/*.json`; remove `routes/societies.js`, `routes/events.js` | Done. Societies, events and the map's "Societies held here" list load from Supabase; JSON routes and files deleted. Checked as a guest (12 societies, 5 events, building panel). |
+| 7 | Settings: Display name linked to `profiles.display_name` (logged in only), Text size removed, Language select (English, 简体中文, Español), leader post form removed, mcqAI renamed mcqAI | Done. Checked as a guest in a browser. Display name saving (logged in) not tested. |
 
 ## Next step
-All six steps are done. Remaining items are the gaps below and macqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
+All seven steps are done. Remaining items are the gaps below and mcqAI answers (README roadmap). Society map pins were dropped by the project owner; do not propose them. Ask which to take next.
 
 ## Where things are
 * Pages are popups over the map: `public/index.html` plus `public/js/pages/*.js` (societies, events, event-plan, food, settings). Popups are built with `createPopup` in `public/js/components/popup.js`.
-* Auth: `public/js/lib/auth.js` (global `auth`: `ready`, `user`, `profile`, `leaderships`, `onChange`, `signIn`, `signUp`, `signOut`, `continueAsGuest`, `requireLogin`, `listSocieties`, `myFollows`, `setFollow`, `approvedSocieties`, `listEvents`, `saveEvent`, `deleteEvent`). Login UI: `public/login.html`, `public/js/pages/login.js`.
+* Auth: `public/js/lib/auth.js` (global `auth`: `ready`, `user`, `profile`, `leaderships`, `onChange`, `signIn`, `signUp`, `signOut`, `continueAsGuest`, `requireLogin`, `listSocieties`, `myFollows`, `setFollow`, `approvedSocieties`, `listEvents`, `saveEvent`, `deleteEvent`, `updateDisplayName`). Language: `public/js/lib/i18n.js` (`t(key)`, `i18nLang()`, `setLang()`; keys are English text, dictionary has `zh` and `es`). Login UI: `public/login.html`, `public/js/pages/login.js`.
 * Database: `database/schema.sql` (tables, RLS, grants, sign-up trigger), `database/seed.sql`. Not applied automatically; run in the Supabase SQL editor.
 * Server: `server.js` loads `.env` and serves `/api/map`, `/api/config` and the JSON-backed `/api/food`.
 * Secrets: `.env` (gitignored). `.env.example` lists the variable names.
@@ -49,8 +50,9 @@ All six steps are done. Remaining items are the gaps below and macqAI answers (R
 
 ## Known gaps and gotchas
 * Event plans and the Add event plan form still save to `localStorage`, not Supabase.
-* The Display name field in User Settings is browser-only and not linked to `profiles.display_name`.
-* The Task Plan view is dropped, and its route, data and the MySQL-era leftovers (Docker files, `db.js`, `macqai.js`, `import-geojson.js`) are deleted.
+* Language changes reload the page (`/?tasks`, reopening User Settings). Static HTML uses `data-i18n` attributes; JS-built UI calls `t('English text')`. Database content (societies, events, food) and dates stay English/en-AU. Add new UI text to the `zh` and `es` dictionaries or it shows in English.
+* `auth.saveEvent`, `auth.deleteEvent` and `auth.approvedSocieties` are unused by the UI since the leader post form was removed. Leaders cannot post events from the app until a new UI is built.
+* The Task Plan view is dropped, and its route, data and the MySQL-era leftovers (Docker files, `db.js`, the old AI route, `import-geojson.js`) are deleted.
 * The empty `events.html`, `event-plan.html`, `food.html` were deleted; the icon SVG now lives in `docs/`.
 * Sample events seed as the first admin (`created_by` must be a real user), so run `seed.sql` events only after an admin exists. Do not re-run the societies insert (names are unique).
 * Event times in Supabase are `time` values (`12:00:00`); the UI expects strings like `12:00pm`, so format when Step 6 lands.
@@ -58,4 +60,8 @@ All six steps are done. Remaining items are the gaps below and macqAI answers (R
 * `.claude/launch.json` server name is still `mcq-imap`.
 
 ## Last updated
-2026-10-25, after Step 6.
+2026-10-26, after Step 7.
+
+### 2026-10-26
+* **Change:** Display name linked to `profiles`, Text size and its CSS removed, language switching added (`i18n.js`), leader post/edit/delete UI removed from What's Happening, mcqAI renamed mcqAI (including CSS class names `mcqai-*`).
+* **Reasoning:** project owner request. Language reloads the page because it is the simplest way to rebuild every popup; English text as keys keeps the dictionary small.

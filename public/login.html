@@ -9,29 +9,30 @@
 <body class="auth-page">
   <main class="auth-card">
     <h1>iMCQ</h1>
-    <p class="auth-tagline">Your Macquarie campus map</p>
+    <p class="auth-tagline" data-i18n="Your Macquarie campus map">Your Macquarie campus map</p>
 
     <div class="auth-tabs" role="tablist">
-      <button type="button" role="tab" class="chip active" data-mode="login">Log in</button>
-      <button type="button" role="tab" class="chip" data-mode="signup">Sign up</button>
+      <button type="button" role="tab" class="chip active" data-mode="login" data-i18n="Log in">Log in</button>
+      <button type="button" role="tab" class="chip" data-mode="signup" data-i18n="Sign up">Sign up</button>
     </div>
 
     <form class="event-form" id="auth-form">
-      <label data-signup hidden>Display name<input name="displayName" maxlength="40" autocomplete="nickname"></label>
-      <label>Email<input name="email" type="email" required autocomplete="email"></label>
-      <label>Password<input name="password" type="password" required minlength="6" autocomplete="current-password"></label>
+      <label data-signup hidden><span data-i18n="Display name">Display name</span><input name="displayName" maxlength="40" autocomplete="nickname"></label>
+      <label><span data-i18n="Email">Email</span><input name="email" type="email" required autocomplete="email"></label>
+      <label><span data-i18n="Password">Password</span><input name="password" type="password" required minlength="6" autocomplete="current-password"></label>
       <div data-signup hidden class="auth-leader">
-        <label class="auth-check"><input type="checkbox" name="isLeader"> I lead a society (an admin will approve this)</label>
-        <label data-leader hidden>Society<select name="societyId"></select></label>
+        <label class="auth-check"><input type="checkbox" name="isLeader"> <span data-i18n="I lead a society (an admin will approve this)">I lead a society (an admin will approve this)</span></label>
+        <label data-leader hidden><span data-i18n="Society">Society</span><select name="societyId"></select></label>
       </div>
       <button class="form-submit" type="submit">Log in</button>
       <p class="form-msg" hidden></p>
     </form>
 
-    <button class="auth-guest" type="button">Continue as guest</button>
+    <button class="auth-guest" type="button" data-i18n="Continue as guest">Continue as guest</button>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="js/lib/i18n.js"></script>
   <script src="js/lib/auth.js"></script>
   <script src="js/pages/login.js"></script>
 </body>

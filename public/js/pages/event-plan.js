@@ -3,18 +3,18 @@
   const p = createPopup({ id: 'event-plan-popup', title: 'Add Event Plan', navHref: '/?event-plan', hash: 'event-plan' });
   p.results.innerHTML =
     '<div class="account guest-gate" hidden>' +
-      '<p>Log in to add event plans. Guests can browse everything but cannot save.</p>' +
-      '<button class="form-submit" type="button">Log in or sign up</button></div>' +
+      '<p>' + t('Log in to add event plans. Guests can browse everything but cannot save.') + '</p>' +
+      '<button class="form-submit" type="button">' + t('Log in or sign up') + '</button></div>' +
     '<form class="event-form" hidden>' +
-      '<label>Event name<input name="name" required maxlength="80"></label>' +
-      '<label>Category<select name="category">' +
+      '<label>' + t('Event name') + '<input name="name" required maxlength="80"></label>' +
+      '<label>' + t('Category') + '<select name="category">' +
         ['Social', 'Academic', 'Career', 'Community'].map((c) => `<option>${c}</option>`).join('') + '</select></label>' +
-      '<label>Date<input name="date" type="date" required></label>' +
-      '<label>Time<input name="time" type="time" value="12:00"></label>' +
-      '<label>Building<input name="building" list="event-buildings" placeholder="e.g. 1CC"></label>' +
+      '<label>' + t('Date') + '<input name="date" type="date" required></label>' +
+      '<label>' + t('Time') + '<input name="time" type="time" value="12:00"></label>' +
+      '<label>' + t('Building') + '<input name="building" list="event-buildings" placeholder="e.g. 1CC"></label>' +
       '<datalist id="event-buildings"></datalist>' +
-      '<label>Description<textarea name="description" rows="3" maxlength="200"></textarea></label>' +
-      '<button class="form-submit" type="submit">Add event</button>' +
+      '<label>' + t('Description') + '<textarea name="description" rows="3" maxlength="200"></textarea></label>' +
+      '<button class="form-submit" type="submit">' + t('Add event') + '</button>' +
       '<p class="form-msg" hidden></p>' +
     '</form>';
   const form = p.results.querySelector('form');
@@ -58,7 +58,7 @@
     } catch (err) { console.error(err); }
     window.dispatchEvent(new Event('events-changed'));
     form.reset();
-    msg.textContent = "Added! Find it in What's Happening.";
+    msg.textContent = t("Added! Find it in What's Happening.");
     msg.hidden = false;
   });
 })();

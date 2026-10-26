@@ -1,18 +1,18 @@
-// Floating search + macqAI bar. Call initSearchBar(features, onSelect, onAsk) once pins are loaded.
-// Typing lists matching buildings plus an "Ask macqAI" row; optional onAsk(text) returns the answer text to show.
+// Floating search + mcqAI bar. Call initSearchBar(features, onSelect, onAsk) once pins are loaded.
+// Typing lists matching buildings plus an "Ask mcqAI" row; optional onAsk(text) returns the answer text to show.
 function initSearchBar(features, onSelect, onAsk) {
   const mount = document.getElementById('search-bar-mount');
   mount.innerHTML =
     '<div class="search-bar">' +
     '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="#000" stroke-width="2.5"/><path d="M15 15l9 9" stroke="#000" stroke-width="3"/></svg>' +
-    '<input type="search" placeholder="Search buildings or ask macqAI" aria-label="Search campus or ask macqAI" autocomplete="off">' +
-    '<button class="macqai-info" type="button" aria-label="About macqAI">' +
+    '<input type="search" placeholder="' + t('Search buildings or ask mcqAI') + '" aria-label="' + t('Search campus or ask mcqAI') + '" autocomplete="off">' +
+    '<button class="mcqai-info" type="button" aria-label="' + t('About mcqAI') + '">' +
     '<svg viewBox="0 0 40 40" width="28" height="28"><circle cx="20" cy="20" r="17" fill="#fff" stroke="#000" stroke-width="3"/><circle cx="20" cy="11" r="2.5" fill="#000"/><path d="M20 17v14M16 17h4M16 31h8" stroke="#000" stroke-width="3" fill="none"/></svg>' +
-    '</button></div><ul class="search-results"></ul><div class="macqai-panel" hidden></div>';
+    '</button></div><ul class="search-results"></ul><div class="mcqai-panel" hidden></div>';
 
   const input = mount.querySelector('input');
   const list = mount.querySelector('.search-results');
-  const panel = mount.querySelector('.macqai-panel');
+  const panel = mount.querySelector('.mcqai-panel');
   let active = -1;
 
   const showPanel = (text) => { panel.textContent = text; panel.hidden = false; };
@@ -50,7 +50,7 @@ function initSearchBar(features, onSelect, onAsk) {
           onSelect(f);
         });
       });
-    addRow('Ask macqAI: ' + q, 'ask-ai', () => ask(q));
+    addRow(t('Ask mcqAI') + ': ' + q, 'ask-ai', () => ask(q));
   });
 
   input.addEventListener('keydown', (e) => {
@@ -61,8 +61,8 @@ function initSearchBar(features, onSelect, onAsk) {
     else if (e.key === 'Enter') { e.preventDefault(); list.children[active >= 0 ? active : n - 1].click(); }
   });
 
-  mount.querySelector('.macqai-info').addEventListener('click', () => {
-    if (panel.hidden) showPanel('macqAI is your campus assistant. Search for a building, or type a question and choose "Ask macqAI".');
+  mount.querySelector('.mcqai-info').addEventListener('click', () => {
+    if (panel.hidden) showPanel(t('mcqAI is your campus assistant. Search for a building, or type a question and choose "Ask mcqAI".'));
     else panel.hidden = true;
   });
 }

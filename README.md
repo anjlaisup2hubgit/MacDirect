@@ -1,13 +1,13 @@
 # iMCQ - Macquarie University campus map
 
-iMCQ is a mobile-first campus map for Macquarie University students. It shows buildings, lets students find and follow societies, and lets society leaders post events.
+iMCQ is a mobile-first campus map for Macquarie University students. It shows buildings, lets students find and follow societies, and lets society leaders hold events.
 
 Current progress and the next task live in [CHANGELOG.md](CHANGELOG.md).
 
 ## 1. Overview
 
 * **Audience:** new students unfamiliar with campus, society leaders, and the general student population.
-* **What it does:** one place for the campus map, building search, events, food options and societies. An AI assistant ("macqAI") is planned.
+* **What it does:** one place for the campus map, building search, events, food options and societies. An AI assistant ("mcqAI") is planned.
 * **Look and feel:** modern mobile app with a rounded bottom navigation bar, floating search controls and Macquarie's red as the accent colour.
 
 ## 2. Running locally
@@ -27,12 +27,13 @@ npm start              # http://localhost:3000 (set PORT to change)
 
 * **Map:** a Leaflet map (a JavaScript map library) on OpenStreetMap tiles, centred on Wally's Walk and locked to a 1.8 km circle around campus.
 * **Buildings:** named footprints come from `GET /api/map`, built from `data/map.geojson` (GeoJSON, a standard map data format). Tapping one outlines it and opens an info panel with name, address, description and website.
-* **Search bar:** one bar reading "Search buildings or ask macqAI". Typing filters building names (up to 8 matches) and zooms to the one you pick. "Ask macqAI" does nothing yet.
+* **Search bar:** one bar reading "Search buildings or ask mcqAI". Typing filters building names (up to 8 matches) and zooms to the one you pick. "Ask mcqAI" does nothing yet.
 * **Accounts:** email and password sign-up and login, guest mode, and an "I lead a society" request at sign-up.
 * **Guest gating:** actions that need an account show "Log in to use this".
+* **Languages:** English, 简体中文 and Español, chosen in User settings and stored in `localStorage`. Changing it reloads the page. Society, event and food content from the database stays in English.
 * **Views:** five popups over the map (below). Societies and events are read from Supabase; only food is still static JSON.
 
-For what is being built next, see [CHANGELOG.md](CHANGELOG.md). Not built yet: macqAI answers.
+For what is being built next, see [CHANGELOG.md](CHANGELOG.md). Not built yet: mcqAI answers.
 
 ## 4. Users and roles
 
@@ -40,7 +41,7 @@ For what is being built next, see [CHANGELOG.md](CHANGELOG.md). Not built yet: m
 | :--- | :--- | :--- |
 | Guest | "Continue as guest" on the login page | Browse the map, events, food and societies. Nothing is saved. |
 | Student | Signs up with email and password | Everything a guest can, plus follow societies and keep an event plan. |
-| Society leader | Requests a society at sign-up; an admin approves | Everything a student can, plus post, edit and delete events for their own society. |
+| Society leader | Requests a society at sign-up; an admin approves | Everything a student can. Posting events from the app is not available yet; the database rules still allow it. |
 | Admin | Set up by the project owner | Approves or rejects leader requests by editing the request status in the Supabase dashboard (no admin screen yet). |
 
 ## 5. Screens and design
@@ -49,8 +50,8 @@ The five views open as popups on the map page (`index.html`). The nav labels bel
 
 | Nav label | Opens | Login needed | Status |
 | :--- | :--- | :--- | :--- |
-| User settings | Account details, Log in / Log out | No | Working |
-| What's Happening | Campus events, with a "Following" filter; leaders also get a "Post event" form | To follow or post | Working |
+| User settings | Account details, display name (logged in), language, Log in / Log out | No | Working |
+| What's Happening | Campus events in a month calendar and day list | No | Working |
 | Add event plan | Personal agenda for bookmarked events | Yes | Working, saved in the browser only (`localStorage`) |
 | Food and drinks | Directory of campus dining options | No | Working with JSON data |
 | On-campus Societies | Directory of societies, with Follow buttons | To follow | Working |
@@ -109,9 +110,9 @@ MCQ iMap/
     └── js/
         ├── components/    # nav.js, search-bar.js, popup.js, card.js
         ├── pages/         # map.js, events.js, event-plan.js, food.js, societies.js, settings.js, login.js
-        └── lib/           # api.js (fetch wrapper), auth.js (Supabase client, session, guest mode)
+        └── lib/           # api.js (fetch wrapper), auth.js (Supabase client, session, guest mode), i18n.js (languages)
 ```
 
 ## 9. Roadmap
 
-1. **macqAI:** real answers and question logging.
+1. **mcqAI:** real answers and question logging.

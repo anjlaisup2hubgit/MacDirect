@@ -17,7 +17,7 @@
     mode = next;
     tabs.forEach((t) => t.classList.toggle('active', t.dataset.mode === mode));
     form.querySelectorAll('[data-signup]').forEach((el) => { el.hidden = mode !== 'signup'; });
-    submit.textContent = mode === 'signup' ? 'Sign up' : 'Log in';
+    submit.textContent = t(mode === 'signup' ? 'Sign up' : 'Log in');
     form.elements.password.autocomplete = mode === 'signup' ? 'new-password' : 'current-password';
     msg.hidden = true;
   }
@@ -36,7 +36,7 @@
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!auth.configured) return say('Login is not set up yet. You can continue as a guest.', true);
+    if (!auth.configured) return say(t('Login is not set up yet. You can continue as a guest.'), true);
     submit.disabled = true;
     const email = form.elements.email.value.trim();
     const password = form.elements.password.value;
@@ -53,7 +53,7 @@
         societyId: isLeader ? form.elements.societyId.value : null,
       });
       if (error) say(error.message, true);
-      else if (needsConfirmation) say('Check your email to confirm your account, then log in.');
+      else if (needsConfirmation) say(t('Check your email to confirm your account, then log in.'));
       else location.href = '/';
     }
     submit.disabled = false;
