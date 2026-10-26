@@ -29,11 +29,29 @@ function societyCard(s, following, imageUrl) {
     `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button></li>`;
 }
 
+const WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+// Opening hours as { Mon: '...', ... }. Keys of the data may be days or ranges ("Mon-Fri").
+function hoursByDay(hours) {
+  const out = {};
+  Object.entries(hours || {}).forEach(([k, v]) => {
+    const [a, b] = k.split('-');
+    for (let d = WEEK.indexOf(a); d <= WEEK.indexOf(b || a); d++) out[WEEK[d]] = v;
+  });
+  return out;
+}
+
 function foodCard(f) {
+  const days = hoursByDay(f.hours);
+  const todayKey = WEEK[(new Date().getDay() + 6) % 7];
+  const label = (v) => (v === 'Closed' ? t('Closed') : esc(v));
   return `<li class="card" data-id="${f.id}" tabindex="0">` +
+    (f.image ? `<img class="society-cover" src="${esc(f.image)}" alt="${esc(f.name)}" loading="lazy">` : '') +
     `<h2>${esc(f.name)}</h2>` +
     `<p>${esc(f.description)}</p>` +
-    `<p>${esc(f.building)} &middot; ${esc(f.hours)}</p>` +
+    `<p>${esc(f.building)} &middot; ${t('Today')}: ${label(days[todayKey] || 'Closed')}</p>` +
+    `<details class="hours"><summary>${t('Opening hours')}</summary><ul>` +
+      WEEK.map((d) => `<li><span>${t(d)}</span><span>${label(days[d] || 'Closed')}</span></li>`).join('') + '</ul></details>' +
     hashtagLine(f) + '</li>';
 }
 

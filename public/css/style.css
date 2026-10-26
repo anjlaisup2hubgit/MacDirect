@@ -300,6 +300,12 @@ button, input, select, textarea { font-family: inherit; }
   background: #f3e5e8;
   border-radius: 999px;
 }
+.logout-btn { margin-top: 16px; }
+.logout-btn[hidden] { display: none; }
+.hours { margin-top: 6px; font-size: 13px; }
+.hours summary { cursor: pointer; color: var(--mq-red); }
+.hours ul { margin: 6px 0 0; padding: 0; list-style: none; }
+.hours li { display: flex; justify-content: space-between; gap: 12px; padding: 2px 0; }
 .card .hashtags { margin: 8px 0 0; font-size: 13px; color: var(--mq-red); }
 .event-poster { height: auto; max-height: 360px; object-fit: contain; background: #f3f3f3; }
 .follow-btn {

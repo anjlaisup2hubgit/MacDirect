@@ -81,8 +81,6 @@
     dayEvents = events[selected] || [];
     dayTitleEl.textContent = formatDate(selected);
     listEl.innerHTML = dayEvents.map((e) => eventCard(e)).join('');
-    emptyEl.textContent = t('No events on this day.');
-    emptyEl.hidden = dayEvents.length > 0;
 
     agendaEvents = [];
     let agenda = '';
@@ -166,7 +164,8 @@
   render();
   // Only events of followed societies are shown; own plans are not filtered. Guests load nothing.
   const loadEvents = () => auth.ready.then(() => (auth.user ? Promise.all([auth.listEvents(), auth.myFollows()]) : [[], []]))
-    .then(([data, ids]) => { follows = new Set(ids); base = data.filter((e) => follows.has(e.societyId)); render(); })
+    .then(([data, ids]) => { follows = new Set(ids); const own = new Set(auth.approvedSocieties.map((s) => s.id)); // leaders also see their own society's events
+      base = data.filter((e) => follows.has(e.societyId) || own.has(e.societyId)); render(); })
     .catch((err) => { console.error(err); emptyEl.textContent = t('Could not load events.'); emptyEl.hidden = false; });
   loadEvents();
   auth.ready.then(loadPlans);

@@ -51,7 +51,7 @@
   });
   listEl.addEventListener('click', (e) => {
     const card = e.target.closest('.card');
-    if (!card) return;
+    if (!card || e.target.closest('.hours')) return; // opening hours just expand
     const s = items.find((x) => x.id === Number(card.dataset.id));
     setOpen(false);
     if (window.focusBuildingByName) window.focusBuildingByName(s.building, s.name);

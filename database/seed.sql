@@ -25,7 +25,19 @@ from (values
   (null,                              'Sample Careers Fair',           'Career',   '2026-10-28', '10:00', '3IR',                          'Meet graduate employers and pick up internship opportunities.'),
   (null,                              'Sample Study Skills Workshop',  'Academic', '2026-10-29', '14:00', '16MW (Waranara Library)',      'Exam preparation tips and time management strategies.'),
   ('Sample Film and Media Society',   'Sample Movie Night',            'Social',   '2026-10-30', '18:30', '21WW (Macquarie Theatre)',     'Student-run screening with popcorn provided.'),
-  ('Sample Volunteers Network',       'Sample Volunteering Drive',     'Community','2026-11-03', '11:00', '18WW (Service Connect)',       'Sign up for local community volunteering projects.')
+  ('Sample Volunteers Network',       'Sample Volunteering Drive',     'Community','2026-11-03', '11:00', '18WW (Service Connect)',       'Sign up for local community volunteering projects.'),
+  ('Sample Robotics Society', 'Sample Robot Build Night', 'Academic', '2026-10-27', '18:00', '16MW (Waranara Library)', 'Hands-on robot building. Parts provided, beginners welcome.'),
+  ('Sample Chinese Students Association', 'Sample Mid-Autumn Lantern Night', 'Social', '2026-10-29', '17:30', '1CC', 'Lanterns, mooncakes and games on the lawn.'),
+  ('Sample Indian Society', 'Sample Diwali Celebration', 'Social', '2026-11-05', '18:00', '1CC', 'Food, music and dance to celebrate the festival of lights.'),
+  ('Sample Futsal Club', 'Sample Futsal Social Match', 'Social', '2026-10-28', '19:00', '10GR (Macquarie University Sport and Aquatic Centre)', 'Casual 5-a-side games. All skill levels welcome.'),
+  ('Sample Dance Society', 'Sample Open Dance Class', 'Social', '2026-10-31', '16:00', '27WW (Lotus Theatre)', 'Try hip hop and K-pop with our instructors.'),
+  ('Sample Business Society', 'Sample Industry Panel', 'Career', '2026-11-04', '17:00', '3IR', 'Hear from graduates working in consulting, finance and marketing.'),
+  ('Sample Sustainability Collective', 'Sample Campus Clean-up', 'Community', '2026-11-01', '09:30', '4WW', 'Gloves and bags provided. Free breakfast for volunteers.'),
+  ('Sample Board Games Club', 'Sample Board Games Night', 'Social', '2026-10-30', '19:00', '1CC', 'Bring a game or borrow ours. Snacks provided.'),
+  ('Sample Law Students Society', 'Sample Moot Practice', 'Academic', '2026-11-02', '15:00', '17WW (Michael Kirby Building)', 'Practice your oral advocacy with feedback from senior students.'),
+  ('Sample Pride Collective', 'Sample Pride Morning Tea', 'Community', '2026-11-06', '10:30', '18WW (Service Connect)', 'Tea, cake and a chat. Everyone is welcome.'),
+  ('Sample Film and Media Society', 'Sample Short Film Workshop', 'Academic', '2026-11-07', '13:00', '21WW (Macquarie Theatre)', 'Plan and shoot a one-minute film on your phone.'),
+  ('Sample Volunteers Network', 'Sample Charity Bake Sale', 'Community', '2026-11-09', '11:30', '18WW (Service Connect)', 'Cakes and cookies; all funds go to a local food bank.')
 ) as e(society_name, title, category, event_date, event_time, building, description)
 left join public.societies s on s.name = e.society_name
 cross join lateral (select id from public.profiles where role = 'admin' order by created_at limit 1) a;

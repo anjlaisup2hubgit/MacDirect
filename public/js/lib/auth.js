@@ -195,9 +195,10 @@ const auth = (function () {
     // The logged-in user's private plans, in the same shape as listEvents (empty for guests).
     async listMyPlans() {
       if (!state.user) return [];
-      const { data, error } = await state.sb.from('event_plans')
-        .select('id, title, category, plan_date, plan_time, building, description')
-        .order('plan_date').order('plan_time');
+      const cols = 'id, title, category, plan_date, plan_time, building, description';
+      const order = (q) => q.order('plan_date').order('plan_time');
+      let { data, error } = await order(state.sb.from('event_plans').select(cols + ', image_path'));
+      if (error) ({ data, error } = await order(state.sb.from('event_plans').select(cols))); // image_path column not added yet
       if (error) throw error;
       return data.map((e) => {
         const [h, m] = e.plan_time ? e.plan_time.split(':').map(Number) : [null, null];
@@ -205,24 +206,42 @@ const auth = (function () {
           id: e.id, mine: true, name: e.title, category: e.category, date: e.plan_date,
           time: h === null ? '' : `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`,
           building: e.building || 'TBC', description: e.description,
+          imageUrl: e.image_path ? posterUrl(e.image_path) : '',
         };
       });
     },
-    // `plan` uses the form fields; `time` is HH:MM or empty.
-    async savePlan(plan) {
-      const { error } = await state.sb.from('event_plans').insert({
+    // `plan` uses the form fields; `time` is HH:MM or empty. `file` is an optional photo (kept under <user id>/plans/).
+    async savePlan(plan, file) {
+      const row = {
         user_id: state.user.id, title: plan.name, category: plan.category, plan_date: plan.date,
         plan_time: plan.time || null, building: plan.building || null, description: plan.description,
-      });
+      };
+      const bucket = state.sb.storage.from('society-images');
+      let path = null;
+      if (file) {
+        const key = imageError(file);
+        if (key) return { error: Object.assign(new Error(key), { userMessage: key }) };
+        path = `${state.user.id}/plans/${crypto.randomUUID()}.${IMAGE_EXTS[file.type]}`;
+        const up = await bucket.upload(path, file, { contentType: file.type });
+        if (up.error) return { error: up.error };
+        row.image_path = path;
+      }
+      const { error } = await state.sb.from('event_plans').insert(row);
+      if (error && path) await bucket.remove([path]);
       return { error };
     },
     async deletePlan(id) {
+      const { data: old } = await state.sb.from('event_plans').select('image_path').eq('id', id).maybeSingle();
       const { error } = await state.sb.from('event_plans').delete().eq('id', id);
+      if (!error && old && old.image_path) await state.sb.storage.from('society-images').remove([old.image_path]);
       return { error };
     },
     // Deletes every plan of the logged-in user (row-level security limits it to their own).
     async clearPlans() {
+      const { data: old } = await state.sb.from('event_plans').select('image_path').eq('user_id', state.user.id);
       const { error } = await state.sb.from('event_plans').delete().eq('user_id', state.user.id);
+      const paths = (old || []).map((r) => r.image_path).filter(Boolean);
+      if (!error && paths.length) await state.sb.storage.from('society-images').remove(paths);
       return { error };
     },
     // Cover images: { societyId: public URL } for every society that has one (readable by guests).

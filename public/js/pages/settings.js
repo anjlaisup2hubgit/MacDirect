@@ -1,4 +1,4 @@
-// User settings popup: display name (logged-in users, saved to profiles) and language.
+// User settings popup: display name (logged-in users, saved to profiles), language, clear plans and log out.
 (function () {
   const p = createPopup({ id: 'settings-popup', title: 'User Settings', navHref: '/?tasks', hash: 'tasks' });
   p.results.innerHTML =
@@ -12,12 +12,13 @@
       '<p class="form-msg" hidden></p>' +
     '</form>' +
     '<div class="my-data" hidden>' +
-      `<h3>${t('Followed societies')}</h3><div class="follow-list"></div>` +
       `<button class="auth-guest" type="button" data-act="clear-plans">${t('Clear my event plans')}</button>` +
-    '</div>';
+    '</div>' +
+    `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button>`;
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
   const nameField = form.querySelector('.name-field');
+  const logoutBtn = p.results.querySelector('.logout-btn');
   const viewField = form.querySelector('.view-field');
   form.elements.lang.value = i18nLang();
   try { form.elements.view.value = localStorage.getItem('imcq-cal-view') === 'list' ? 'list' : 'cal'; } catch (err) { /* storage blocked: keep Month */ }
@@ -57,46 +58,28 @@
     return `${t('Leader request declined for')} ${name}`;
   }
   function renderAccount() {
+    logoutBtn.hidden = !auth.user;
     nameField.hidden = !auth.user;
     viewField.hidden = !auth.user;
     if (auth.user) {
       form.elements.name.value = (auth.profile && auth.profile.display_name) || '';
       const name = (auth.profile && auth.profile.display_name) || t('Signed in');
       account.innerHTML =
-        `<p><strong>${esc(name)}</strong><br>${esc(auth.user.email)}</p><p>${esc(roleLine())}</p>` +
-        '<button class="form-submit" type="button" data-act="logout">' + t('Log out') + '</button>';
+        `<p><strong>${esc(name)}</strong><br>${esc(auth.user.email)}</p><p>${esc(roleLine())}</p>`;
     } else {
       account.innerHTML =
         '<p>' + t('You are browsing as a guest. Following societies, the calendar and the event plan need an account.') + '</p>' +
         '<button class="form-submit" type="button" data-act="login">' + t('Log in or sign up') + '</button>';
     }
   }
-  account.addEventListener('click', async (e) => {
+  p.results.addEventListener('click', async (e) => {
     const act = e.target.dataset.act;
     if (act === 'login') location.href = '/login.html';
     if (act === 'logout') { await auth.signOut(); location.href = '/login.html'; }
   });
 
-  // Followed societies and clearing plans: logged-in users only.
+  // Clearing plans: logged-in users only. Followed societies are listed in the Societies popup.
   const myData = p.results.querySelector('.my-data');
-  const followList = myData.querySelector('.follow-list');
-  async function renderFollows() {
-    const [ids, societies] = await Promise.all([auth.myFollows(), auth.listSocieties()]);
-    const followed = societies.filter((s) => ids.includes(s.id));
-    followList.innerHTML = followed.length
-      ? followed.map((s) => `<div class="follow-row"><span>${esc(s.name)}</span>` +
-          `<button class="auth-guest" type="button" data-unfollow="${s.id}">${t('Unfollow')}</button></div>`).join('')
-      : '<p>' + t('You are not following any societies.') + '</p>';
-  }
-  followList.addEventListener('click', async (e) => {
-    const id = e.target.dataset.unfollow;
-    if (!id) return;
-    const { error } = await auth.setFollow(Number(id), false);
-    if (error) { console.error(error); flash(t('Could not save.'), true); return; }
-    flash(t('Saved.'));
-    window.dispatchEvent(new Event('events-changed')); // Calendar reloads its followed events
-    renderFollows();
-  });
   myData.addEventListener('click', async (e) => {
     if (e.target.dataset.act !== 'clear-plans') return;
     const d = document.createElement('dialog');
@@ -119,7 +102,6 @@
   });
   function renderMyData() {
     myData.hidden = !auth.user;
-    if (auth.user) renderFollows();
   }
   auth.onChange(renderMyData);
   auth.ready.then(renderMyData);
