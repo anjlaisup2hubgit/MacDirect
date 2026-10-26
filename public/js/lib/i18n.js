@@ -20,7 +20,7 @@ const I18N = {
     'Followed societies': '已关注的社团', 'You are not following any societies.': '你还没有关注任何社团。', 'Unfollow': '取消关注',
     
     'Signed in': '已登录', 'Admin': '管理员', 'Student': '学生', 'Log out': '退出登录',
-    'Leader of': '负责人：', 'Leader request pending for': '负责人申请待审核：', 'Leader request declined for': '负责人申请被拒绝：',
+    'Leader of': '负责人：', 'Leader requests': '负责人申请', 'No pending requests.': '没有待处理的申请。', 'Approve': '批准', 'Reject': '拒绝', 'Leader request pending for': '负责人申请待审核：', 'Leader request declined for': '负责人申请被拒绝：',
     'You are browsing as a guest. Following societies, the calendar and the event plan need an account.': '您正以访客身份浏览。关注社团、日历和活动计划需要账号。',
     'Log in or sign up': '登录或注册', 'Not now': '暂不',
     'Log in to follow societies': '登录后才能关注社团', 'Log in to add event plans': '登录后才能添加活动计划',
@@ -59,7 +59,7 @@ const I18N = {
     'Followed societies': 'Sociedades que sigues', 'You are not following any societies.': 'No sigues ninguna sociedad.', 'Unfollow': 'Dejar de seguir',
     
     'Signed in': 'Sesión iniciada', 'Admin': 'Administrador', 'Student': 'Estudiante', 'Log out': 'Cerrar sesión',
-    'Leader of': 'Líder de', 'Leader request pending for': 'Solicitud de líder pendiente para', 'Leader request declined for': 'Solicitud de líder rechazada para',
+    'Leader of': 'Líder de', 'Leader requests': 'Solicitudes de líder', 'No pending requests.': 'No hay solicitudes pendientes.', 'Approve': 'Aprobar', 'Reject': 'Rechazar', 'Leader request pending for': 'Solicitud de líder pendiente para', 'Leader request declined for': 'Solicitud de líder rechazada para',
     'You are browsing as a guest. Following societies, the calendar and the event plan need an account.': 'Estás navegando como invitado. Seguir sociedades, el calendario y el plan de eventos requieren una cuenta.',
     'Log in or sign up': 'Iniciar sesión o registrarse', 'Not now': 'Ahora no',
     'Log in to follow societies': 'Inicia sesión para seguir sociedades', 'Log in to add event plans': 'Inicia sesión para añadir planes de eventos',
@@ -98,7 +98,7 @@ const I18N = {
     'Followed societies': 'CLB đang theo dõi', 'You are not following any societies.': 'Bạn chưa theo dõi CLB nào.', 'Unfollow': 'Bỏ theo dõi',
     
     'Signed in': 'Đã đăng nhập', 'Admin': 'Quản trị viên', 'Student': 'Sinh viên', 'Log out': 'Đăng xuất',
-    'Leader of': 'Chủ nhiệm CLB', 'Leader request pending for': 'Yêu cầu làm chủ nhiệm CLB đang chờ duyệt cho', 'Leader request declined for': 'Yêu cầu làm chủ nhiệm CLB bị từ chối cho',
+    'Leader of': 'Chủ nhiệm CLB', 'Leader requests': 'Yêu cầu làm chủ nhiệm', 'No pending requests.': 'Không có yêu cầu nào đang chờ.', 'Approve': 'Duyệt', 'Reject': 'Từ chối', 'Leader request pending for': 'Yêu cầu làm chủ nhiệm CLB đang chờ duyệt cho', 'Leader request declined for': 'Yêu cầu làm chủ nhiệm CLB bị từ chối cho',
     'You are browsing as a guest. Following societies, the calendar and the event plan need an account.': 'Bạn đang xem với tư cách khách. Theo dõi câu lạc bộ, lịch và kế hoạch sự kiện cần có tài khoản.',
     'Log in or sign up': 'Đăng nhập hoặc đăng ký', 'Not now': 'Để sau',
     'Log in to follow societies': 'Đăng nhập để theo dõi câu lạc bộ', 'Log in to add event plans': 'Đăng nhập để thêm kế hoạch sự kiện',

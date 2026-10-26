@@ -137,6 +137,17 @@ const auth = (function () {
       return state.leaderships.filter((l) => l.status === 'approved')
         .map((l) => ({ id: l.society_id, name: l.societies && l.societies.name }));
     },
+    // Admin only (row-level security returns nothing for anyone else): pending leader requests, oldest first.
+    async listLeaderRequests() {
+      const { data, error } = await state.sb.from('society_leaders')
+        .select('id, created_at, profiles(display_name), societies(name)').eq('status', 'pending').order('created_at');
+      if (error) throw error;
+      return data;
+    },
+    // Admin only: status is 'approved' or 'rejected'.
+    async setLeaderStatus(id, status) {
+      return state.sb.from('society_leaders').update({ status }).eq('id', id);
+    },
     // Events in the shape the UI uses; `time` is display text, `timeValue` is HH:MM for forms.
     async listEvents() {
       const cols = 'id, society_id, title, category, event_date, event_time, building, description';

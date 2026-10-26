@@ -11,6 +11,9 @@
         `<option value="cal">${t('Month')}</option><option value="list">${t('Day')}</option></select></label>` +
       '<p class="form-msg" hidden></p>' +
     '</form>' +
+    '<section class="admin-requests" hidden>' +
+      `<h3>${t('Leader requests')}</h3><ul class="card-list"></ul>` +
+      `<p class="empty-msg" hidden>${t('No pending requests.')}</p></section>` +
     `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button>`;
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
@@ -75,6 +78,33 @@
     if (act === 'logout') { await auth.signOut(); location.href = '/login.html'; }
   });
 
+  // Admins approve or reject society leader requests here (replaces editing society_leaders in the dashboard).
+  const adminBox = p.results.querySelector('.admin-requests');
+  const reqList = adminBox.querySelector('.card-list');
+  const reqEmpty = adminBox.querySelector('.empty-msg');
+  let requests = [];
+  async function renderRequests() {
+    const isAdmin = !!(auth.profile && auth.profile.role === 'admin');
+    adminBox.hidden = !isAdmin;
+    if (!isAdmin) return;
+    try { requests = await auth.listLeaderRequests(); } catch (err) { console.error(err); return; }
+    reqList.innerHTML = requests.map((r) =>
+      `<li class="card" data-id="${r.id}"><h2>${esc((r.profiles && r.profiles.display_name) || t('Student'))}</h2>` +
+      `<p>${esc(t('Leader of'))} ${esc((r.societies && r.societies.name) || '')}</p>` +
+      `<div class="card-actions"><button type="button" class="follow-btn" data-approve>${t('Approve')}</button>` +
+      `<button type="button" class="follow-btn" data-reject>${t('Reject')}</button></div></li>`).join('');
+    reqEmpty.hidden = requests.length > 0;
+  }
+  reqList.addEventListener('click', async (e) => {
+    const approve = e.target.closest('[data-approve]');
+    const reject = e.target.closest('[data-reject]');
+    if (!approve && !reject) return;
+    const { error } = await auth.setLeaderStatus(Number(e.target.closest('.card').dataset.id), approve ? 'approved' : 'rejected');
+    if (error) { console.error(error); flash(t('Could not save.'), true); return; }
+    renderRequests();
+  });
+  auth.onChange(renderRequests);
+  auth.ready.then(renderRequests);
   auth.onChange(renderAccount);
   auth.ready.then(renderAccount);
 })();
