@@ -7,12 +7,7 @@
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
   const p = createPopup({ id: 'events-popup', title: 'Calendar', navHref: '/?events', hash: 'events' });
-  const openPopup = window.popups['/?events'];
-  // Guests are asked to log in instead of opening the calendar. Closing is always allowed.
-  window.popups['/?events'] = () => {
-    if (p.popup.hidden && !auth.user && !auth.requireLogin('Log in to view the calendar')) return;
-    openPopup();
-  };
+  // Guests open the popup like Add event plan does and see the log in gate inside it.
   p.results.innerHTML =
     '<div class="account guest-gate" hidden>' +
       '<p>' + t('Log in to view the calendar') + '.</p>' +

@@ -255,7 +255,9 @@ button, input, select, textarea { font-family: inherit; }
   margin: 12px 0;
   padding-bottom: 4px;
   overflow-x: auto;
+  scrollbar-width: none;
 }
+.chips::-webkit-scrollbar { display: none; }
 .chip {
   flex: none;
   padding: 6px 14px;

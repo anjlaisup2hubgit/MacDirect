@@ -61,6 +61,8 @@ let expanded = false;
 const panelY = () => (expanded ? 0 : peekY);
 
 function selectBuilding(id, label) {
+  // A building and a nav popup never show together.
+  document.querySelectorAll('.societies-popup:not([hidden]) .popup-close').forEach((b) => b.click());
   if (selected) selected.setStyle(idleStyle);
   selected = layers.get(id);
   selected.setStyle(outlineStyle);
@@ -99,6 +101,8 @@ function clearSelection() {
   panel.classList.remove('open');
   panel.style.transform = '';
 }
+
+window.clearBuildingSelection = clearSelection; // called when a nav popup opens
 
 let drag = null;
 panel.addEventListener('pointerdown', (e) => {
