@@ -85,12 +85,12 @@ const auth = (function () {
     },
     continueAsGuest() { setGuest(true); },
     // For actions that need an account: returns true when logged in, otherwise shows a
-    // "Log in to <action>" dialog and returns false.
-    requireLogin(action) {
+    // dialog with the given message (an English key in i18n.js) and returns false.
+    requireLogin(message) {
       if (state.user) return true;
       const d = document.createElement('dialog');
       d.className = 'login-prompt';
-      d.innerHTML = `<p>${t('Log in to ' + action)}.</p><div>` +
+      d.innerHTML = `<p>${t(message)}.</p><div>` +
         `<button class="form-submit" type="button" data-go>${t('Log in or sign up')}</button>` +
         `<button class="auth-guest" type="button" data-close>${t('Not now')}</button></div>`;
       d.addEventListener('click', (e) => {

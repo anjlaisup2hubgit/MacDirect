@@ -73,18 +73,18 @@ function selectBuilding(id, label) {
       '<div class="building-panel-handle"></div>' +
       `<h2>${esc(p.name)}</h2>` +
       `<p class="building-panel-address">${p.address ? esc(p.address) + ' &middot; ' : ''}` +
-        `<a href="https://www.google.com/maps/search/?api=1&query=${c.lat},${c.lng}" target="_blank" rel="noopener">Google Maps</a></p>` +
-      (label ? `<p><strong>${esc(label)}</strong> meets here.</p>` : '') +
+        `<a href="https://www.google.com/maps/search/?api=1&query=${c.lat},${c.lng}" target="_blank" rel="noopener">${t('Google Maps')}</a></p>` +
+      (label ? `<p><strong>${esc(label)}</strong> ${t('meets here.')}</p>` : '') +
     '</div>' +
     '<div class="building-panel-body">' +
-      '<div class="building-panel-image">No photo available</div>' +
+      `<div class="building-panel-image">${t('No photo available')}</div>` +
       `<p>${esc(p.description)}</p>` +
-      (p.website ? `<a href="${esc(p.website)}" target="_blank" rel="noopener">Website</a>` : '') +
-      '<h3>Societies held here</h3>' +
+      (p.website ? `<a href="${esc(p.website)}" target="_blank" rel="noopener">${t('Website')}</a>` : '') +
+      `<h3>${t('Societies held here')}</h3>` +
       (here.length
         ? '<ul class="building-panel-societies">' +
           here.map((s) => `<li><strong>${esc(s.name)}</strong><span>${esc(s.category)}</span></li>`).join('') + '</ul>'
-        : '<p>No societies listed here.</p>') +
+        : `<p>${t('No societies listed here.')}</p>`) +
     '</div>';
   panel.querySelector('.building-panel-body').scrollTop = 0;
   panel.classList.add('open');

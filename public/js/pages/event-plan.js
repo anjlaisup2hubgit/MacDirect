@@ -8,10 +8,10 @@
     '<form class="event-form" hidden>' +
       '<label>' + t('Event name') + '<input name="name" required maxlength="80"></label>' +
       '<label>' + t('Category') + '<select name="category">' +
-        ['Social', 'Academic', 'Career', 'Community'].map((c) => `<option>${c}</option>`).join('') + '</select></label>' +
+        ['Social', 'Academic', 'Career', 'Community'].map((c) => `<option value="${c}">${t(c)}</option>`).join('') + '</select></label>' +
       '<label>' + t('Date') + '<input name="date" type="date" required></label>' +
       '<label>' + t('Time') + '<input name="time" type="time" value="12:00"></label>' +
-      '<label>' + t('Building') + '<input name="building" list="event-buildings" placeholder="e.g. 1CC"></label>' +
+      '<label>' + t('Building') + '<input name="building" list="event-buildings" placeholder="' + t('e.g. 1CC') + '"></label>' +
       '<datalist id="event-buildings"></datalist>' +
       '<label>' + t('Description') + '<textarea name="description" rows="3" maxlength="200"></textarea></label>' +
       '<button class="form-submit" type="submit">' + t('Add event') + '</button>' +
@@ -41,7 +41,7 @@
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (!auth.requireLogin('add event plans')) return;
+    if (!auth.requireLogin('Log in to add event plans')) return;
     const f = new FormData(form);
     const ev = {
       id: Date.now(),

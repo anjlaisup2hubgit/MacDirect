@@ -15,7 +15,7 @@
 
   function setMode(next) {
     mode = next;
-    tabs.forEach((t) => t.classList.toggle('active', t.dataset.mode === mode));
+    tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.mode === mode));
     form.querySelectorAll('[data-signup]').forEach((el) => { el.hidden = mode !== 'signup'; });
     submit.textContent = t(mode === 'signup' ? 'Sign up' : 'Log in');
     form.elements.password.autocomplete = mode === 'signup' ? 'new-password' : 'current-password';
@@ -26,7 +26,7 @@
     form.querySelector('[data-leader]').hidden = !form.elements.isLeader.checked;
   }
 
-  tabs.forEach((t) => t.addEventListener('click', () => setMode(t.dataset.mode)));
+  tabs.forEach((tab) => tab.addEventListener('click', () => setMode(tab.dataset.mode)));
   form.elements.isLeader.addEventListener('change', syncLeaderField);
 
   document.querySelector('.auth-guest').addEventListener('click', () => {

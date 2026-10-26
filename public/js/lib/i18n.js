@@ -33,6 +33,9 @@ const I18N = {
     'Search buildings or ask mcqAI': '搜索建筑或询问 mcqAI', 'Search campus or ask mcqAI': '搜索校园或询问 mcqAI',
     'About mcqAI': '关于 mcqAI', 'Ask mcqAI': '询问 mcqAI',
     'mcqAI is your campus assistant. Search for a building, or type a question and choose "Ask mcqAI".': 'mcqAI 是你的校园助手。搜索建筑，或输入问题并选择“询问 mcqAI”。',
+    'Google Maps': '谷歌地图', 'meets here.': '在此聚会。', 'No photo available': '暂无照片', 'Website': '网站',
+    'Societies held here': '在此的社团', 'No societies listed here.': '此处没有列出社团。',
+    'Social': '社交', 'Academic': '学术', 'Career': '职业', 'Community': '社区', 'e.g. 1CC': '例如 1CC', 'a society': '某社团',
   },
   es: {
     'User settings': 'Ajustes', 'User Settings': 'Ajustes',
@@ -63,6 +66,9 @@ const I18N = {
     'Search buildings or ask mcqAI': 'Busca edificios o pregunta a mcqAI', 'Search campus or ask mcqAI': 'Busca en el campus o pregunta a mcqAI',
     'About mcqAI': 'Acerca de mcqAI', 'Ask mcqAI': 'Pregunta a mcqAI',
     'mcqAI is your campus assistant. Search for a building, or type a question and choose "Ask mcqAI".': 'mcqAI es tu asistente del campus. Busca un edificio o escribe una pregunta y elige "Pregunta a mcqAI".',
+    'Google Maps': 'Google Maps', 'meets here.': 'se reúne aquí.', 'No photo available': 'Sin foto disponible', 'Website': 'Sitio web',
+    'Societies held here': 'Sociedades en este lugar', 'No societies listed here.': 'No hay sociedades aquí.',
+    'Social': 'Social', 'Academic': 'Académico', 'Career': 'Profesional', 'Community': 'Comunidad', 'e.g. 1CC': 'p. ej. 1CC', 'a society': 'una sociedad',
   },
 };
 

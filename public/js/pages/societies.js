@@ -49,7 +49,7 @@
     if (!card) return;
     const s = societies.find((x) => x.id === Number(card.dataset.id));
     if (e.target.closest('[data-follow]')) {
-      if (!auth.requireLogin('follow societies')) return;
+      if (!auth.requireLogin('Log in to follow societies')) return;
       const on = !follows.has(s.id);
       const { error } = await auth.setFollow(s.id, on);
       if (error) { console.error(error); return; }

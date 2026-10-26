@@ -50,7 +50,7 @@ All seven steps are done. Remaining items are the gaps below and mcqAI answers (
 
 ## Known gaps and gotchas
 * Event plans and the Add event plan form still save to `localStorage`, not Supabase.
-* Language changes reload the page (`/?tasks`, reopening User Settings). Static HTML uses `data-i18n` attributes; JS-built UI calls `t('English text')`. Database content (societies, events, food) and dates stay English/en-AU. Add new UI text to the `zh` and `es` dictionaries or it shows in English.
+* Language changes reload the page (`/?tasks`, reopening User Settings). Static HTML uses `data-i18n` attributes; JS-built UI calls `t('English text')`. Database content (societies, events, food, building names/descriptions/addresses) and card dates stay English/en-AU; the calendar month title follows the language. `auth.requireLogin(message)` takes the full English key (e.g. 'Log in to follow societies'), which must exist in the dictionary. Add new UI text to the `zh` and `es` dictionaries or it shows in English.
 * `auth.saveEvent`, `auth.deleteEvent` and `auth.approvedSocieties` are unused by the UI since the leader post form was removed. Leaders cannot post events from the app until a new UI is built.
 * The Task Plan view is dropped, and its route, data and the MySQL-era leftovers (Docker files, `db.js`, the old AI route, `import-geojson.js`) are deleted.
 * The empty `events.html`, `event-plan.html`, `food.html` were deleted; the icon SVG now lives in `docs/`.
@@ -60,8 +60,12 @@ All seven steps are done. Remaining items are the gaps below and mcqAI answers (
 * `.claude/launch.json` server name is still `mcq-imap`.
 
 ## Last updated
-2026-10-26, after Step 7.
+2026-10-26, after Step 7 and the tester fixes (remaining English translated).
 
 ### 2026-10-26
 * **Change:** Display name linked to `profiles`, Text size and its CSS removed, language switching added (`i18n.js`), leader post/edit/delete UI removed from What's Happening, macqAI renamed mcqAI (including CSS class names `mcqai-*`).
 * **Reasoning:** project owner request. Language reloads the page because it is the simplest way to rebuild every popup; English text as keys keeps the dictionary small.
+
+### 2026-10-26 (tester findings 5-7)
+* **Change:** Building panel, Category options (values stay English), "e.g. 1CC", "a society" now use `t()` with zh/es entries; events month title uses the language locale; `requireLogin` callers pass full sentences; login.js arrow parameter renamed `tab`.
+* **Reasoning:** remove untranslated visible English and a shadowed global `t`. Checked as a guest in headless Chrome (en, zh, es); month title and logged-in flows not checked.

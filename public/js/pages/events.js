@@ -47,7 +47,7 @@
 
   function render() {
     const events = byDate();
-    titleEl.textContent = month.toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
+    titleEl.textContent = month.toLocaleDateString({ en: 'en-AU', zh: 'zh-CN', es: 'es' }[i18nLang()], { month: 'long', year: 'numeric' });
     const lead = (month.getDay() + 6) % 7; // week starts Monday
     const days = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
     let html = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => `<span class="cal-dow">${t(d)}</span>`).join('');

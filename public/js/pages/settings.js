@@ -37,7 +37,7 @@
     if (auth.profile && auth.profile.role === 'admin') return t('Admin');
     const l = auth.leaderships[0];
     if (!l) return t('Student');
-    const name = l.societies ? l.societies.name : 'a society';
+    const name = l.societies ? l.societies.name : t('a society');
     if (l.status === 'approved') return `${t('Leader of')} ${name}`;
     if (l.status === 'pending') return `${t('Leader request pending for')} ${name}`;
     return `${t('Leader request declined for')} ${name}`;
