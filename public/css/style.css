@@ -292,6 +292,8 @@ button, input, select, textarea { font-family: inherit; }
 .card-society .event-poster { height: 160px; object-fit: contain; }
 .card-society h2 { margin-top: 6px; }
 .card-society .follow-btn { display: block; margin: 12px 0 0 auto; }
+.card-society .card-actions { margin-top: 12px; }
+.card-society .card-actions .follow-btn { margin: 0; }
 .card p {
   margin: 0;
   font-size: 13px;
@@ -312,6 +314,11 @@ button, input, select, textarea { font-family: inherit; }
 }
 .logout-btn { margin-top: 16px; }
 .logout-btn[hidden] { display: none; }
+.delete-btn { min-height: 44px; margin-top: 16px; background: #c62828; }
+.delete-btn[hidden] { display: none; }
+.delete-btn:disabled { opacity: 0.5; cursor: default; }
+.login-prompt input { box-sizing: border-box; width: 100%; min-height: 44px; margin-bottom: 14px; padding: 8px; font: inherit; border: 1px solid #ccc; border-radius: 6px; }
+.login-prompt .form-msg.error { margin: -6px 0 14px; }
 .hours { margin-top: 6px; font-size: 13px; }
 .hours summary { cursor: pointer; color: var(--mq-red); }
 .hours ul { margin: 6px 0 0; padding: 0; list-style: none; }

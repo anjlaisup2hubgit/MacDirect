@@ -17,6 +17,8 @@ const I18N = {
     'No events on this day.': '当天没有活动。', 'No events found.': '没有找到活动。', 'Could not load events.': '无法加载活动。',
     'Mon': '周一', 'Tue': '周二', 'Wed': '周三', 'Thu': '周四', 'Fri': '周五', 'Sat': '周六', 'Sun': '周日',
     'Display name': '显示名称', 'Language': '语言', 'Saved.': '已保存。', 'Could not save.': '无法保存。',
+    'Change password': '修改密码', 'New password': '新密码', 'Confirm new password': '确认新密码',
+    'Passwords do not match.': '两次输入的密码不一致。', 'Password changed.': '密码已修改。',
     'Followed societies': '已关注的社团', 'You are not following any societies.': '你还没有关注任何社团。', 'Unfollow': '取消关注',
     
     'Signed in': '已登录', 'Admin': '管理员', 'Student': '学生', 'Log out': '退出登录',
@@ -26,7 +28,7 @@ const I18N = {
     'Log in to follow societies': '登录后才能关注社团', 'Log in to add event plans': '登录后才能添加活动计划',
     'Log in to add event plans. Guests can browse everything but cannot save.': '登录后才能添加活动计划。访客可以浏览全部内容，但无法保存。',
     'Event name': '活动名称', 'Category': '类别', 'Date': '日期', 'Time': '时间', 'Building': '建筑', 'Description': '描述',
-    'Post event': '发布活动', 'Edit': '编辑', 'Delete': '删除', 'Delete this event?': '删除此活动？', 'Cancel': '取消', 'Save event': '保存活动', 'Remove': '移除', 'Remove this plan?': '移除此计划？', 'Add event': '添加活动', 'Edit events': '编辑活动', 'Your society has not posted any events yet.': '你的社团还没有发布任何活动。', 'Added! Find it in Calendar.': '已添加！可在“日历”中查看。', 'Log in to view the calendar': '登录后才能查看日历', 'Follow societies to see their events here.': '关注社团后，其活动会显示在这里。', 'Calendar view': '日历视图', 'Societies': '社团',
+    'Post event': '发布活动', 'Edit': '编辑', 'Delete': '删除', 'Delete this event?': '删除此活动？', 'Cancel': '取消', 'Save event': '保存活动', 'Remove': '移除', 'Remove this plan?': '移除此计划？', 'Add event': '添加活动', 'Edit events': '编辑活动', 'Your society has not posted any events yet.': '你的社团还没有发布任何活动。', 'Added! Find it in Calendar.': '已添加！可在“日历”中查看。', 'Log in to view the calendar': '登录后才能查看日历', 'Follow societies to see their events here.': '关注社团后，其活动会显示在这里。', 'Calendar view': '日历视图', 'Week starts on': '每周开始于', 'Monday': '星期一', 'Sunday': '星期日', 'Add to calendar': '添加到日历', 'Google Calendar': '谷歌日历', 'Apple Calendar': '苹果日历', 'Societies': '社团',
     'Log in': '登录', 'Sign up': '注册', 'Email': '邮箱', 'Password': '密码', 'Society': '社团',
     'I lead a society': '我是社团负责人', 'An admin will approve this': '需管理员批准',
     'Wrong email or password.': '邮箱或密码错误。', 'This email is already registered. Try logging in.': '此邮箱已注册。请尝试登录。',
@@ -42,6 +44,7 @@ const I18N = {
     'Societies held here': '在此的社团', 'No societies listed here.': '此处没有列出社团。',
     'Social': '社交', 'Academic': '学术', 'Career': '职业', 'Community': '社区', 'e.g. 1CC': '例如 1CC', 'a society': '某社团',
     'My plan': '我的计划', 'Society event': '社团活动', 'Cover photo': '封面照片', 'Hashtags (up to 5, e.g. social games)': '话题标签（最多 5 个，例如 social games）', 'Save hashtags': '保存标签', 'Today': '今天', 'Opening hours': '营业时间', 'Closed': '休息', 'Add for': '添加到', 'Just me (private)': '仅自己（私人）', 'Remove current photo': '移除当前照片', 'Event photo (optional; JPEG, PNG or WebP, up to 5 MB)': '活动照片（可选；JPEG、PNG 或 WebP，最大 5 MB）', 'Society cover photo': '社团封面照片', 'Choose image (JPEG, PNG or WebP, up to 5 MB)': '选择图片（JPEG、PNG 或 WebP，最大 5 MB）', 'Choose a JPEG, PNG or WebP image.': '请选择 JPEG、PNG 或 WebP 图片。', 'The image must be 5 MB or smaller.': '图片不能超过 5 MB。',
+    'Delete account': '删除账户', 'Delete my account': '删除我的账户', 'Your follows, event plans and leader requests will be removed. Society events you posted stay. This cannot be undone.': '你的关注、活动计划和负责人申请将被删除。你发布的社团活动会保留。此操作无法撤销。', 'Type DELETE (in capital letters, in English) to confirm.': '请输入 DELETE（英文大写）以确认。', 'You are the only admin, so you cannot delete your account.': '你是唯一的管理员，因此无法删除账户。',
   },
   es: {
     'User settings': 'Ajustes', 'User Settings': 'Ajustes',
@@ -56,6 +59,8 @@ const I18N = {
     'No events on this day.': 'No hay eventos este día.', 'No events found.': 'No se encontraron eventos.', 'Could not load events.': 'No se pudieron cargar los eventos.',
     'Mon': 'Lun', 'Tue': 'Mar', 'Wed': 'Mié', 'Thu': 'Jue', 'Fri': 'Vie', 'Sat': 'Sáb', 'Sun': 'Dom',
     'Display name': 'Nombre visible', 'Language': 'Idioma', 'Saved.': 'Guardado.', 'Could not save.': 'No se pudo guardar.',
+    'Change password': 'Cambiar contraseña', 'New password': 'Nueva contraseña', 'Confirm new password': 'Confirmar nueva contraseña',
+    'Passwords do not match.': 'Las contraseñas no coinciden.', 'Password changed.': 'Contraseña cambiada.',
     'Followed societies': 'Sociedades que sigues', 'You are not following any societies.': 'No sigues ninguna sociedad.', 'Unfollow': 'Dejar de seguir',
     
     'Signed in': 'Sesión iniciada', 'Admin': 'Administrador', 'Student': 'Estudiante', 'Log out': 'Cerrar sesión',
@@ -65,7 +70,7 @@ const I18N = {
     'Log in to follow societies': 'Inicia sesión para seguir sociedades', 'Log in to add event plans': 'Inicia sesión para añadir planes de eventos',
     'Log in to add event plans. Guests can browse everything but cannot save.': 'Inicia sesión para añadir planes de eventos. Los invitados pueden explorar todo pero no guardar.',
     'Event name': 'Nombre del evento', 'Category': 'Categoría', 'Date': 'Fecha', 'Time': 'Hora', 'Building': 'Edificio', 'Description': 'Descripción',
-    'Post event': 'Publicar evento', 'Edit': 'Editar', 'Delete': 'Eliminar', 'Delete this event?': '¿Eliminar este evento?', 'Cancel': 'Cancelar', 'Save event': 'Guardar evento', 'Remove': 'Quitar', 'Remove this plan?': '¿Quitar este plan?', 'Add event': 'Añadir evento', 'Edit events': 'Editar eventos', 'Your society has not posted any events yet.': 'Tu sociedad aún no ha publicado eventos.', 'Added! Find it in Calendar.': '¡Añadido! Búscalo en Calendario.', 'Log in to view the calendar': 'Inicia sesión para ver el calendario', 'Follow societies to see their events here.': 'Sigue sociedades para ver aquí sus eventos.', 'Calendar view': 'Vista del calendario', 'Societies': 'Sociedades',
+    'Post event': 'Publicar evento', 'Edit': 'Editar', 'Delete': 'Eliminar', 'Delete this event?': '¿Eliminar este evento?', 'Cancel': 'Cancelar', 'Save event': 'Guardar evento', 'Remove': 'Quitar', 'Remove this plan?': '¿Quitar este plan?', 'Add event': 'Añadir evento', 'Edit events': 'Editar eventos', 'Your society has not posted any events yet.': 'Tu sociedad aún no ha publicado eventos.', 'Added! Find it in Calendar.': '¡Añadido! Búscalo en Calendario.', 'Log in to view the calendar': 'Inicia sesión para ver el calendario', 'Follow societies to see their events here.': 'Sigue sociedades para ver aquí sus eventos.', 'Calendar view': 'Vista del calendario', 'Week starts on': 'La semana empieza el', 'Monday': 'Lunes', 'Sunday': 'Domingo', 'Add to calendar': 'Añadir al calendario', 'Google Calendar': 'Google Calendar', 'Apple Calendar': 'Calendario de Apple', 'Societies': 'Sociedades',
     'Log in': 'Iniciar sesión', 'Sign up': 'Registrarse', 'Email': 'Correo', 'Password': 'Contraseña', 'Society': 'Sociedad',
     'I lead a society': 'Dirijo una sociedad', 'An admin will approve this': 'Un administrador lo aprobará',
     'Wrong email or password.': 'Correo o contraseña incorrectos.', 'This email is already registered. Try logging in.': 'Este correo ya está registrado. Prueba a iniciar sesión.',
@@ -81,6 +86,7 @@ const I18N = {
     'Societies held here': 'Sociedades en este lugar', 'No societies listed here.': 'No hay sociedades aquí.',
     'Social': 'Social', 'Academic': 'Académico', 'Career': 'Profesional', 'Community': 'Comunidad', 'e.g. 1CC': 'p. ej. 1CC', 'a society': 'una sociedad',
     'My plan': 'Mi plan', 'Society event': 'Evento del club', 'Cover photo': 'Foto de portada', 'Hashtags (up to 5, e.g. social games)': 'Hashtags (hasta 5, p. ej. social games)', 'Save hashtags': 'Guardar hashtags', 'Today': 'Hoy', 'Opening hours': 'Horario', 'Closed': 'Cerrado', 'Add for': 'Añadir para', 'Just me (private)': 'Solo yo (privado)', 'Remove current photo': 'Quitar la foto actual', 'Event photo (optional; JPEG, PNG or WebP, up to 5 MB)': 'Foto del evento (opcional; JPEG, PNG o WebP, hasta 5 MB)', 'Society cover photo': 'Foto de portada del club', 'Choose image (JPEG, PNG or WebP, up to 5 MB)': 'Elegir imagen (JPEG, PNG o WebP, hasta 5 MB)', 'Choose a JPEG, PNG or WebP image.': 'Elige una imagen JPEG, PNG o WebP.', 'The image must be 5 MB or smaller.': 'La imagen debe pesar 5 MB o menos.',
+    'Delete account': 'Eliminar cuenta', 'Delete my account': 'Eliminar mi cuenta', 'Your follows, event plans and leader requests will be removed. Society events you posted stay. This cannot be undone.': 'Se eliminarán tus seguimientos, planes de eventos y solicitudes de líder. Los eventos de sociedades que publicaste se mantienen. Esto no se puede deshacer.', 'Type DELETE (in capital letters, in English) to confirm.': 'Escribe DELETE (en mayúsculas y en inglés) para confirmar.', 'You are the only admin, so you cannot delete your account.': 'Eres el único administrador, así que no puedes eliminar tu cuenta.',
   },
   vi: {
     'User settings': 'Cài đặt', 'User Settings': 'Cài đặt',
@@ -95,6 +101,8 @@ const I18N = {
     'No events on this day.': 'Không có sự kiện trong ngày này.', 'No events found.': 'Không tìm thấy sự kiện.', 'Could not load events.': 'Không thể tải sự kiện.',
     'Mon': 'T2', 'Tue': 'T3', 'Wed': 'T4', 'Thu': 'T5', 'Fri': 'T6', 'Sat': 'T7', 'Sun': 'CN',
     'Display name': 'Tên hiển thị', 'Language': 'Ngôn ngữ', 'Saved.': 'Đã lưu.', 'Could not save.': 'Không thể lưu.',
+    'Change password': 'Đổi mật khẩu', 'New password': 'Mật khẩu mới', 'Confirm new password': 'Xác nhận mật khẩu mới',
+    'Passwords do not match.': 'Mật khẩu không khớp.', 'Password changed.': 'Đã đổi mật khẩu.',
     'Followed societies': 'CLB đang theo dõi', 'You are not following any societies.': 'Bạn chưa theo dõi CLB nào.', 'Unfollow': 'Bỏ theo dõi',
     
     'Signed in': 'Đã đăng nhập', 'Admin': 'Quản trị viên', 'Student': 'Sinh viên', 'Log out': 'Đăng xuất',
@@ -104,7 +112,7 @@ const I18N = {
     'Log in to follow societies': 'Đăng nhập để theo dõi câu lạc bộ', 'Log in to add event plans': 'Đăng nhập để thêm kế hoạch sự kiện',
     'Log in to add event plans. Guests can browse everything but cannot save.': 'Đăng nhập để thêm kế hoạch sự kiện. Khách có thể xem mọi thứ nhưng không thể lưu.',
     'Event name': 'Tên sự kiện', 'Category': 'Danh mục', 'Date': 'Ngày', 'Time': 'Giờ', 'Building': 'Tòa nhà', 'Description': 'Mô tả',
-    'Post event': 'Đăng sự kiện', 'Edit': 'Sửa', 'Delete': 'Xóa', 'Delete this event?': 'Xóa sự kiện này?', 'Cancel': 'Hủy', 'Save event': 'Lưu sự kiện', 'Remove': 'Xóa', 'Remove this plan?': 'Xóa kế hoạch này?', 'Add event': 'Thêm sự kiện', 'Edit events': 'Sửa sự kiện', 'Your society has not posted any events yet.': 'CLB của bạn chưa đăng sự kiện nào.', 'Added! Find it in Calendar.': 'Đã thêm! Xem trong mục Lịch.', 'Log in to view the calendar': 'Đăng nhập để xem lịch', 'Follow societies to see their events here.': 'Theo dõi câu lạc bộ để xem sự kiện của họ tại đây.', 'Calendar view': 'Chế độ xem lịch', 'Societies': 'Câu lạc bộ',
+    'Post event': 'Đăng sự kiện', 'Edit': 'Sửa', 'Delete': 'Xóa', 'Delete this event?': 'Xóa sự kiện này?', 'Cancel': 'Hủy', 'Save event': 'Lưu sự kiện', 'Remove': 'Xóa', 'Remove this plan?': 'Xóa kế hoạch này?', 'Add event': 'Thêm sự kiện', 'Edit events': 'Sửa sự kiện', 'Your society has not posted any events yet.': 'CLB của bạn chưa đăng sự kiện nào.', 'Added! Find it in Calendar.': 'Đã thêm! Xem trong mục Lịch.', 'Log in to view the calendar': 'Đăng nhập để xem lịch', 'Follow societies to see their events here.': 'Theo dõi câu lạc bộ để xem sự kiện của họ tại đây.', 'Calendar view': 'Chế độ xem lịch', 'Week starts on': 'Tuần bắt đầu vào', 'Monday': 'Thứ Hai', 'Sunday': 'Chủ Nhật', 'Add to calendar': 'Thêm vào lịch', 'Google Calendar': 'Google Calendar', 'Apple Calendar': 'Lịch Apple', 'Societies': 'Câu lạc bộ',
     'Log in': 'Đăng nhập', 'Sign up': 'Đăng ký', 'Email': 'Email', 'Password': 'Mật khẩu', 'Society': 'Câu lạc bộ',
     'I lead a society': 'Tôi là chủ nhiệm một câu lạc bộ', 'An admin will approve this': 'Quản trị viên sẽ duyệt',
     'Wrong email or password.': 'Email hoặc mật khẩu không đúng.', 'This email is already registered. Try logging in.': 'Email này đã được đăng ký. Hãy thử đăng nhập.',
@@ -120,6 +128,7 @@ const I18N = {
     'Societies held here': 'Các câu lạc bộ tại đây', 'No societies listed here.': 'Không có câu lạc bộ nào tại đây.',
     'Social': 'Giao lưu', 'Academic': 'Học thuật', 'Career': 'Nghề nghiệp', 'Community': 'Cộng đồng', 'e.g. 1CC': 'ví dụ 1CC', 'a society': 'một câu lạc bộ',
     'My plan': 'Kế hoạch của tôi', 'Society event': 'Sự kiện câu lạc bộ', 'Cover photo': 'Ảnh bìa', 'Hashtags (up to 5, e.g. social games)': 'Hashtag (tối đa 5, ví dụ social games)', 'Save hashtags': 'Lưu hashtag', 'Today': 'Hôm nay', 'Opening hours': 'Giờ mở cửa', 'Closed': 'Đóng cửa', 'Add for': 'Thêm cho', 'Just me (private)': 'Chỉ mình tôi (riêng tư)', 'Remove current photo': 'Xóa ảnh hiện tại', 'Event photo (optional; JPEG, PNG or WebP, up to 5 MB)': 'Ảnh sự kiện (tùy chọn; JPEG, PNG hoặc WebP, tối đa 5 MB)', 'Society cover photo': 'Ảnh bìa câu lạc bộ', 'Choose image (JPEG, PNG or WebP, up to 5 MB)': 'Chọn ảnh (JPEG, PNG hoặc WebP, tối đa 5 MB)', 'Choose a JPEG, PNG or WebP image.': 'Hãy chọn ảnh JPEG, PNG hoặc WebP.', 'The image must be 5 MB or smaller.': 'Ảnh phải từ 5 MB trở xuống.',
+    'Delete account': 'Xóa tài khoản', 'Delete my account': 'Xóa tài khoản của tôi', 'Your follows, event plans and leader requests will be removed. Society events you posted stay. This cannot be undone.': 'Các lượt theo dõi, kế hoạch sự kiện và yêu cầu làm trưởng nhóm của bạn sẽ bị xóa. Sự kiện câu lạc bộ bạn đã đăng vẫn được giữ lại. Không thể hoàn tác.', 'Type DELETE (in capital letters, in English) to confirm.': 'Nhập DELETE (viết hoa, bằng tiếng Anh) để xác nhận.', 'You are the only admin, so you cannot delete your account.': 'Bạn là quản trị viên duy nhất nên không thể xóa tài khoản.',
   },
 };
 

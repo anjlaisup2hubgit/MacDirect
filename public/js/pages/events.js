@@ -67,9 +67,11 @@
     base.forEach((e) => { e.canEdit = leaderIds.includes(e.societyId); });
     const events = byDate();
     titleEl.textContent = month.toLocaleDateString({ en: 'en-AU', zh: 'zh-CN', es: 'es', vi: 'vi' }[i18nLang()], { month: 'long', year: 'numeric' });
-    const lead = (month.getDay() + 6) % 7; // week starts Monday
+    let sunStart = false;
+    try { sunStart = localStorage.getItem('imcq-week-start') === 'sun'; } catch (err) { /* storage blocked: Monday */ }
+    const lead = sunStart ? month.getDay() : (month.getDay() + 6) % 7;
     const days = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
-    let html = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => `<span class="cal-dow">${t(d)}</span>`).join('');
+    let html = (sunStart ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']).map((d) => `<span class="cal-dow">${t(d)}</span>`).join('');
     html += '<span></span>'.repeat(lead);
     for (let d = 1; d <= days; d++) {
       const key = iso(new Date(month.getFullYear(), month.getMonth(), d));
@@ -103,6 +105,17 @@
     return true;
   }
 
+  // Handles the Add to calendar buttons (Google opens a new tab, Apple downloads an .ics); true if it handled the click.
+  function calendarAction(e, list) {
+    const btn = e.target.closest('[data-gcal], [data-ics]');
+    if (!btn) return false;
+    const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
+    if (!ev) return true;
+    if (btn.hasAttribute('data-gcal')) window.open(googleCalendarUrl(ev), '_blank', 'noopener');
+    else downloadIcs(ev);
+    return true;
+  }
+
   // Handles Edit and Delete on a society event card; true if it handled the click.
   async function leaderAction(e, list) {
     const btn = e.target.closest('[data-edit], [data-delete]');
@@ -119,7 +132,7 @@
 
   gate.querySelector('button').addEventListener('click', () => { location.href = '/login.html'; });
   agendaEl.addEventListener('click', async (e) => {
-    if (await removePlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
+    if (calendarAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = agendaEvents[[...agendaEl.querySelectorAll('.card')].indexOf(el)];
@@ -145,7 +158,7 @@
     render();
   });
   listEl.addEventListener('click', async (e) => {
-    if (await removePlan(e, dayEvents) || await leaderAction(e, dayEvents)) return;
+    if (calendarAction(e, dayEvents) || await removePlan(e, dayEvents) || await leaderAction(e, dayEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = dayEvents[[...listEl.children].indexOf(el)];

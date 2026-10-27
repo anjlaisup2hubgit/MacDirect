@@ -52,8 +52,8 @@ The five views open as popups on the map page (`index.html`). The nav labels bel
 
 | Nav label | Opens | Login needed | Status |
 | :--- | :--- | :--- | :--- |
-| User settings | Account details, display name (logged in), language, Log in / Log out | No | Working |
-| Calendar | Events of societies you follow plus your own plans, in a month calendar or day list (Month or Day chosen in User settings) | Yes | Working |
+| User settings | Account details, display name, calendar view, week start, change password, delete account (logged in), language, Log in / Log out | No | Working |
+| Calendar | Events of societies you follow plus your own plans, in a month calendar or day list (Month or Day and Monday or Sunday week start chosen in User settings). Each event has Google Calendar and Apple Calendar (.ics) buttons | Yes | Working |
 | Add event plan | Personal agenda for bookmarked events | Yes | Working, saved to Supabase (`event_plans`, private to each user) |
 | Food and drinks | Directory of campus dining options | No | Working with JSON data |
 | On-campus Societies | Directory of societies, with Follow buttons | To follow | Working |
@@ -83,7 +83,7 @@ The SQL is in `database/schema.sql` (tables, security rules, sign-up trigger) an
 * `societies(id, name, category, description, building, contact, website)`
 * `society_leaders(user_id, society_id, status)` where status is `pending`, `approved` or `rejected`.
 * `follows(user_id, society_id)`
-* `events(id, society_id, title, category, date, time, building, description, created_by)`
+* `events(id, society_id, title, category, date, time, building, description, created_by)`: `created_by` becomes null when its author deletes their account, so society events stay (run the "Delete my account" block of `database/schema.sql` by hand)
 * `society_images(society_id, path, created_by)`: one cover image per society. The file sits in the public Supabase Storage bucket `society-images` at `<society_id>/<random>.jpg|png|webp` (5 MB limit, JPEG/PNG/WebP only). Anyone can see it; only that society's approved leaders (and admins) can upload or remove it. Run the new block of `database/schema.sql` by hand to create the bucket, table and rules.
 
 Security rules: anyone can read societies and events; users manage only their own follows; only approved leaders can add events for their own society.

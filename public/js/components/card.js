@@ -67,6 +67,59 @@ function taskCard(t) {
     `<p>Due ${esc(formatDate(t.due))}</p></li>`;
 }
 
+// Start and end of an event as floating local times (YYYYMMDDTHHMMSS), 1 hour long. Times like "12:00pm" or "14:30"
+// are read; if the time cannot be read the event is all-day ({ allDay: true } with YYYYMMDD dates, end exclusive).
+function calendarTimes(ev) {
+  const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(ev.date || '');
+  if (!d) return null;
+  const m = /^\s*(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*(am|pm)?\s*$/i.exec(ev.time || '');
+  let h = m ? Number(m[1]) : -1;
+  const min = m && m[2] ? Number(m[2]) : 0;
+  if (m && m[3]) { if (h < 1 || h > 12) h = -1; else h = (h % 12) + (m[3].toLowerCase() === 'pm' ? 12 : 0); }
+  const p2 = (n) => String(n).padStart(2, '0');
+  const fmt = (ms, withTime) => { const x = new Date(ms); // UTC arithmetic only, so daylight saving cannot shift it
+    return `${x.getUTCFullYear()}${p2(x.getUTCMonth() + 1)}${p2(x.getUTCDate())}` + (withTime ? `T${p2(x.getUTCHours())}${p2(x.getUTCMinutes())}00` : ''); };
+  if (h < 0 || h > 23 || min > 59) {
+    const day = Date.UTC(Number(d[1]), Number(d[2]) - 1, Number(d[3]));
+    return { allDay: true, start: fmt(day), end: fmt(day + 86400000) };
+  }
+  const start = Date.UTC(Number(d[1]), Number(d[2]) - 1, Number(d[3]), h, min);
+  return { allDay: false, start: fmt(start, true), end: fmt(start + 3600000, true) };
+}
+
+function googleCalendarUrl(ev) {
+  const c = calendarTimes(ev);
+  if (!c) return '';
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+    `&text=${encodeURIComponent(ev.name || '')}&dates=${c.start}/${c.end}` +
+    `&details=${encodeURIComponent(ev.description || '')}&location=${encodeURIComponent(ev.building || '')}`;
+}
+
+function icsText(ev) {
+  const c = calendarTimes(ev);
+  if (!c) return '';
+  const esc2 = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
+  const when = c.allDay ? [`DTSTART;VALUE=DATE:${c.start}`, `DTEND;VALUE=DATE:${c.end}`] : [`DTSTART:${c.start}`, `DTEND:${c.end}`];
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//iMCQ//Calendar//EN', 'BEGIN:VEVENT',
+    `UID:${ev.id || c.start}-${c.start}@imcq`, `DTSTAMP:${stamp}`, ...when,
+    `SUMMARY:${esc2(ev.name)}`, `DESCRIPTION:${esc2(ev.description)}`, `LOCATION:${esc2(ev.building)}`,
+    'END:VEVENT', 'END:VCALENDAR'].join('\r\n') + '\r\n';
+}
+
+// Downloads the event as an .ics file named after it.
+function downloadIcs(ev) {
+  const text = icsText(ev);
+  if (!text) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/calendar;charset=utf-8' }));
+  a.download = (String(ev.name || 'event').replace(/[^\w\- ]+/g, '').trim() || 'event') + '.ics';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
 function eventCard(e) {
   return `<li class="card card-society" data-id="${e.id}" tabindex="0">` +
     (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : '<div class="society-cover"></div>') +
@@ -74,6 +127,8 @@ function eventCard(e) {
     `<h2>${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
     `<p>${esc(e.description)}</p>` +
+    `<div class="card-actions" role="group" aria-label="${t('Add to calendar')}"><button type="button" class="follow-btn" data-gcal>${t('Google Calendar')}</button>` +
+      `<button type="button" class="follow-btn" data-ics>${t('Apple Calendar')}</button></div>` +
     (e.mine ? `<button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` : '') +
     (e.canEdit ? `<div class="card-actions"><button type="button" class="follow-btn" data-edit>${t('Edit')}</button>` +
       `<button type="button" class="follow-btn" data-delete>${t('Delete')}</button></div>` : '') + '</div></li>';

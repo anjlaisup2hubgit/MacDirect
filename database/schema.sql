@@ -47,7 +47,7 @@ create table public.events (
   event_time  time,
   building    text,
   description text not null default '',
-  created_by  uuid not null references public.profiles (id) on delete cascade,
+  created_by  uuid references public.profiles (id) on delete set null,
   created_at  timestamptz not null default now()
 );
 
@@ -268,6 +268,29 @@ drop policy if exists "plan images storage delete" on storage.objects;
 create policy "plan images storage delete" on storage.objects
   for delete to authenticated using (
     bucket_id = 'society-images' and (storage.foldername(name))[1] = auth.uid()::text);
+
+-- Delete my account: society events stay (created_by becomes null); the user's follows,
+-- plans, leader requests and profile are removed by their existing cascades. Safe to run again.
+alter table public.events drop constraint if exists events_created_by_fkey;
+alter table public.events alter column created_by drop not null;
+alter table public.events add constraint events_created_by_fkey
+  foreign key (created_by) references public.profiles (id) on delete set null;
+
+create or replace function public.delete_my_account() returns void
+language plpgsql security definer set search_path = '' as $$
+begin
+  if auth.uid() is null then
+    raise exception 'Not logged in';
+  end if;
+  if exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
+     and not exists (select 1 from public.profiles where role = 'admin' and id <> auth.uid()) then
+    raise exception 'You are the only admin';
+  end if;
+  delete from auth.users where id = auth.uid();
+end;
+$$;
+revoke all on function public.delete_my_account() from public, anon;
+grant execute on function public.delete_my_account() to authenticated;
 
 -- Making yourself the first admin (SQL editor only, after signing up once):
 --   update public.profiles set role = 'admin' where id = '<your auth.users id>';

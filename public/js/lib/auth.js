@@ -37,6 +37,14 @@ const auth = (function () {
     state.leaderships = l.data || [];
   }
 
+  async function clearMyPlans() {
+    const { data: old } = await state.sb.from('event_plans').select('image_path').eq('user_id', state.user.id);
+    const { error } = await state.sb.from('event_plans').delete().eq('user_id', state.user.id);
+    const paths = (old || []).map((r) => r.image_path).filter(Boolean);
+    if (!error && paths.length) await state.sb.storage.from('society-images').remove(paths);
+    return { error };
+  }
+
   async function refresh(session) {
     state.user = session ? session.user : null;
     state.profile = null;
@@ -117,6 +125,10 @@ const auth = (function () {
         state.profile = { ...state.profile, display_name: name };
         listeners.forEach((cb) => cb());
       }
+      return { error };
+    },
+    async changePassword(newPassword) {
+      const { error } = await state.sb.auth.updateUser({ password: newPassword });
       return { error };
     },
     // Society ids the logged-in user follows (empty for guests).
@@ -249,11 +261,17 @@ const auth = (function () {
     },
     // Deletes every plan of the logged-in user (row-level security limits it to their own).
     async clearPlans() {
-      const { data: old } = await state.sb.from('event_plans').select('image_path').eq('user_id', state.user.id);
-      const { error } = await state.sb.from('event_plans').delete().eq('user_id', state.user.id);
-      const paths = (old || []).map((r) => r.image_path).filter(Boolean);
-      if (!error && paths.length) await state.sb.storage.from('society-images').remove(paths);
-      return { error };
+      return clearMyPlans();
+    },
+    // Removes the account (plans and photos first, then the delete_my_account database function) and signs out.
+    async deleteAccount() {
+      const c = await clearMyPlans();
+      if (c.error) return { error: c.error };
+      const { error } = await state.sb.rpc('delete_my_account');
+      if (error) return { error };
+      setGuest(false);
+      try { await state.sb.auth.signOut(); } catch (e) { /* session already gone */ }
+      return { error: null };
     },
     // Cover images: { societyId: public URL } for every society that has one (readable by guests).
     async listSocietyImages() {

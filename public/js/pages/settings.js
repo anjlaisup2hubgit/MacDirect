@@ -9,18 +9,30 @@
         Object.entries(I18N_LANGS).map(([v, l]) => `<option value="${v}">${l}</option>`).join('') + '</select></label>' +
       `<label class="view-field" hidden>${t('Calendar view')}<select name="view">` +
         `<option value="cal">${t('Month')}</option><option value="list">${t('Day')}</option></select></label>` +
+      `<label class="weekstart-field" hidden>${t('Week starts on')}<select name="weekstart">` +
+        `<option value="mon">${t('Monday')}</option><option value="sun">${t('Sunday')}</option></select></label>` +
       '<p class="form-msg" hidden></p>' +
+    '</form>' +
+    '<form class="event-form pw-form" novalidate hidden>' +
+      `<label>${t('New password')}<input type="password" name="newPassword" minlength="6" autocomplete="new-password" required></label>` +
+      `<label>${t('Confirm new password')}<input type="password" name="confirmPassword" minlength="6" autocomplete="new-password" required></label>` +
+      '<p class="form-msg" hidden></p>' +
+      `<button class="form-submit" type="submit">${t('Change password')}</button>` +
     '</form>' +
     '<section class="admin-requests" hidden>' +
       `<h3>${t('Leader requests')}</h3><ul class="card-list"></ul>` +
       `<p class="empty-msg" hidden>${t('No pending requests.')}</p></section>` +
+    `<button class="form-submit delete-btn" type="button" data-act="delete-account" hidden>${t('Delete account')}</button>` +
     `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button>`;
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
   const nameField = form.querySelector('.name-field');
   const logoutBtn = p.results.querySelector('.logout-btn');
+  const deleteBtn = p.results.querySelector('.delete-btn');
   const viewField = form.querySelector('.view-field');
+  const weekField = form.querySelector('.weekstart-field');
   form.elements.lang.value = i18nLang();
+  try { form.elements.weekstart.value = localStorage.getItem('imcq-week-start') === 'sun' ? 'sun' : 'mon'; } catch (err) { /* storage blocked: keep Monday */ }
   try { form.elements.view.value = localStorage.getItem('imcq-cal-view') === 'list' ? 'list' : 'cal'; } catch (err) { /* storage blocked: keep Month */ }
 
   function flash(text, isError) {
@@ -40,10 +52,39 @@
         flash(t('Saved.'));
         window.dispatchEvent(new Event('events-changed')); // Calendar switches to the chosen view
       } catch (err) { console.error(err); flash(t('Could not save.'), true); }
+    } else if (e.target.name === 'weekstart') {
+      try {
+        localStorage.setItem('imcq-week-start', e.target.value);
+        flash(t('Saved.'));
+        window.dispatchEvent(new Event('events-changed')); // Calendar redraws with the chosen first day
+      } catch (err) { console.error(err); flash(t('Could not save.'), true); }
     } else if (e.target.name === 'name') {
       const { error } = await auth.updateDisplayName(e.target.value.trim());
       if (error) { console.error(error); flash(t('Could not save.'), true); } else flash(t('Saved.'));
     }
+  });
+
+  const pwForm = p.results.querySelector('.pw-form');
+  const pwMsg = pwForm.querySelector('.form-msg');
+  const pwSubmit = pwForm.querySelector('.form-submit');
+  function pwFlash(text, isError) {
+    pwMsg.textContent = text;
+    pwMsg.classList.toggle('error', !!isError);
+    pwMsg.hidden = false;
+  }
+  pwForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const pw = pwForm.elements.newPassword.value;
+    if (pw.length < 6) return pwFlash(t('Password must be at least 6 characters.'), true);
+    if (pw !== pwForm.elements.confirmPassword.value) return pwFlash(t('Passwords do not match.'), true);
+    pwSubmit.disabled = true;
+    pwSubmit.textContent = t('Please wait...');
+    const { error } = await auth.changePassword(pw);
+    pwSubmit.disabled = false;
+    pwSubmit.textContent = t('Change password');
+    if (error) { console.error(error); pwFlash(t('Could not save.'), true); return; }
+    pwForm.reset();
+    pwFlash(t('Password changed.'));
   });
 
   // Account block: who is signed in, or a prompt to log in when browsing as a guest.
@@ -59,8 +100,11 @@
   }
   function renderAccount() {
     logoutBtn.hidden = !auth.user;
+    deleteBtn.hidden = !auth.user;
     nameField.hidden = !auth.user;
     viewField.hidden = !auth.user;
+    weekField.hidden = !auth.user;
+    pwForm.hidden = !auth.user;
     if (auth.user) {
       form.elements.name.value = (auth.profile && auth.profile.display_name) || '';
       const name = (auth.profile && auth.profile.display_name) || t('Signed in');
@@ -76,7 +120,41 @@
     const act = e.target.dataset.act;
     if (act === 'login') location.href = '/login.html';
     if (act === 'logout') { await auth.signOut(); location.href = '/login.html'; }
+    if (act === 'delete-account') confirmDelete();
   });
+
+  // Deleting the account: the user must type DELETE (the word stays in English in every language).
+  function confirmDelete() {
+    const d = document.createElement('dialog');
+    d.className = 'login-prompt';
+    d.innerHTML = `<p>${t('Your follows, event plans and leader requests will be removed. Society events you posted stay. This cannot be undone.')}</p>` +
+      `<p>${t('Type DELETE (in capital letters, in English) to confirm.')}</p>` +
+      '<input name="confirm" autocomplete="off" autocapitalize="off" spellcheck="false">' +
+      '<p class="form-msg error" hidden></p><div>' +
+      `<button class="form-submit delete-btn" type="button" data-yes disabled>${t('Delete my account')}</button>` +
+      `<button class="auth-guest" type="button" data-no>${t('Cancel')}</button></div>`;
+    const input = d.querySelector('input');
+    const yes = d.querySelector('[data-yes]');
+    const dMsg = d.querySelector('.form-msg');
+    input.addEventListener('input', () => { yes.disabled = input.value !== 'DELETE'; });
+    d.addEventListener('close', () => d.remove());
+    d.addEventListener('click', async (ev) => {
+      if (ev.target.dataset.no !== undefined) d.close();
+      if (ev.target.dataset.yes === undefined) return;
+      yes.disabled = true;
+      yes.textContent = t('Please wait...');
+      const { error } = await auth.deleteAccount();
+      if (!error) { location.href = '/login.html'; return; }
+      console.error(error);
+      dMsg.textContent = String(error.message || '').includes('only admin')
+        ? t('You are the only admin, so you cannot delete your account.') : t('Could not save.');
+      dMsg.hidden = false;
+      yes.textContent = t('Delete my account');
+      yes.disabled = input.value !== 'DELETE';
+    });
+    document.body.appendChild(d);
+    d.showModal();
+  }
 
   // Admins approve or reject society leader requests here (replaces editing society_leaders in the dashboard).
   const adminBox = p.results.querySelector('.admin-requests');
