@@ -46,14 +46,14 @@ function foodCard(f) {
   const days = hoursByDay(f.hours);
   const todayKey = WEEK[(new Date().getDay() + 6) % 7];
   const label = (v) => (v === 'Closed' ? t('Closed') : esc(v));
-  return `<li class="card" data-id="${f.id}" tabindex="0">` +
-    (f.image ? `<img class="society-cover" src="${esc(f.image)}" alt="${esc(f.name)}" loading="lazy">` : '') +
-    `<h2>${esc(f.name)}</h2>` +
+  return `<li class="card card-society" data-id="${f.id}" tabindex="0">` +
+    (f.image ? `<img class="society-cover" src="${esc(f.image)}" alt="${esc(f.name)}" loading="lazy">` : '<div class="society-cover"></div>') +
+    `<div class="card-body"><h2>${esc(f.name)}</h2>` +
     `<p>${esc(f.description)}</p>` +
     `<p>${esc(f.building)} &middot; ${t('Today')}: ${label(days[todayKey] || 'Closed')}</p>` +
     `<details class="hours"><summary>${t('Opening hours')}</summary><ul>` +
       WEEK.map((d) => `<li><span>${t(d)}</span><span>${label(days[d] || 'Closed')}</span></li>`).join('') + '</ul></details>' +
-    hashtagLine(f) + '</li>';
+    hashtagLine(f) + '</div></li>';
 }
 
 function formatDate(iso) {
