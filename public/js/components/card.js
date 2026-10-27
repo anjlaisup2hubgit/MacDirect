@@ -21,12 +21,12 @@ function hashtagLine(item) {
 }
 
 function societyCard(s, following, imageUrl) {
-  return `<li class="card" data-id="${s.id}" tabindex="0">` +
-    (imageUrl ? `<img class="society-cover" src="${esc(imageUrl)}" alt="${esc(s.name)}" loading="lazy">` : '') +
-    `<h2>${esc(s.name)}</h2>` +
+  return `<li class="card card-society" data-id="${s.id}" tabindex="0">` +
+    (imageUrl ? `<img class="society-cover" src="${esc(imageUrl)}" alt="${esc(s.name)}" loading="lazy">` : '<div class="society-cover"></div>') +
+    `<div class="card-body"><h2>${esc(s.name)}</h2>` +
     `<p>${esc(s.description)}</p>` +
     hashtagLine(s) +
-    `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button></li>`;
+    `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button></div></li>`;
 }
 
 const WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -68,13 +68,13 @@ function taskCard(t) {
 }
 
 function eventCard(e) {
-  return `<li class="card" data-id="${e.id}" tabindex="0">` +
-    (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : '') +
-    `<span class="card-tag">${esc(e.category)}</span>` +
+  return `<li class="card card-society" data-id="${e.id}" tabindex="0">` +
+    (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : '<div class="society-cover"></div>') +
+    `<div class="card-body"><span class="card-tag">${esc(e.category)}</span>` +
     `<h2>${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
     `<p>${esc(e.description)}</p>` +
     (e.mine ? `<button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` : '') +
     (e.canEdit ? `<div class="card-actions"><button type="button" class="follow-btn" data-edit>${t('Edit')}</button>` +
-      `<button type="button" class="follow-btn" data-delete>${t('Delete')}</button></div>` : '') + '</li>';
+      `<button type="button" class="follow-btn" data-delete>${t('Delete')}</button></div>` : '') + '</div></li>';
 }

@@ -282,6 +282,15 @@ button, input, select, textarea { font-family: inherit; }
 .cover-preview { display: block; width: 100%; height: 120px; object-fit: cover; border-radius: 8px; }
 .cover-preview[hidden], .cover-section [data-remove-cover][hidden] { display: none; }
 .card h2 { margin: 6px 0 4px; font-size: 16px; }
+/* Society cards: full-width banner, then title and details (unit-overview card style) */
+.card-list:has(.card-society) { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.card-society { padding: 0; overflow: hidden; border: 1px solid #d0d5da; border-radius: 6px; }
+.card-society .society-cover { height: 100px; margin: 0; border-radius: 0; background: #d9dde0; }
+.card-society .card-body { padding: 12px; }
+.card-society h2 { margin: 0 0 4px; font-size: 15px; font-weight: 500; color: var(--mq-red); }
+.card-society .event-poster { height: 160px; object-fit: contain; }
+.card-society h2 { margin-top: 6px; }
+.card-society .follow-btn { display: block; margin: 12px 0 0 auto; }
 .card p {
   margin: 0;
   font-size: 13px;
