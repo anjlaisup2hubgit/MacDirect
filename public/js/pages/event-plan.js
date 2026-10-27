@@ -26,10 +26,10 @@
       '<label>' + t('Event photo (optional; JPEG, PNG or WebP, up to 5 MB)') + '<input name="photo" type="file" accept="image/jpeg,image/png,image/webp"></label>' +
       '<button class="form-submit" type="submit">' + t('Add event') + '</button>' +
       '<button class="auth-guest" type="button" data-cancel hidden>' + t('Cancel') + '</button>' +
-      '<p class="form-msg" hidden></p>' +
+      '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</form>' +
     '<section class="manage-section" hidden>' +
-      '<ul class="card-list"></ul><p class="empty-msg" hidden>' + t('Your society has not posted any events yet.') + '</p>' +
+      '<ul class="card-list"></ul><p class="empty-msg" role="status" hidden>' + t('Your society has not posted any events yet.') + '</p>' +
     '</section>' +
     '<section class="event-form cover-section" hidden>' +
       '<h3>' + t('Society cover photo') + '</h3>' +
@@ -37,10 +37,10 @@
       '<img class="cover-preview" alt="" hidden>' +
       '<label>' + t('Choose image (JPEG, PNG or WebP, up to 5 MB)') + '<input name="cover" type="file" accept="image/jpeg,image/png,image/webp"></label>' +
       '<button class="auth-guest" type="button" data-remove-cover hidden>' + t('Remove') + '</button>' +
-      '<p class="form-msg" hidden></p>' +
+      '<p class="form-msg" aria-live="polite" hidden></p>' +
       '<label>' + t('Hashtags (up to 5, e.g. social games)') + '<input name="hashtags" maxlength="120" autocomplete="off"></label>' +
       '<button class="form-submit" type="button" data-save-tags>' + t('Save hashtags') + '</button>' +
-      '<p class="form-msg tags-msg" hidden></p>' +
+      '<p class="form-msg tags-msg" aria-live="polite" hidden></p>' +
     '</section>';
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');

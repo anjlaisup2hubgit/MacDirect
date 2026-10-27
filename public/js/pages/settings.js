@@ -11,17 +11,17 @@
         `<option value="cal">${t('Month')}</option><option value="list">${t('Day')}</option></select></label>` +
       `<label class="weekstart-field" hidden>${t('Week starts on')}<select name="weekstart">` +
         `<option value="mon">${t('Monday')}</option><option value="sun">${t('Sunday')}</option></select></label>` +
-      '<p class="form-msg" hidden></p>' +
+      '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</form>' +
     '<form class="event-form pw-form" novalidate hidden>' +
       `<label>${t('New password')}<input type="password" name="newPassword" minlength="6" autocomplete="new-password" required></label>` +
       `<label>${t('Confirm new password')}<input type="password" name="confirmPassword" minlength="6" autocomplete="new-password" required></label>` +
-      '<p class="form-msg" hidden></p>' +
+      '<p class="form-msg" aria-live="polite" hidden></p>' +
       `<button class="form-submit" type="submit">${t('Change password')}</button>` +
     '</form>' +
     '<section class="admin-requests" hidden>' +
       `<h3>${t('Leader requests')}</h3><ul class="card-list"></ul>` +
-      `<p class="empty-msg" hidden>${t('No pending requests.')}</p></section>` +
+      `<p class="empty-msg" role="status" hidden>${t('No pending requests.')}</p></section>` +
     `<button class="form-submit delete-btn" type="button" data-act="delete-account" hidden>${t('Delete account')}</button>` +
     `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button>`;
   const form = p.results.querySelector('form');
@@ -130,7 +130,7 @@
     d.innerHTML = `<p>${t('Your follows, event plans and leader requests will be removed. Society events you posted stay. This cannot be undone.')}</p>` +
       `<p>${t('Type DELETE (in capital letters, in English) to confirm.')}</p>` +
       '<input name="confirm" autocomplete="off" autocapitalize="off" spellcheck="false">' +
-      '<p class="form-msg error" hidden></p><div>' +
+      '<p class="form-msg error" aria-live="polite" hidden></p><div>' +
       `<button class="form-submit delete-btn" type="button" data-yes disabled>${t('Delete my account')}</button>` +
       `<button class="auth-guest" type="button" data-no>${t('Cancel')}</button></div>`;
     const input = d.querySelector('input');

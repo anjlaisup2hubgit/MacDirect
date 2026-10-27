@@ -127,8 +127,9 @@ function eventCard(e) {
     `<h2>${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
     `<p>${esc(e.description)}</p>` +
-    `<div class="card-actions" role="group" aria-label="${t('Add to calendar')}"><button type="button" class="follow-btn" data-gcal>${t('Google Calendar')}</button>` +
-      `<button type="button" class="follow-btn" data-ics>${t('Apple Calendar')}</button></div>` +
+    `<p class="card-actions-label">${t('Add to calendar')}</p>` +
+    `<div class="card-actions" role="group" aria-label="${t('Add to calendar')}"><button type="button" class="follow-btn" data-gcal>${t('Google')}</button>` +
+      `<button type="button" class="follow-btn" data-ics>${t('Apple / Outlook')}</button></div>` +
     (e.mine ? `<button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` : '') +
     (e.canEdit ? `<div class="card-actions"><button type="button" class="follow-btn" data-edit>${t('Edit')}</button>` +
       `<button type="button" class="follow-btn" data-delete>${t('Delete')}</button></div>` : '') + '</div></li>';

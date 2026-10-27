@@ -13,7 +13,7 @@
       '<p>' + t('Log in to view the calendar') + '.</p>' +
       '<button class="form-submit" type="button">' + t('Log in or sign up') + '</button></div>' +
     '<div class="cal-body">' +
-    '<p class="empty-msg follow-hint" hidden></p>' +
+    '<p class="empty-msg follow-hint" role="status" hidden></p>' +
     '<div class="cal-view">' +
     '<div class="cal-nav">' +
       '<button type="button" class="cal-prev" aria-label="' + t('Previous month') + '">&lsaquo;</button>' +
@@ -22,7 +22,7 @@
     '</div>' +
     '<div class="cal-grid"></div>' +
     '<h2 class="cal-day-title"></h2>' +
-    '<ul class="card-list"></ul><p class="empty-msg" hidden></p>' +
+    '<ul class="card-list"></ul><p class="empty-msg" role="status" hidden></p>' +
     '</div>' +
     '<div class="agenda-view" hidden></div>' +
     '</div>';

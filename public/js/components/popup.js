@@ -11,7 +11,7 @@ function createPopup({ id, title, navHref, hash, searchPlaceholder }) {
       `<button class="popup-close" type="button" aria-label="${esc(t('Close'))}">&times;</button></div>` +
       (searchPlaceholder
         ? `<input class="page-search" type="search" placeholder="${esc(searchPlaceholder)}" aria-label="${esc(searchPlaceholder)}" autocomplete="off">` +
-          '<div class="chips" role="group" aria-label="Filter by category"></div>'
+          `<div class="chips" role="group" aria-label="${esc(t('Filter by category'))}"></div>`
         : '') +
     '</div>' +
     '<div class="popup-results"></div>';
@@ -45,7 +45,7 @@ function createPopup({ id, title, navHref, hash, searchPlaceholder }) {
 // A searchable, category-filtered card list inside a popup.
 function createListPopup({ card, text, category, onSelect, emptyText, ...popupOpts }) {
   const p = createPopup(popupOpts);
-  p.results.innerHTML = '<ul class="card-list"></ul><p class="empty-msg" hidden></p>';
+  p.results.innerHTML = '<ul class="card-list"></ul><p class="empty-msg" role="status" hidden></p>';
   const searchInput = p.popup.querySelector('.page-search');
   const chipsEl = p.popup.querySelector('.chips');
   const listEl = p.results.querySelector('.card-list');
