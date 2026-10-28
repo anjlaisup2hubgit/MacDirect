@@ -153,7 +153,7 @@
     if (!await choose(t('Delete this event?'), [{ label: t('Delete'), value: true, danger: true }])) return;
     const { error } = await auth.deleteEvent(ev.id);
     if (error) { console.error(error); await choose(t('Could not save.'), [], t('Close')); return; }
-    window.dispatchEvent(new Event('events-changed'));
+    location.href = '/?event-plan'; // reload the page and reopen this popup
   });
   window.addEventListener('events-changed', renderManage);
 

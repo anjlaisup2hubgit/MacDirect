@@ -153,7 +153,7 @@
     if (btn.hasAttribute('data-edit')) { if (window.editSocietyEvent) window.editSocietyEvent(ev); return true; }
     if (await choose(t('Delete this event?'), [{ label: t('Delete'), value: true, danger: true }])) {
       const { error } = await auth.deleteEvent(ev.id);
-      if (error) console.error(error); else loadEvents();
+      if (error) console.error(error); else location.href = '/?events'; // reload the page and reopen the Calendar
     }
     return true;
   }
