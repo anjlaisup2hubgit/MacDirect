@@ -456,6 +456,7 @@ button, input, select, textarea { font-family: inherit; }
 }
 .form-msg { margin: 0; padding: 10px 12px; text-align: left; font-size: 14px; color: #373A36; border-left: 4px solid #009174; }
 .form-msg.error { border-left-color: #D6001C; }
+.event-form .form-msg:not(.error) { background: #E6F4F1; font-weight: 500; }
 .form-msg[hidden] { display: none; }
 
 /* Tab bar (Add event plan), Moodle style: text tabs, active one has a thick red underline */
@@ -538,3 +539,6 @@ button, input, select, textarea { font-family: inherit; }
 .login-prompt::backdrop { background: rgba(0, 0, 0, 0.4); }
 .login-prompt p { margin: 0 0 14px; }
 .login-prompt div { display: grid; gap: 8px; }
+/* Dialog buttons match the card buttons: 6px corners, 14px medium text, red outline for Cancel. */
+.login-prompt button { min-height: 44px; padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 6px; }
+.login-prompt .auth-guest { color: var(--mq-red); border-color: var(--mq-red); }

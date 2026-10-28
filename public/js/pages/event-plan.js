@@ -254,5 +254,6 @@
       msg.textContent = wasEditing ? t('Saved.') : t('Added! Find it in Calendar.');
     }
     msg.hidden = false;
+    msg.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); // the form is long; keep the result in view
   });
 })();
