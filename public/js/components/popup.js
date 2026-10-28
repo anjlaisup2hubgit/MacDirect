@@ -1,6 +1,6 @@
 // Builds a floating-island popup over the map: a pinned header island plus a scrolling body.
 // Opening one popup closes the others. Registered in window.popups so the nav link can toggle it.
-function createPopup({ id, title, navHref, hash, searchPlaceholder }) {
+function createPopup({ id, title, subtitle, navHref, hash, searchPlaceholder }) {
   const popup = document.createElement('div');
   popup.id = id;
   popup.className = 'societies-popup';
@@ -9,6 +9,7 @@ function createPopup({ id, title, navHref, hash, searchPlaceholder }) {
     '<div class="popup-island">' +
       `<div class="popup-head"><h1>${esc(t(title))}</h1>` +
       `<button class="popup-close" type="button" aria-label="${esc(t('Close'))}">&times;</button></div>` +
+      `<p class="page-subtitle">${esc(t(subtitle))}</p>` +
       (searchPlaceholder
         ? `<input class="page-search" type="search" placeholder="${esc(searchPlaceholder)}" aria-label="${esc(searchPlaceholder)}" autocomplete="off">` +
           `<div class="chips" role="group" aria-label="${esc(t('Filter by category'))}"></div>`

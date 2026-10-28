@@ -6,7 +6,7 @@
 (function () {
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-  const p = createPopup({ id: 'events-popup', title: 'Calendar', navHref: '/?events', hash: 'events' });
+  const p = createPopup({ id: 'events-popup', title: 'Calendar', subtitle: 'Calendar overview', navHref: '/?events', hash: 'events' });
   // Guests open the popup like Add event plan does and see the log in gate inside it.
   p.results.innerHTML =
     '<div class="account guest-gate" hidden>' +

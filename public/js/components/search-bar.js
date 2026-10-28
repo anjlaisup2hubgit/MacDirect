@@ -8,7 +8,7 @@ function initSearchBar(features, onSelect, onAsk) {
   mount.innerHTML =
     '<div class="search-bar">' +
     '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="#373A36" stroke-width="1.6"/><path d="M15 15l9 9" stroke="#373A36" stroke-width="1.8" stroke-linecap="round"/></svg>' +
-    '<input type="search" placeholder="' + t('Search buildings or ask mcqAI') + '" aria-label="' + t('Search campus or ask mcqAI') + '" autocomplete="off">' +
+    '<input type="search" placeholder="' + t('Search buildings, societies, food or ask mcqAI') + '" aria-label="' + t('Search campus or ask mcqAI') + '" autocomplete="off">' +
     '<button class="mcqai-info" type="button" aria-label="' + t('About mcqAI') + '">' +
     '<svg viewBox="0 0 40 40" width="28" height="28"><circle cx="20" cy="20" r="17" fill="#fff" stroke="#373A36" stroke-width="1.8"/><circle cx="20" cy="11" r="2.2" fill="#373A36"/><path d="M20 17v14M16 17h4M16 31h8" stroke="#373A36" stroke-width="2" fill="none"/></svg>' +
     '</button></div><ul class="search-results"></ul><div class="mcqai-panel" hidden></div>';
