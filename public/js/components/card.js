@@ -20,13 +20,47 @@ function hashtagLine(item) {
   return `<p class="hashtags">${hashtagsOf(item).map((h) => '#' + esc(h)).join(' ')}</p>`;
 }
 
+// Fallback banner when there is no photo: one of five soft patterns, chosen from the name so a card keeps its colour.
+function coverDiv(name) {
+  let sum = 0;
+  for (const ch of String(name)) sum += ch.charCodeAt(0);
+  return `<div class="society-cover cover-v${sum % 5}"></div>`;
+}
+
+// Three-dot menu at the bottom right of a card; the items are [data attribute, label] pairs.
+function cardMenu(items) {
+  return `<div class="card-menu-wrap"><button type="button" class="card-menu" data-menu aria-haspopup="menu" aria-expanded="false" aria-label="${t('More actions')}">` +
+    '<svg width="4" height="16" viewBox="0 0 4 16" aria-hidden="true"><circle cx="2" cy="2" r="2" fill="currentColor"/><circle cx="2" cy="8" r="2" fill="currentColor"/><circle cx="2" cy="14" r="2" fill="currentColor"/></svg></button>' +
+    '<ul class="card-menu-list" role="menu" hidden>' +
+    items.map(([attr, label]) => `<li role="none"><button type="button" role="menuitem" ${attr}>${t(label)}</button></li>`).join('') + '</ul></div>';
+}
+
+function closeCardMenus() {
+  document.querySelectorAll('.card-menu-list:not([hidden])').forEach((m) => {
+    m.hidden = true;
+    m.previousElementSibling.setAttribute('aria-expanded', 'false');
+  });
+}
+
+function toggleCardMenu(btn) {
+  const list = btn.nextElementSibling;
+  const open = list.hidden;
+  closeCardMenus();
+  list.hidden = !open;
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+document.addEventListener('click', (e) => { if (!e.target.closest('.card-menu-wrap')) closeCardMenus(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCardMenus(); });
+
 function societyCard(s, following, imageUrl) {
   return `<li class="card card-society" data-id="${s.id}" tabindex="0">` +
-    (imageUrl ? `<img class="society-cover" src="${esc(imageUrl)}" alt="${esc(s.name)}" loading="lazy">` : '<div class="society-cover"></div>') +
-    `<div class="card-body"><h2>${esc(s.name)}</h2>` +
+    (imageUrl ? `<img class="society-cover" src="${esc(imageUrl)}" alt="${esc(s.name)}" loading="lazy">` : coverDiv(s.name)) +
+    `<div class="card-body"><h2 title="${esc(s.name)}">${esc(s.name)}</h2>` +
     `<p>${esc(s.description)}</p>` +
     hashtagLine(s) +
-    `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button></div></li>`;
+    `<div class="card-foot"><button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button>` +
+    cardMenu([['data-map', 'Show on map']]) + '</div></div></li>';
 }
 
 const WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -47,13 +81,13 @@ function foodCard(f) {
   const todayKey = WEEK[(new Date().getDay() + 6) % 7];
   const label = (v) => (v === 'Closed' ? t('Closed') : esc(v));
   return `<li class="card card-society" data-id="${f.id}" tabindex="0">` +
-    (f.image ? `<img class="society-cover" src="${esc(f.image)}" alt="${esc(f.name)}" loading="lazy">` : '<div class="society-cover"></div>') +
-    `<div class="card-body"><h2>${esc(f.name)}</h2>` +
+    (f.image ? `<img class="society-cover" src="${esc(f.image)}" alt="${esc(f.name)}" loading="lazy">` : coverDiv(f.name)) +
+    `<div class="card-body"><h2 title="${esc(f.name)}">${esc(f.name)}</h2>` +
     `<p>${esc(f.description)}</p>` +
     `<p>${esc(f.building)} &middot; ${t('Today')}: ${label(days[todayKey] || 'Closed')}</p>` +
     `<details class="hours"><summary>${t('Opening hours')}</summary><ul>` +
       WEEK.map((d) => `<li><span>${t(d)}</span><span>${label(days[d] || 'Closed')}</span></li>`).join('') + '</ul></details>' +
-    hashtagLine(f) + '</div></li>';
+    hashtagLine(f) + '<div class="card-foot">' + cardMenu([['data-map', 'Show on map']]) + '</div></div></li>';
 }
 
 function formatDate(iso) {
@@ -122,9 +156,9 @@ function downloadIcs(ev) {
 
 function eventCard(e) {
   return `<li class="card card-society" data-id="${e.id}" tabindex="0">` +
-    (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : '<div class="society-cover"></div>') +
+    (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : coverDiv(e.name)) +
     `<div class="card-body"><span class="card-tag">${esc(e.category)}</span>` +
-    `<h2>${esc(e.name)}</h2>` +
+    `<h2 title="${esc(e.name)}">${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
     `<p>${esc(e.description)}</p>` +
     `<p class="card-actions-label">${t('Add to calendar')}</p>` +

@@ -2,6 +2,7 @@
 (function () {
   const popup = document.getElementById('food-popup');
   const searchInput = popup.querySelector('.page-search');
+  const sortEl = popup.querySelector('.list-sort');
   const listEl = popup.querySelector('.card-list');
   const emptyEl = popup.querySelector('.empty-msg');
   const navLink = document.querySelector('.bottom-nav a[href="/?food"]');
@@ -12,6 +13,7 @@
     const q = searchInput.value.trim().toLowerCase();
     const shown = items.filter((s) =>
       (s.name + ' ' + s.description + ' ' + hashtagsOf(s).join(' ')).toLowerCase().includes(q.replace(/^#/, '')));
+    shown.sort((a, b) => a.name.localeCompare(b.name) * (sortEl.value === 'za' ? -1 : 1));
     listEl.innerHTML = shown.map(foodCard).join('');
     emptyEl.hidden = shown.length > 0;
   }
@@ -31,11 +33,14 @@
   window.openFood = () => setOpen(popup.hidden);
 
   searchInput.addEventListener('input', render);
+  sortEl.addEventListener('change', render);
   popup.querySelector('.popup-close').addEventListener('click', () => setOpen(false));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
   listEl.addEventListener('click', (e) => {
     const card = e.target.closest('.card');
     if (!card || e.target.closest('.hours')) return; // opening hours just expand
+    const menuBtn = e.target.closest('[data-menu]');
+    if (menuBtn) { toggleCardMenu(menuBtn); return; }
     const s = items.find((x) => x.id === Number(card.dataset.id));
     setOpen(false);
     if (window.focusBuildingByName) window.focusBuildingByName(s.building, s.name);
