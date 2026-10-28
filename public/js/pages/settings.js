@@ -22,8 +22,9 @@
     '<section class="admin-requests" hidden>' +
       `<h3>${t('Leader requests')}</h3><ul class="card-list"></ul>` +
       `<p class="empty-msg" role="status" hidden>${t('No pending requests.')}</p></section>` +
+    '<div class="card-actions account-actions">' +
     `<button class="form-submit delete-btn" type="button" data-act="delete-account" hidden>${t('Delete account')}</button>` +
-    `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button>`;
+    `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button></div>`;
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
   const nameField = form.querySelector('.name-field');
@@ -131,7 +132,8 @@
       `<p>${t('Type DELETE (in capital letters, in English) to confirm.')}</p>` +
       '<input name="confirm" autocomplete="off" autocapitalize="off" spellcheck="false">' +
       '<p class="form-msg error" aria-live="polite" hidden></p><div>' +
-      `<button class="form-submit delete-btn" type="button" data-yes disabled>${t('Delete my account')}</button>` +
+      '<div class="card-actions account-actions">' +
+    `<button class="form-submit delete-btn" type="button" data-yes disabled>${t('Delete my account')}</button>` +
       `<button class="auth-guest" type="button" data-no>${t('Cancel')}</button></div>`;
     const input = d.querySelector('input');
     const yes = d.querySelector('[data-yes]');

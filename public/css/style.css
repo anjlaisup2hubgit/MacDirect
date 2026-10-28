@@ -349,9 +349,8 @@ button, input, select, textarea { font-family: inherit; }
 .logout-btn[hidden] { display: none; }
 .delete-btn { min-height: 44px; margin-top: 16px; background: #76232F; }
 .delete-btn[hidden] { display: none; }
-.delete-btn, .logout-btn { display: block; width: 100%; }
-.delete-btn[hidden], .logout-btn[hidden] { display: none; }
-.delete-btn + .logout-btn { margin-top: 16px; }
+.account-actions { margin-top: 32px; }
+.account-actions .delete-btn, .account-actions .logout-btn { flex: 1 1 0; margin: 0; }
 .delete-btn:disabled { opacity: 0.5; cursor: default; }
 .login-prompt input { box-sizing: border-box; width: 100%; min-height: 44px; margin-bottom: 14px; padding: 8px; font: inherit; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
 .login-prompt .form-msg.error { margin: -6px 0 14px; }
