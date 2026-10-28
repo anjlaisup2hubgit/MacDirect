@@ -93,12 +93,32 @@
     agendaEl.innerHTML = agenda || `<p class="empty-msg">${t('No events found.')}</p>`;
   }
 
+  // In-page dialog (native confirm/prompt are blocked in some browsers and then do nothing).
+  // Resolves to the chosen button's value, or null when cancelled.
+  function choose(message, choices, cancelLabel) {
+    return new Promise((resolve) => {
+      const d = document.createElement('dialog');
+      d.className = 'login-prompt';
+      d.innerHTML = `<p>${esc(message)}</p><div>` +
+        choices.map((c, i) => `<button class="form-submit" type="button" data-pick="${i}">${esc(c.label)}</button>`).join('') +
+        `<button class="auth-guest" type="button" data-close>${esc(cancelLabel || t('Cancel'))}</button></div>`;
+      let value = null;
+      d.addEventListener('click', (e) => {
+        if (e.target.dataset.pick !== undefined) { value = choices[e.target.dataset.pick].value; d.close(); }
+        if (e.target.dataset.close !== undefined) d.close();
+      });
+      d.addEventListener('close', () => { d.remove(); resolve(value); });
+      document.body.appendChild(d);
+      d.showModal();
+    });
+  }
+
   // Removes one of the user's own plans when its Remove button is pressed; true if it handled the click.
   async function removePlan(e, list) {
     const btn = e.target.closest('[data-remove]');
     if (!btn) return false;
     const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
-    if (ev && confirm(t('Remove this plan?'))) {
+    if (ev && await choose(t('Remove this plan?'), [{ label: t('Remove'), value: true }])) {
       const { error } = await auth.deletePlan(ev.id);
       if (error) console.error(error); else loadPlans();
     }
@@ -112,12 +132,10 @@
     const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
     const mine = auth.approvedSocieties;
     if (!ev || !mine.length) return true;
-    let society = mine[0];
-    if (mine.length > 1) {
-      const pick = Number(prompt([t('Post to which society?'), ...mine.map((s, i) => `${i + 1}. ${s.name}`)].join('\n')));
-      society = mine[pick - 1];
-      if (!society) return true;
-    } else if (!confirm(`${t('Post to followers of')} ${society.name}?`)) return true;
+    const society = mine.length > 1
+      ? await choose(t('Post to which society?'), mine.map((s) => ({ label: s.name, value: s })))
+      : await choose(`${t('Post to followers of')} ${mine[0].name}?`, [{ label: t('Post'), value: mine[0] }]);
+    if (!society) return true;
     btn.disabled = true;
     let photo;
     if (ev.imageUrl) {
@@ -127,7 +145,7 @@
       societyId: society.id, name: ev.name, category: ev.category, date: ev.date, time: ev.timeValue,
       building: ev.building === 'TBC' ? '' : ev.building, description: ev.description,
     }, photo);
-    if (error) { console.error(error); btn.disabled = false; alert(t('Could not save.')); return true; }
+    if (error) { console.error(error); btn.disabled = false; await choose(t('Could not save.'), [], t('Close')); return true; }
     await auth.deletePlan(ev.id);
     window.dispatchEvent(new Event('events-changed'));
     return true;
@@ -151,7 +169,7 @@
     const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
     if (!ev || !ev.canEdit) return true;
     if (btn.hasAttribute('data-edit')) { if (window.editSocietyEvent) window.editSocietyEvent(ev); return true; }
-    if (confirm(t('Delete this event?'))) {
+    if (await choose(t('Delete this event?'), [{ label: t('Delete'), value: true }])) {
       const { error } = await auth.deleteEvent(ev.id);
       if (error) console.error(error); else loadEvents();
     }
