@@ -13,18 +13,19 @@
         `<option value="mon">${t('Monday')}</option><option value="sun">${t('Sunday')}</option></select></label>` +
       '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</form>' +
-    '<form class="event-form pw-form" novalidate hidden>' +
+    '<form class="event-form pw-form" id="pw-form" novalidate hidden>' +
       `<label>${t('New password')}<input type="password" name="newPassword" minlength="6" autocomplete="new-password" required></label>` +
       `<label>${t('Confirm new password')}<input type="password" name="confirmPassword" minlength="6" autocomplete="new-password" required></label>` +
       '<p class="form-msg" aria-live="polite" hidden></p>' +
-      `<button class="form-submit" type="submit">${t('Change password')}</button>` +
     '</form>' +
     '<section class="admin-requests" hidden>' +
       `<h3>${t('Leader requests')}</h3><ul class="card-list"></ul>` +
       `<p class="empty-msg" role="status" hidden>${t('No pending requests.')}</p></section>` +
     '<div class="card-actions account-actions">' +
-    `<button class="form-submit delete-btn" type="button" data-act="delete-account" hidden>${t('Delete account')}</button>` +
-    `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button></div>`;
+    `<button class="follow-btn pw-btn" type="submit" form="pw-form" hidden>${t('Change password')}</button>` +
+    `<button class="follow-btn delete-btn" type="button" data-act="delete-account" hidden>${t('Delete account')}</button></div>` +
+    '<div class="card-actions account-actions">' +
+    `<button class="follow-btn logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button></div>`;
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
   const nameField = form.querySelector('.name-field');
@@ -67,7 +68,7 @@
 
   const pwForm = p.results.querySelector('.pw-form');
   const pwMsg = pwForm.querySelector('.form-msg');
-  const pwSubmit = pwForm.querySelector('.form-submit');
+  const pwSubmit = p.results.querySelector('.pw-btn');
   function pwFlash(text, isError) {
     pwMsg.textContent = text;
     pwMsg.classList.toggle('error', !!isError);
@@ -106,6 +107,7 @@
     viewField.hidden = !auth.user;
     weekField.hidden = !auth.user;
     pwForm.hidden = !auth.user;
+    pwSubmit.hidden = !auth.user;
     if (auth.user) {
       form.elements.name.value = (auth.profile && auth.profile.display_name) || '';
       const name = (auth.profile && auth.profile.display_name) || t('Signed in');
