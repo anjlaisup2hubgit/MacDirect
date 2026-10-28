@@ -32,7 +32,7 @@ button, input, select, textarea { font-family: inherit; }
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 10px;
+  padding: 0 6px 0 10px;
   background: #fff;
   border: 1px solid var(--control-line);
 }
@@ -41,7 +41,7 @@ button, input, select, textarea { font-family: inherit; }
 .search-bar input {
   flex: 1;
   min-width: 0;
-  min-height: 32px;
+  min-height: 40px;
   border: 0;
   outline: 0;
   font: inherit;
@@ -79,8 +79,8 @@ button, input, select, textarea { font-family: inherit; }
 /* mcqAI info button and answer panel (inside the search bar) */
 .mcqai-info {
   flex: none;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   background: transparent;
   border: 0;
@@ -304,21 +304,23 @@ button, input, select, textarea { font-family: inherit; }
 .card-society .cover-v2 { background: linear-gradient(135deg, rgba(255,255,255,.35) 25%, transparent 25%) -20px 0/40px 40px, linear-gradient(225deg, rgba(255,255,255,.35) 25%, transparent 25%) -20px 0/40px 40px, #B9C4CF; }
 .card-society .cover-v3 { background: radial-gradient(circle at 0 0, rgba(55,58,54,.1) 28px, transparent 29px) 0 0/60px 60px, radial-gradient(circle at 60px 60px, rgba(55,58,54,.1) 28px, transparent 29px) 0 0/60px 60px, #D9B8CC; }
 .card-society .cover-v4 { background: repeating-linear-gradient(45deg, rgba(55,58,54,.08) 0 20px, transparent 20px 40px), #C99AA1; }
-.card-society .card-body { padding: 14px 16px; }
-.card-society h2 { margin: 6px 0 4px; font-size: 16px; font-weight: 400; line-height: 1.3; color: var(--mq-red); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-society .card-body { position: relative; padding: 8px 12px; }
+.card-society .card-body > p { -webkit-line-clamp: 1; }
+.card-society h2 { margin: 0 44px 2px 0; line-height: 1.5; font-size: 16px; font-weight: 400; line-height: 1.3; color: var(--mq-red); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-society .event-poster { height: 160px; object-fit: contain; }
 @media (hover: hover) { .card-society:hover { border-color: var(--mq-red); } }
 .card .card-actions-label { margin: 12px 0 0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; display: block; -webkit-line-clamp: unset; }
 .card-actions-label + .card-actions { margin-top: 4px; }
 .card-society .follow-btn { display: block; margin: 12px 0 0 auto; }
 /* Card footer: Follow on the left, three-dot menu on the right */
-.card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+.card-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+.card-foot .hashtags { display: block; flex: 1; min-width: 0; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-society .card-foot .follow-btn { margin: 0; }
-.card-menu-wrap { position: relative; margin-left: auto; }
+.card-menu-wrap { position: absolute; top: 0; right: 0; }
 .card-menu { display: grid; place-items: center; min-width: 44px; min-height: 44px; padding: 0; color: #373A36; background: none; border: 0; border-radius: 6px; cursor: pointer; }
 @media (hover: hover) { .card-menu:hover { background: #EDEBE5; } }
 .card-menu:focus-visible, .card-menu-list button:focus-visible { outline: 2px solid var(--mq-red); outline-offset: 2px; }
-.card-menu-list { position: absolute; right: 0; bottom: 100%; z-index: 1; min-width: 160px; margin: 0; padding: 4px; list-style: none; background: #fff; border: 1px solid #D6D2C4; border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+.card-menu-list { position: absolute; right: 0; top: 100%; z-index: 1; min-width: 160px; margin: 0; padding: 4px; list-style: none; background: #fff; border: 1px solid #D6D2C4; border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
 .card-menu-list[hidden] { display: none; }
 .card-menu-list button { width: 100%; min-height: 44px; padding: 8px 12px; font: inherit; font-size: 16px; text-align: left; color: #373A36; background: none; border: 0; border-radius: 4px; cursor: pointer; }
 @media (hover: hover) { .card-menu-list button:hover { background: #EDEBE5; } }
@@ -349,11 +351,11 @@ button, input, select, textarea { font-family: inherit; }
 .delete-btn:disabled { opacity: 0.5; cursor: default; }
 .login-prompt input { box-sizing: border-box; width: 100%; min-height: 44px; margin-bottom: 14px; padding: 8px; font: inherit; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
 .login-prompt .form-msg.error { margin: -6px 0 14px; }
-.hours { margin-top: 6px; font-size: 14px; }
+.hours { margin-top: 0; font-size: 14px; }
 .hours summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; color: var(--mq-red); }
 .hours ul { margin: 6px 0 0; padding: 0; list-style: none; }
 .hours li { display: flex; justify-content: space-between; gap: 12px; padding: 2px 0; }
-.card .hashtags { margin: 8px 0 0; font-size: 14px; color: var(--mq-red); }
+.card .hashtags { margin: 2px 0 0; font-size: 14px; color: var(--mq-red); }
 .event-poster { height: auto; max-height: 360px; object-fit: contain; background: #f3f3f3; }
 .follow-btn {
   margin-top: 10px;

@@ -51,6 +51,7 @@
 
   api('/food').then((data) => {
     items = data;
+    window.searchExtras.push(...data.map((f) => ({ name: f.name, building: f.building, kind: 'Food' })));
     render();
   }).catch((err) => {
     console.error(err);

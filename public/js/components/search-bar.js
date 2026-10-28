@@ -1,5 +1,8 @@
 // Floating search + mcqAI bar. Call initSearchBar(features, onSelect, onAsk) once pins are loaded.
 // Typing lists matching buildings plus an "Ask mcqAI" row; optional onAsk(text) returns the answer text to show.
+// Societies and food outlets add themselves here as { name, building, kind } so the bar finds them too.
+window.searchExtras = [];
+
 function initSearchBar(features, onSelect, onAsk) {
   const mount = document.getElementById('search-bar-mount');
   mount.innerHTML =
@@ -48,6 +51,17 @@ function initSearchBar(features, onSelect, onAsk) {
           panel.hidden = true;
           input.value = f.properties.name;
           onSelect(f);
+        });
+      });
+    window.searchExtras
+      .filter((x) => x.name.toLowerCase().includes(q.toLowerCase()))
+      .slice(0, 6)
+      .forEach((x) => {
+        addRow(x.name + ' \u00b7 ' + t(x.kind), '', () => {
+          list.innerHTML = '';
+          panel.hidden = true;
+          input.value = x.name;
+          if (window.focusBuildingByName) window.focusBuildingByName(x.building, x.name);
         });
       });
     addRow(t('Ask mcqAI') + ': ' + q, 'ask-ai', () => ask(q));

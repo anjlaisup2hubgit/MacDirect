@@ -67,6 +67,7 @@
 
   Promise.all([auth.ready.then(() => auth.listSocieties()), auth.ready.then(() => auth.myFollows()), auth.ready.then(() => auth.listSocietyImages())]).then(([data, ids, imgs]) => {
     societies = data;
+    window.searchExtras.push(...data.map((s) => ({ name: s.name, building: s.building, kind: 'Society' })));
     follows = new Set(ids);
     images = imgs;
     render();
