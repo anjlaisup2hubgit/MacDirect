@@ -387,6 +387,7 @@ button, input, select, textarea { font-family: inherit; }
   .societies-popup { max-width: 880px; max-height: 70vh; }
   .event-form { max-width: 560px; }
   .page-search { max-width: 480px; }
+  .cal-day { aspect-ratio: auto; height: 44px; }
   .card-list:has(.card-society) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
