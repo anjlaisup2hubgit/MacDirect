@@ -399,16 +399,15 @@ button, input, select, textarea { font-family: inherit; }
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
 }
 .societies-popup[hidden] { display: none; }
-.popup-island { flex: none; padding: 16px 16px 0; }
+.popup-island { flex: none; padding: 4px 16px 0; }
 .popup-head h1 { font-size: 24px; }
-.page-subtitle { margin: 0 0 12px; padding-bottom: 12px; font-size: 16px; font-weight: 400; border-bottom: 1px solid #D6D2C4; }
 .list-toolbar { display: flex; gap: 8px; padding-bottom: 12px; }
 .list-toolbar .page-search { flex: 1 1 0; min-width: 0; width: auto; max-width: none; }
 .list-sort { flex: 0 0 auto; min-height: 44px; padding: 8px; font: inherit; font-size: 16px; color: #373A36; background: #fff; border: 1px solid var(--control-line); border-radius: 6px; }
 .list-sort:focus-visible { outline: 2px solid var(--mq-red); outline-offset: 0; }
 .popup-results { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 16px; scrollbar-width: none; }
 .popup-results::-webkit-scrollbar { display: none; }
-.popup-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.popup-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
 .popup-head h1 { margin: 0; font-weight: 500; }
 .cal-title { font-weight: 400; }
 .popup-close { min-width: 44px; min-height: 44px; border: 0; background: none; font-size: 32px; line-height: 1; cursor: pointer; }
@@ -418,6 +417,7 @@ button, input, select, textarea { font-family: inherit; }
 /* Wide screens: wider popups, two columns of cards */
 @media (min-width: 768px) {
   .societies-popup { max-width: 880px; max-height: min(85vh, calc(100dvh - var(--nav-height) - 88px)); }
+  .societies-popup:not(#societies-popup):not(#food-popup) { max-width: 480px; }
   .event-form { max-width: 560px; }
   .page-search { max-width: 480px; }
   .cal-day { aspect-ratio: auto; height: 44px; }
@@ -426,7 +426,8 @@ button, input, select, textarea { font-family: inherit; }
 
 /* Add event form */
 .event-form { display: grid; gap: 12px; }
-.event-form label { display: grid; gap: 4px; font-size: 14px; font-weight: 600; }
+.event-form label { display: grid; gap: 4px; font-size: 14px; }
+.societies-popup strong { font-weight: 400; }
 .event-form input:not([type="checkbox"]):not([type="file"]),
 .event-form select,
 .event-form textarea {

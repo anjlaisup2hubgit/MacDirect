@@ -1,6 +1,6 @@
 // User settings popup: display name (logged-in users, saved to profiles), language, calendar view and log out.
 (function () {
-  const p = createPopup({ id: 'settings-popup', title: 'User Settings', subtitle: 'Account overview', navHref: '/?tasks', hash: 'tasks' });
+  const p = createPopup({ id: 'settings-popup', title: 'User Settings', navHref: '/?tasks', hash: 'tasks' });
   p.results.innerHTML =
     '<div class="account"></div>' +
     '<form class="event-form">' +
