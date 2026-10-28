@@ -105,6 +105,10 @@ Steps 0-14 are done; steps 15, 16, 17, 19 and 20 are Partly (see their NOT check
 ## Last updated
 2026-10-28, after Step 35 (owner feedback round, Post button). Dev server for the preview is `.claude/launch.json` `mcq-imap`; the live site is https://mcq-i-map.vercel.app (auto-deploys from `main`, commit and push every change). Gotcha: the preview pane is never the focused window, so `:focus` / `:focus-visible` styles cannot be checked there; the Calendar and forms are login-gated, so check them with a real login or by injecting markup (`eventCard` is a global).
 
+### 2026-10-28 (dialog consistency check)
+* **Change:** `events.js` `choose()` takes `danger: true` per choice (adds `delete-btn`; used by Remove and Delete); `style.css` one rule `.login-prompt > div > .delete-btn { margin-top: 0; }`.
+* **Reasoning:** the destructive confirm now has the same dark red as Delete account. Margin zeroed so the grid gap spaces it like the other buttons. Not checked in a browser.
+
 ### 2026-10-26 (Calendar)
 * **Change:** step 16 above: files `nav.js`, `events.js`, `event-plan.js`, `settings.js`, `societies.js`, `i18n.js`, orphaned `.cal-tabs` CSS removed, README table row and roadmap item 1 (done) updated.
 * **Reasoning:** project owner decisions: Calendar is for logged-in users, shows followed societies' events plus own plans, view (Month/Day) is a setting. Old keys "What's Happening" and "Added! Find it in What's Happening." removed from all three dictionaries.

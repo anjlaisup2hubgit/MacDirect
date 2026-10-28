@@ -100,7 +100,7 @@
       const d = document.createElement('dialog');
       d.className = 'login-prompt';
       d.innerHTML = `<p>${esc(message)}</p><div>` +
-        choices.map((c, i) => `<button class="form-submit" type="button" data-pick="${i}">${esc(c.label)}</button>`).join('') +
+        choices.map((c, i) => `<button class="form-submit${c.danger ? ' delete-btn' : ''}" type="button" data-pick="${i}">${esc(c.label)}</button>`).join('') +
         `<button class="auth-guest" type="button" data-close>${esc(cancelLabel || t('Cancel'))}</button></div>`;
       const done = (value) => { d.remove(); resolve(value); };
       d.addEventListener('click', (e) => {
@@ -119,7 +119,7 @@
     const btn = e.target.closest('[data-remove]');
     if (!btn) return false;
     const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
-    if (ev && await choose(t('Remove this plan?'), [{ label: t('Remove'), value: true }])) {
+    if (ev && await choose(t('Remove this plan?'), [{ label: t('Remove'), value: true, danger: true }])) {
       const { error } = await auth.deletePlan(ev.id);
       if (error) { console.error(error); await choose(t('Could not save.'), [], t('Close')); } else loadPlans();
     }
@@ -172,7 +172,7 @@
     const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
     if (!ev || !ev.canEdit) return true;
     if (btn.hasAttribute('data-edit')) { if (window.editSocietyEvent) window.editSocietyEvent(ev); return true; }
-    if (await choose(t('Delete this event?'), [{ label: t('Delete'), value: true }])) {
+    if (await choose(t('Delete this event?'), [{ label: t('Delete'), value: true, danger: true }])) {
       const { error } = await auth.deleteEvent(ev.id);
       if (error) console.error(error); else loadEvents();
     }
