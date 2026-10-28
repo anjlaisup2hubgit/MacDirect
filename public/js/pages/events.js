@@ -105,6 +105,34 @@
     return true;
   }
 
+  // Posts one of the leader's private plans to a society they lead, so its followers see it; true if it handled the click.
+  async function postPlan(e, list) {
+    const btn = e.target.closest('[data-post]');
+    if (!btn) return false;
+    const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
+    const mine = auth.approvedSocieties;
+    if (!ev || !mine.length) return true;
+    let society = mine[0];
+    if (mine.length > 1) {
+      const pick = Number(prompt([t('Post to which society?'), ...mine.map((s, i) => `${i + 1}. ${s.name}`)].join('\n')));
+      society = mine[pick - 1];
+      if (!society) return true;
+    } else if (!confirm(`${t('Post to followers of')} ${society.name}?`)) return true;
+    btn.disabled = true;
+    let photo;
+    if (ev.imageUrl) {
+      try { const blob = await (await fetch(ev.imageUrl)).blob(); photo = new File([blob], 'photo', { type: blob.type }); } catch (err) { console.error(err); }
+    }
+    const { error } = await auth.saveEvent({
+      societyId: society.id, name: ev.name, category: ev.category, date: ev.date, time: ev.timeValue,
+      building: ev.building === 'TBC' ? '' : ev.building, description: ev.description,
+    }, photo);
+    if (error) { console.error(error); btn.disabled = false; alert(t('Could not save.')); return true; }
+    await auth.deletePlan(ev.id);
+    window.dispatchEvent(new Event('events-changed'));
+    return true;
+  }
+
   // Handles the Add to calendar buttons (Google opens a new tab, Apple downloads an .ics); true if it handled the click.
   function calendarAction(e, list) {
     const btn = e.target.closest('[data-gcal], [data-ics]');
@@ -132,7 +160,7 @@
 
   gate.querySelector('button').addEventListener('click', () => { location.href = '/login.html'; });
   agendaEl.addEventListener('click', async (e) => {
-    if (calendarAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
+    if (calendarAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await postPlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = agendaEvents[[...agendaEl.querySelectorAll('.card')].indexOf(el)];
@@ -158,7 +186,7 @@
     render();
   });
   listEl.addEventListener('click', async (e) => {
-    if (calendarAction(e, dayEvents) || await removePlan(e, dayEvents) || await leaderAction(e, dayEvents)) return;
+    if (calendarAction(e, dayEvents) || await removePlan(e, dayEvents) || await postPlan(e, dayEvents) || await leaderAction(e, dayEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = dayEvents[[...listEl.children].indexOf(el)];

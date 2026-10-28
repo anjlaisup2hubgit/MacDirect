@@ -163,7 +163,8 @@ function eventCard(e) {
     `<p class="card-actions-label">${t('Add to calendar')}</p>` +
     `<div class="card-actions" role="group" aria-label="${t('Add to calendar')}"><button type="button" class="follow-btn" data-gcal>${t('Google')}</button>` +
       `<button type="button" class="follow-btn" data-ics>${t('Apple / Outlook')}</button></div>` +
-    (e.mine ? `<button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` : '') +
+    (e.mine ? `<div class="card-actions"><button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` +
+      (auth.user && auth.approvedSocieties.length ? `<button type="button" class="follow-btn" data-post>${t('Post')}</button>` : '') + '</div>' : '') +
     (e.canEdit ? `<div class="card-actions"><button type="button" class="follow-btn" data-edit>${t('Edit')}</button>` +
       `<button type="button" class="follow-btn" data-delete>${t('Delete')}</button></div>` : '') + '</div></li>';
 }
