@@ -315,7 +315,7 @@ button, input, select, textarea { font-family: inherit; }
 /* Card footer: Follow on the left, three-dot menu on the right */
 .card-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
 .card-foot .hashtags { display: block; flex: 1; min-width: 0; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-society .card-foot .follow-btn { margin: 0; }
+.card-society .card-foot .follow-btn { margin: 0; min-height: 32px; padding: 4px 14px; }
 .card-menu-wrap { position: absolute; top: 0; right: 0; }
 .card-menu { display: grid; place-items: center; min-width: 44px; min-height: 44px; padding: 0; color: #373A36; background: none; border: 0; border-radius: 6px; cursor: pointer; }
 @media (hover: hover) { .card-menu:hover { background: #EDEBE5; } }
@@ -352,7 +352,7 @@ button, input, select, textarea { font-family: inherit; }
 .login-prompt input { box-sizing: border-box; width: 100%; min-height: 44px; margin-bottom: 14px; padding: 8px; font: inherit; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
 .login-prompt .form-msg.error { margin: -6px 0 14px; }
 .hours { margin-top: 0; font-size: 14px; }
-.hours summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; color: var(--mq-red); }
+.hours summary { display: flex; align-items: center; min-height: 28px; cursor: pointer; color: var(--mq-red); }
 .hours ul { margin: 6px 0 0; padding: 0; list-style: none; }
 .hours li { display: flex; justify-content: space-between; gap: 12px; padding: 2px 0; }
 .card .hashtags { margin: 2px 0 0; font-size: 14px; color: var(--mq-red); }
