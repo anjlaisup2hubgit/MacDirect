@@ -102,12 +102,13 @@
       d.innerHTML = `<p>${esc(message)}</p><div>` +
         choices.map((c, i) => `<button class="form-submit" type="button" data-pick="${i}">${esc(c.label)}</button>`).join('') +
         `<button class="auth-guest" type="button" data-close>${esc(cancelLabel || t('Cancel'))}</button></div>`;
-      let value = null;
+      const done = (value) => { d.remove(); resolve(value); };
       d.addEventListener('click', (e) => {
-        if (e.target.dataset.pick !== undefined) { value = choices[e.target.dataset.pick].value; d.close(); }
-        if (e.target.dataset.close !== undefined) d.close();
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        done(btn.dataset.pick !== undefined ? choices[btn.dataset.pick].value : null);
       });
-      d.addEventListener('close', () => { d.remove(); resolve(value); });
+      d.addEventListener('cancel', (e) => { e.preventDefault(); done(null); });
       document.body.appendChild(d);
       d.showModal();
     });
@@ -120,7 +121,7 @@
     const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
     if (ev && await choose(t('Remove this plan?'), [{ label: t('Remove'), value: true }])) {
       const { error } = await auth.deletePlan(ev.id);
-      if (error) console.error(error); else loadPlans();
+      if (error) { console.error(error); await choose(t('Could not save.'), [], t('Close')); } else loadPlans();
     }
     return true;
   }
@@ -137,6 +138,7 @@
       : await choose(`${t('Post to followers of')} ${mine[0].name}?`, [{ label: t('Post'), value: mine[0] }]);
     if (!society) return true;
     btn.disabled = true;
+    try {
     let photo;
     if (ev.imageUrl) {
       try { const blob = await (await fetch(ev.imageUrl)).blob(); photo = new File([blob], 'photo', { type: blob.type }); } catch (err) { console.error(err); }
@@ -148,6 +150,7 @@
     if (error) { console.error(error); btn.disabled = false; await choose(t('Could not save.'), [], t('Close')); return true; }
     await auth.deletePlan(ev.id);
     window.dispatchEvent(new Event('events-changed'));
+    } catch (err) { console.error(err); btn.disabled = false; await choose(t('Could not save.'), [], t('Close')); }
     return true;
   }
 
