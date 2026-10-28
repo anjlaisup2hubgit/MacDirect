@@ -93,27 +93,6 @@
     agendaEl.innerHTML = agenda || `<p class="empty-msg">${t('No events found.')}</p>`;
   }
 
-  // In-page dialog (native confirm/prompt are blocked in some browsers and then do nothing).
-  // Resolves to the chosen button's value, or null when cancelled.
-  function choose(message, choices, cancelLabel) {
-    return new Promise((resolve) => {
-      const d = document.createElement('dialog');
-      d.className = 'login-prompt';
-      d.innerHTML = `<p>${esc(message)}</p><div>` +
-        choices.map((c, i) => `<button class="form-submit${c.danger ? ' delete-btn' : ''}" type="button" data-pick="${i}">${esc(c.label)}</button>`).join('') +
-        `<button class="auth-guest" type="button" data-close>${esc(cancelLabel || t('Cancel'))}</button></div>`;
-      const done = (value) => { d.remove(); resolve(value); };
-      d.addEventListener('click', (e) => {
-        const btn = e.target.closest('button');
-        if (!btn) return;
-        done(btn.dataset.pick !== undefined ? choices[btn.dataset.pick].value : null);
-      });
-      d.addEventListener('cancel', (e) => { e.preventDefault(); done(null); });
-      document.body.appendChild(d);
-      d.showModal();
-    });
-  }
-
   // Removes one of the user's own plans when its Remove button is pressed; true if it handled the click.
   async function removePlan(e, list) {
     const btn = e.target.closest('[data-remove]');

@@ -137,9 +137,10 @@
   async function renderManage() {
     const mine = auth.user ? auth.approvedSocieties.map((s) => s.id) : [];
     if (!mine.length) return;
+    manageEmpty.textContent = t('Your society has not posted any events yet.');
     try {
       manageEvents = (await auth.listEvents()).filter((ev) => mine.includes(ev.societyId)).map((ev) => ({ ...ev, canEdit: true }));
-    } catch (err) { console.error(err); return; }
+    } catch (err) { console.error(err); manageEvents = []; manageEmpty.textContent = t('Could not save.'); manageEmpty.hidden = false; manageList.innerHTML = ''; return; }
     manageList.innerHTML = manageEvents.map(eventCard).join('');
     manageEmpty.hidden = manageEvents.length > 0;
   }
@@ -149,9 +150,9 @@
     const ev = manageEvents[[...manageList.children].indexOf(btn.closest('.card'))];
     if (!ev) return;
     if (btn.hasAttribute('data-edit')) { window.editSocietyEvent(ev); return; }
-    if (!confirm(t('Delete this event?'))) return;
+    if (!await choose(t('Delete this event?'), [{ label: t('Delete'), value: true, danger: true }])) return;
     const { error } = await auth.deleteEvent(ev.id);
-    if (error) { console.error(error); return; }
+    if (error) { console.error(error); await choose(t('Could not save.'), [], t('Close')); return; }
     window.dispatchEvent(new Event('events-changed'));
   });
   window.addEventListener('events-changed', renderManage);
