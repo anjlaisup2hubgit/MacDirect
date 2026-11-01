@@ -82,6 +82,8 @@
   reqBtn.className = 'follow-btn request-lead';
   reqBtn.textContent = t('Request to lead a society');
   grid.append(reqBtn);
+  mBtn.hidden = reqBtn.hidden = true;
+  auth.ready.then(() => { mBtn.hidden = reqBtn.hidden = !auth.user; });
 
   function openLeaderRequest() {
     if (!auth.requireLogin('Log in to request to lead a society')) return;

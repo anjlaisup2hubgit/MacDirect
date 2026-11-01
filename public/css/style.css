@@ -474,6 +474,7 @@ button, input, select, textarea { font-family: inherit; }
 .category-grid[hidden], .card-list[hidden] { display: none; }
 .category-wide { grid-column: 1 / -1; height: auto; }
 .request-lead { grid-column: 1 / -1; justify-self: start; margin: 0; }
+.category-card[hidden], .request-lead[hidden] { display: none; }
 .manage-societies { grid-column: 1 / -1; }
 .manage-societies ul { list-style: none; margin: 8px 0 12px; padding: 0; }
 .manage-societies label { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; }

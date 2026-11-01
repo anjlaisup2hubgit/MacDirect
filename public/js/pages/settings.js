@@ -128,6 +128,7 @@
   }
   function renderAccount() {
     logoutBtn.hidden = !auth.user;
+    p.results.querySelector('.contact-box').hidden = !auth.user;
     deleteBtn.hidden = !auth.user;
     nameField.hidden = !auth.user;
     viewField.hidden = !auth.user;
