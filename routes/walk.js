@@ -249,26 +249,45 @@ function routeBetween(nodes, feature, spot, night) {
   const ring = feature.geometry.type === 'MultiPolygon'
     ? feature.geometry.coordinates[0][0]
     : feature.geometry.coordinates[0];
-  let start = null;
-  let startD = 90;
+  // Try every footpath node near the building (a virtual start joins them, costing their distance to the wall)
+  // and every node near the spot, so one badly placed node cannot send the walk the long way round.
+  // Widen the search only when the tight one finds nothing (a wide one lets a single node between the two count as a walk).
+  const near = new Map();
+  const away = new Map();
   for (const node of nodes.values()) {
-    for (const [lng, lat] of ring) {
-      const d = metres(node, { lng, lat });
-      if (d < startD) { start = node; startD = d; }
-    }
+    let d = Infinity;
+    for (const [lng, lat] of ring) d = Math.min(d, metres(node, { lng, lat }));
+    near.set(node, d);
+    away.set(node, metres(node, spot));
   }
-  const goal = nearest(nodes, spot, 90);
-  if (!start || !goal) return null;
-  const { dist, prev } = shortestFrom(start, night);
-  if (!dist.has(goal)) return null;
+  let virtual = null;
+  let prev = null;
+  let goal = null;
+  for (const limit of [40, 65, 90]) {
+    const starts = [...nodes.values()].filter((n) => near.get(n) <= limit);
+    const goals = [...nodes.values()].filter((n) => away.get(n) <= limit);
+    if (!starts.length || !goals.length) continue;
+    virtual = { lat: 0, lng: 0, edges: starts.map((n) => ({ to: n, w: 0, cost: near.get(n), nightCost: near.get(n), lit: false, steps: false, name: '' })) };
+    const found = shortestFrom(virtual, night);
+    prev = found.prev;
+    let best = Infinity;
+    for (const g of goals) {
+      const cost = found.dist.get(g);
+      if (cost !== undefined && cost + away.get(g) < best) { best = cost + away.get(g); goal = g; }
+    }
+    if (goal) break;
+  }
+  if (!goal) return null;
   const hops = [];
   let cursor = goal;
-  while (cursor && cursor !== start) {
+  while (cursor) {
     const hop = prev.get(cursor);
+    if (!hop || hop.node === virtual) break;
     hops.push({ from: hop.node, to: cursor, w: hop.w, steps: hop.steps, lit: hop.lit, name: hop.name || '' });
     cursor = hop.node;
   }
   hops.reverse();
+  const start = hops.length ? hops[0].from : goal;
   const coordinates = [[start.lat, start.lng]];
   let walked = 0;
   let litWalked = 0;
