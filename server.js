@@ -8,9 +8,24 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
-// Security headers. The page CSP is off because the pages use inline scripts and CDN files.
+// Security headers. The CSP lists every outside host the pages use; inline styles stay allowed (Leaflet and the cards set them).
 app.set('trust proxy', 1);
-app.use(helmet({ contentSecurityPolicy: false, referrerPolicy: { policy: 'strict-origin-when-cross-origin' } }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", 'https://unpkg.com', 'https://cdn.jsdelivr.net'],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://unpkg.com', 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:', 'blob:', 'https://*.tile.openstreetmap.org', 'https://tile.openstreetmap.org', 'https://*.supabase.co'],
+      connectSrc: ["'self'", 'https://*.supabase.co', 'wss://*.supabase.co'],
+      objectSrc: ["'none'"],
+      frameAncestors: ["'self'"],
+      upgradeInsecureRequests: null,
+    },
+  },
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+}));
 app.use('/api', rateLimit({ windowMs: 60 * 1000, limit: 120 }));
 const PORT = process.env.PORT || 3000;
 
