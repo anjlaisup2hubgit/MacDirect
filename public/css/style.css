@@ -751,6 +751,8 @@ a.directions-btn {
 /* Wellbeing: help link, rest nudge, sustainability tags */
 .help-link { margin: 16px 0 0; font-size: 14px; }
 .help-link a { color: var(--mq-red); }
+.contact-box .help-link { margin: 0 0 12px; }
+.contact-box .help-link a { display: inline-block; padding: 12px 0; }
 .rest-nudge { margin: 0 0 12px; padding: 8px 12px; font-size: 14px; border-left: 4px solid #2e7d32; background: #f1f8f1; }
 .rest-nudge p { margin: 0; }
 .rest-nudge p + p { margin-top: 4px; }

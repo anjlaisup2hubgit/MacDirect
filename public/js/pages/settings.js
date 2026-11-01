@@ -52,6 +52,11 @@
     '</div>' +
     '<div class="tab-panel" data-panel="contact" hidden>' +
     '<section class="contact-box">' +
+      `<h3>${t('Need help?')}</h3>` +
+      `<p>${t('For stress, health or wellbeing, Macquarie\'s student support team can help. The iMCQ developers cannot give personal advice.')}</p>` +
+      `<p class="help-link"><a href="https://students.mq.edu.au/support/personal/wellbeing" target="_blank" rel="noopener">${t('Macquarie student wellbeing support')}</a></p>` +
+    '</section>' +
+    '<section class="contact-box">' +
       `<h3>${t('Contact the developers')}</h3>` +
       `<p>${t('Found a problem, a wrong result or something unfair? Tell us.')}</p>` +
       '<form class="event-form contact-form" novalidate>' +
@@ -66,7 +71,6 @@
       '</form>' +
     '</section>' +
     '</div>' +
-    `<p class="help-link"><a href="https://students.mq.edu.au/support/personal/wellbeing" target="_blank" rel="noopener">${t('Need help?')}</a></p>` +
     '<div class="card-actions account-actions">' +
     `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button></div>`;
   const form = p.results.querySelector('form');
@@ -118,12 +122,12 @@
     nameMsg.hidden = false;
   });
 
-  // Tabs: General, Username, Data and Contact; guests only see General and Data.
+  // Tabs: General, Username, Data and Contact; guests do not see Username (Contact holds the wellbeing link, so guests need it).
   let tab = 'general';
   function showTab() {
-    if (!auth.user && (tab === 'name' || tab === 'contact')) tab = 'general';
+    if (!auth.user && tab === 'name') tab = 'general';
     tabs.querySelectorAll('.chip').forEach((b) => {
-      b.hidden = !auth.user && (b.dataset.tab === 'name' || b.dataset.tab === 'contact');
+      b.hidden = !auth.user && b.dataset.tab === 'name';
       b.classList.toggle('active', b.dataset.tab === tab);
     });
     panels.forEach((el) => { el.hidden = el.dataset.panel !== tab; });
