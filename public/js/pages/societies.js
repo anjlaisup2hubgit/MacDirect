@@ -61,6 +61,21 @@
   tBtn.querySelector('.category-more').textContent = t('Find out more') + ' ›';
   grid.append(tBtn);
 
+  // Manage my societies opens its own page; guests are asked to log in first.
+  const mBtn = document.createElement('button');
+  mBtn.type = 'button';
+  mBtn.className = 'category-card category-wide';
+  mBtn.innerHTML = '<span class="category-copy"><span class="category-title"></span><span class="category-blurb"></span><span class="category-more"></span></span>';
+  mBtn.querySelector('.category-title').textContent = t('Manage my societies');
+  mBtn.querySelector('.category-blurb').textContent = t('See the societies you follow and unfollow several at once.');
+  mBtn.querySelector('.category-more').textContent = t('Find out more') + ' ›';
+  mBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!auth.requireLogin('Log in to manage your societies')) return;
+    location.href = '/manage-societies.html';
+  });
+  grid.append(mBtn);
+
   // Logged in users ask to lead a society here; guests are asked to log in first.
   const reqBtn = document.createElement('button');
   reqBtn.type = 'button';
@@ -96,56 +111,6 @@
   }
   reqBtn.addEventListener('click', openLeaderRequest);
 
-  // Manage my societies: tick followed societies and unfollow them in one go (logged in only).
-  const manage = document.createElement('section');
-  manage.className = 'manage-societies';
-  manage.hidden = true;
-  grid.append(manage);
-  let picked = new Set();
-
-  function renderManage() {
-    const mine = societies.filter((s) => follows.has(s.id)).sort((a, b) => a.name.localeCompare(b.name));
-    manage.hidden = !auth.user;
-    if (manage.hidden) return;
-    picked = new Set([...picked].filter((id) => follows.has(id)));
-    manage.innerHTML = `<h2>${t('Manage my societies')}</h2>` + (mine.length
-      ? `<label class="manage-all"><input type="checkbox" data-all${picked.size === mine.length ? ' checked' : ''}> ${t('Select all')}</label>` +
-        '<ul>' + mine.map((s) => `<li><label><input type="checkbox" data-pick="${s.id}"${picked.has(s.id) ? ' checked' : ''}> ${esc(s.name)}</label></li>`).join('') + '</ul>' +
-        `<button class="follow-btn" type="button" data-unfollow${picked.size ? '' : ' disabled'}>${t('Unfollow selected')}</button>` +
-        '<p class="form-msg" role="status" hidden></p>'
-      : `<p class="empty-msg">${t('You are not following any societies yet.')}</p>`);
-  }
-
-  manage.addEventListener('change', (e) => {
-    if (e.target.dataset.all !== undefined) {
-      picked = e.target.checked ? new Set(societies.filter((s) => follows.has(s.id)).map((s) => s.id)) : new Set();
-    } else if (e.target.dataset.pick) {
-      const id = Number(e.target.dataset.pick);
-      e.target.checked ? picked.add(id) : picked.delete(id);
-    } else return;
-    renderManage();
-  });
-
-  manage.addEventListener('click', async (e) => {
-    const btn = e.target.closest('[data-unfollow]');
-    if (!btn) return;
-    btn.disabled = true;
-    const ids = [...picked];
-    const { error } = await auth.unfollowMany(ids);
-    if (error) {
-      console.error(error);
-      const msg = manage.querySelector('.form-msg');
-      msg.textContent = t('Could not save.');
-      msg.hidden = false;
-      btn.disabled = false;
-      return;
-    }
-    ids.forEach((id) => follows.delete(id));
-    picked = new Set();
-    window.dispatchEvent(new Event('events-changed'));
-    render();
-  });
-
   function render() {
     const q = searchInput.value.trim().toLowerCase().replace(/^#/, '');
     const home = !category && !q;
@@ -156,7 +121,6 @@
     title.textContent = people ? t('Who runs each society') : category ? t(category) : t('Societies');
     close.setAttribute('aria-label', category ? t('Categories') : t('Map'));
     if (home) {
-      renderManage();
       emptyEl.hidden = true;
       return;
     }
