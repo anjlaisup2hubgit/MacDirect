@@ -35,7 +35,7 @@
     `<button class="follow-btn" type="button" data-act="download-data" hidden>${t('Download my data')}</button></div>` +
     '<section class="contact-box">' +
       `<h3>${t('Contact the developers')}</h3>` +
-      `<p>${t('Found a problem, a wrong result or something unfair? Tell us. You do not need an account.')}</p>` +
+      `<p>${t('Found a problem, a wrong result or something unfair? Tell us.')}</p>` +
       '<form class="event-form contact-form" novalidate>' +
         `<label>${t('What is this about?')}<select name="kind">` +
           `<option value="problem">${t('Something is broken')}</option><option value="unfair">${t('A wrong or unfair result')}</option>` +
