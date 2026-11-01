@@ -18,6 +18,8 @@
         `<option value="mon">${t('Monday')}</option><option value="sun">${t('Sunday')}</option></select></label>` +
       '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</form>' +
+    '<div class="card-actions account-actions">' +
+    `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button></div>` +
     '</div>' +
     '<div class="tab-panel" data-panel="name" hidden>' +
     '<form class="event-form name-form" novalidate>' +
@@ -70,9 +72,7 @@
         '<p class="form-msg" aria-live="polite" hidden></p>' +
       '</form>' +
     '</section>' +
-    '</div>' +
-    '<div class="card-actions account-actions">' +
-    `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button></div>`;
+    '</div>';
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
   const nameForm = p.results.querySelector('.name-form');
