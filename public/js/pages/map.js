@@ -116,6 +116,11 @@ function esc(t) {
   return d.innerHTML;
 }
 
+const MQ_ACCESS_MAP = 'https://www.mq.edu.au/__data/assets/pdf_file/0011/1182683/map_accessibility.pdf';
+function mapLinkHtml() {
+  return `<a href="${MQ_ACCESS_MAP}" target="_blank" rel="noopener">${t('Open the Macquarie University Accessibility Map')}</a>`;
+}
+
 // Accessibility block of the building panel; a building with no data says so instead of staying blank.
 function accessibilityHtml(a) {
   if (!a) return `<h3>${t('Accessibility')}</h3><p>${t('Not confirmed for this building. Check the Macquarie University Accessibility Map.')}</p>`;
@@ -130,7 +135,8 @@ function accessibilityHtml(a) {
   if (a.showers) rows.push(`${t('Accessible showers')}: ${a.showers}`);
   if (a.stairs) rows.push(`${t('External stairs')}: ${a.stairs}`);
   return `<h3>${t('Accessibility')}</h3><ul class="building-panel-access">${rows.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>` +
-    `<p class="building-panel-note">${t('Source: Macquarie University Accessibility Map, April 2026. Positions are approximate, so check before you rely on them.')}</p>`;
+    `<p class="building-panel-note">${t('Source: Macquarie University Accessibility Map, April 2026. Positions are approximate, so check before you rely on them.')}</p>` +
+    `<p class="building-panel-note">${mapLinkHtml()}</p>`;
 }
 
 let societies = [];
@@ -348,7 +354,8 @@ api('/map').then((data) => {
         if (preferLit) {
           const credit = document.createElement('p');
           credit.className = 'route-credit';
-          credit.textContent = t('Source: Macquarie University Accessibility Map, April 2026. Paths not marked there may still be lit.');
+          credit.textContent = t('Source: Macquarie University Accessibility Map, April 2026. Paths not marked there may still be lit.') + ' ';
+          credit.insertAdjacentHTML('beforeend', mapLinkHtml());
           card.appendChild(credit);
         }
         const steps = route.instructions || [];

@@ -105,6 +105,8 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 
 | 49 | Help link on a busy day (1 Nov 2026): the "Remember to rest" note (`restNote` in `card.js`, `.rest-nudge` in `style.css`) now also says "Feeling overloaded? Macquarie wellbeing can help." with a "Get support" link to `students.mq.edu.au/support/personal/wellbeing` (new tab). 2 new keys in all 11 languages (machine-written) | Partly. `node --check` passes. Preview at 320px with `restNote` loaded by hand: link correct, 4 events show the note and 3 do not, no sideways scroll, link about 42px high (just under 44px). NOT checked: the real Calendar with a busy day, non-English wording, Arabic layout. |
 
+| 50 | Link to Macquarie's Accessibility Map (1 Nov 2026): under the source note in the building panel's Accessibility block, and under the lit-paths source line on the route card, a link "Open the Macquarie University Accessibility Map" to `www.mq.edu.au/__data/assets/pdf_file/0011/1182683/map_accessibility.pdf` (new tab; `mapLinkHtml` in `map.js`). New key is English only | Partly. `node --check` passes. Preview as a guest: the link shows in the panel of 2 Innovation Road with the right URL and `_blank`. NOT checked: the route card link, the PDF URL staying live, other languages. |
+
 ## Next step
 Step 49: owner adds 4 events on one day (logged in) and checks the note and link in the Calendar.
 Step 48: owner, as an approved leader, opens Add event > Cover photo, picks hashtags from the dropdown, saves, and checks the Societies card. Decide if the 16 choices are the right list.

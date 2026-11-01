@@ -719,6 +719,7 @@ a.directions-btn {
 }
 .route-lit input { width: 20px; height: 20px; margin: 0; accent-color: #174EA6; }
 .route-credit { margin: 0; padding: 0 16px 8px; font-size: 12px; color: var(--ink); }
+.route-credit a { color: var(--mq-red); text-decoration: underline; }
 .route-first, .route-steps li {
   display: flex;
   align-items: center;
