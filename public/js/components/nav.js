@@ -9,7 +9,18 @@
   const here = location.pathname;
   const statusText = () => (typeof auth !== 'undefined' && auth.user ? t('Signed in') : t('Not signed in'));
   // Add event is only for approved society leaders.
-  const isLeader = () => typeof auth !== 'undefined' && !!auth.user && auth.approvedSocieties.length > 0;
+  // Every page load repaints the nav before auth is ready; the last answer is remembered so the
+  // button does not vanish and come back. It is only a display hint, never a permission check.
+  const KEY = 'imcq-leader';
+  let settled = false;
+  const isLeader = () => {
+    if (!settled) {
+      try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; }
+    }
+    const leader = typeof auth !== 'undefined' && !!auth.user && auth.approvedSocieties.length > 0;
+    try { localStorage.setItem(KEY, leader ? '1' : '0'); } catch (e) { /* storage blocked */ }
+    return leader;
+  };
   const paint = () => {
     const shown = items.filter((i) => i.href !== '/event-plan.html' || isLeader());
     const links = shown.map((i) => {
@@ -24,7 +35,7 @@
   };
   paint();
   if (typeof auth !== 'undefined') {
-    auth.ready.then(paint);
+    auth.ready.then(() => { settled = true; paint(); });
     auth.onChange(paint);
   }
 })();
