@@ -316,9 +316,8 @@ api('/map').then((data) => {
 
       function showRoute(route, firstTime) {
         if (line) { map.removeLayer(casing); map.removeLayer(line); }
-        const hc = document.documentElement.dataset.contrast === 'high';
-        casing = L.polyline(route.coordinates, { ...routeLine, color: hc ? '#000' : '#174EA6', weight: hc ? 8 : 3.5 }).addTo(map);
-        line = L.polyline(route.coordinates, { ...routeLine, color: hc ? '#FFD400' : '#4285F4', weight: hc ? 4 : 2.5 }).addTo(map);
+        casing = L.polyline(route.coordinates, { ...routeLine, color: '#174EA6', weight: 3.5 }).addTo(map);
+        line = L.polyline(route.coordinates, { ...routeLine, color: '#4285F4', weight: 2.5 }).addTo(map);
         casing.bringToFront();
         line.bringToFront();
         if (firstTime) map.fitBounds(line.getBounds(), { paddingTopLeft: [28, 88], paddingBottomRight: [28, 212] });
