@@ -21,6 +21,9 @@
     '<section class="admin-requests" hidden>' +
       `<h3>${t('Leader requests')}</h3><ul class="card-list"></ul>` +
       `<p class="empty-msg" role="status" hidden>${t('No pending requests.')}</p></section>` +
+    '<section class="admin-feedback" hidden>' +
+      `<h3>${t('Feedback')}</h3><ul class="card-list"></ul>` +
+      `<p class="empty-msg" role="status" hidden>${t('No feedback yet.')}</p></section>` +
     '<section class="privacy-box">' +
       `<h3>${t('Your data')}</h3>` +
       `<p class="privacy-guest">${t('You are browsing as a guest. iMCQ stores only your language choice and your guest choice in this browser. We do not store your location.')}</p>` +
@@ -275,6 +278,26 @@
     if (error) { console.error(error); flash(t('Could not save.'), true); return; }
     renderRequests();
   });
+  // Admins read the messages sent through Contact the developers (newest first, last 100).
+  const feedbackBox = p.results.querySelector('.admin-feedback');
+  const feedbackList = feedbackBox.querySelector('.card-list');
+  const feedbackEmpty = feedbackBox.querySelector('.empty-msg');
+  const KIND_LABELS = { problem: 'Something is broken', unfair: 'A wrong or unfair result', privacy: 'A privacy concern', idea: 'An idea', other: 'Something else' };
+  async function renderFeedback() {
+    const isAdmin = !!(auth.profile && auth.profile.role === 'admin');
+    feedbackBox.hidden = !isAdmin;
+    if (!isAdmin) return;
+    let rows;
+    try { rows = await auth.listFeedback(); } catch (err) { console.error(err); return; }
+    feedbackList.innerHTML = rows.map((r) =>
+      `<li class="card"><h2>${esc(t(KIND_LABELS[r.kind] || 'Something else'))}</h2>` +
+      `<p class="feedback-text">${esc(r.message)}</p>` +
+      `<p>${esc(new Date(r.created_at).toLocaleDateString('en-AU'))} · ${esc((r.profiles && r.profiles.display_name) || t('Guest'))}` +
+      `${r.reply_email ? ' · ' + esc(r.reply_email) : ''}</p></li>`).join('');
+    feedbackEmpty.hidden = rows.length > 0;
+  }
+  auth.onChange(renderFeedback);
+  auth.ready.then(renderFeedback);
   auth.onChange(renderRequests);
   auth.ready.then(renderRequests);
   auth.onChange(renderAccount);

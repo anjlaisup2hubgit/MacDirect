@@ -183,6 +183,13 @@ const auth = (function () {
       if (error) throw error;
       return data;
     },
+    // Admin only (row-level security returns nothing for anyone else): newest feedback first.
+    async listFeedback() {
+      const { data, error } = await state.sb.from('feedback')
+        .select('id, kind, message, reply_email, created_at, profiles(display_name)').order('created_at', { ascending: false }).limit(100);
+      if (error) throw error;
+      return data;
+    },
     // Admin only: status is 'approved' or 'rejected'.
     async setLeaderStatus(id, status) {
       return state.sb.from('society_leaders').update({ status }).eq('id', id);
