@@ -22,6 +22,7 @@
   let societies = [];
   let follows = new Set();
   let images = {};
+  let leaders = {};
   let category = '';
 
   CATEGORIES.forEach((c, i) => {
@@ -48,16 +49,36 @@
     grid.append(btn);
   });
 
+  // Transparency entry: a wide card under the six categories
+  const TRANSPARENCY = 'transparency';
+  const tBtn = document.createElement('button');
+  tBtn.type = 'button';
+  tBtn.className = 'category-card category-wide';
+  tBtn.dataset.category = TRANSPARENCY;
+  tBtn.innerHTML = '<span class="category-copy"><span class="category-title"></span><span class="category-blurb"></span><span class="category-more"></span></span>';
+  tBtn.querySelector('.category-title').textContent = t('Who runs each society');
+  tBtn.querySelector('.category-blurb').textContent = t('See each society\'s leaders and how to contact them.');
+  tBtn.querySelector('.category-more').textContent = t('Find out more') + ' ›';
+  grid.append(tBtn);
+
   function render() {
     const q = searchInput.value.trim().toLowerCase().replace(/^#/, '');
     const home = !category && !q;
+    const people = category === TRANSPARENCY;
     grid.hidden = !home;
     listEl.hidden = home;
     sortEl.hidden = home;
-    title.textContent = category ? t(category) : t('Societies');
+    title.textContent = people ? t('Who runs each society') : category ? t(category) : t('Societies');
     close.setAttribute('aria-label', category ? t('Categories') : t('Map'));
     if (home) {
       emptyEl.hidden = true;
+      return;
+    }
+    if (people) {
+      const shown = societies.filter((s) => !q || (s.name + ' ' + (leaders[s.id] || []).join(' ')).toLowerCase().includes(q));
+      shown.sort((a, b) => a.name.localeCompare(b.name) * (sortEl.value === 'za' ? -1 : 1));
+      listEl.innerHTML = shown.map((s) => leadersCard(s, leaders[s.id])).join('');
+      emptyEl.hidden = shown.length > 0;
       return;
     }
     const shown = societies.filter((s) => {
@@ -112,7 +133,7 @@
   sortEl.addEventListener('change', render);
   listEl.addEventListener('click', async (e) => {
     const card = e.target.closest('.card');
-    if (!card) return;
+    if (!card || card.classList.contains('card-info')) return;
     const menuBtn = e.target.closest('[data-menu]');
     if (menuBtn) { toggleCardMenu(menuBtn); return; }
     const s = societies.find((x) => String(x.id) === card.dataset.id);
@@ -137,10 +158,11 @@
     auth.listSocietyImages().then((map) => { images = map; render(); }).catch(console.error);
   });
 
-  Promise.all([auth.ready.then(() => auth.listSocieties()), auth.ready.then(() => auth.myFollows()), auth.ready.then(() => auth.listSocietyImages())]).then(([data, ids, imgs]) => {
+  Promise.all([auth.ready.then(() => auth.listSocieties()), auth.ready.then(() => auth.myFollows()), auth.ready.then(() => auth.listSocietyImages()), auth.ready.then(() => auth.listPublicLeaders())]).then(([data, ids, imgs, people]) => {
     societies = data;
     follows = new Set(ids);
     images = imgs;
+    leaders = people;
     render();
   }).catch((err) => {
     console.error(err);
