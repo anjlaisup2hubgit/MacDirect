@@ -27,6 +27,10 @@
         <label class="auth-check"><input type="checkbox" name="isLeader"> <span><span data-i18n="I lead a society">I lead a society</span><small data-i18n="An admin will approve this">An admin will approve this</small></span></label>
         <label data-leader hidden><span data-i18n="Society">Society</span><select name="societyId"></select></label>
       </div>
+      <div data-signup hidden class="auth-leader">
+        <p class="auth-consent-info"><strong data-i18n="What iMCQ stores">What iMCQ stores</strong><br><span data-i18n="Your email, display name, the societies you follow and your event plans. This lets you log in and keep your calendar. We do not store your location. You can download or delete your data in Settings.">Your email, display name, the societies you follow and your event plans. This lets you log in and keep your calendar. We do not store your location. You can download or delete your data in Settings.</span></p>
+        <label class="auth-check"><input type="checkbox" name="consent" required> <span data-i18n="I understand what iMCQ stores and why">I understand what iMCQ stores and why</span></label>
+      </div>
       <button class="form-submit" type="submit">Log in</button>
       <p class="form-msg" role="alert" hidden></p>
     </form>

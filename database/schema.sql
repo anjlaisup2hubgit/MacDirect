@@ -286,11 +286,33 @@ begin
      and not exists (select 1 from public.profiles where role = 'admin' and id <> auth.uid()) then
     raise exception 'You are the only admin';
   end if;
+  update public.feedback set reply_email = null where user_id = auth.uid();
   delete from auth.users where id = auth.uid();
 end;
 $$;
 revoke all on function public.delete_my_account() from public, anon;
 grant execute on function public.delete_my_account() to authenticated;
+
+-- Contact the developers: anyone (guests too) can send a message; only an admin can read them.
+-- Deleting an account keeps the message but drops the link to the user and any reply email.
+-- Safe to run again.
+create table if not exists public.feedback (
+  id          bigint generated always as identity primary key,
+  user_id     uuid references public.profiles (id) on delete set null,
+  kind        text not null check (kind in ('problem', 'unfair', 'privacy', 'idea', 'other')),
+  message     text not null check (char_length(message) between 1 and 1000),
+  reply_email text check (reply_email is null or char_length(reply_email) <= 254),
+  created_at  timestamptz not null default now()
+);
+alter table public.feedback enable row level security;
+drop policy if exists "feedback send" on public.feedback;
+create policy "feedback send" on public.feedback
+  for insert to anon, authenticated with check (user_id is null or user_id = auth.uid());
+drop policy if exists "feedback admin read" on public.feedback;
+create policy "feedback admin read" on public.feedback
+  for select to authenticated using (public.is_admin());
+grant insert on public.feedback to anon, authenticated;
+grant select on public.feedback to authenticated;
 
 -- Making yourself the first admin (SQL editor only, after signing up once):
 --   update public.profiles set role = 'admin' where id = '<your auth.users id>';

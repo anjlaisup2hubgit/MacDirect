@@ -84,7 +84,7 @@ const auth = (function () {
     async signUp({ email, password, displayName, societyId }) {
       const { data, error } = await state.sb.auth.signUp({
         email, password,
-        options: { data: { display_name: displayName, leader_society_id: societyId || null } },
+        options: { data: { display_name: displayName, leader_society_id: societyId || null, consent_at: new Date().toISOString() } },
       });
       return { error, needsConfirmation: !error && !data.session };
     },
@@ -126,6 +126,36 @@ const auth = (function () {
     },
     async changePassword(newPassword) {
       const { error } = await state.sb.auth.updateUser({ password: newPassword });
+      return { error };
+    },
+    // Everything stored about the logged-in user, for the privacy section and "Download my data".
+    async exportMyData() {
+      const id = state.user.id;
+      const [follows, plans, leaders] = await Promise.all([
+        state.sb.from('follows').select('created_at, societies(name)').eq('user_id', id),
+        state.sb.from('event_plans').select('*').eq('user_id', id),
+        state.sb.from('society_leaders').select('status, created_at, societies(name)').eq('user_id', id),
+      ]);
+      const failed = follows.error || plans.error || leaders.error;
+      if (failed) throw failed;
+      return {
+        account: {
+          email: state.user.email,
+          display_name: state.profile && state.profile.display_name,
+          role: state.profile && state.profile.role,
+          signed_up: state.user.created_at,
+          consent_at: state.user.user_metadata && state.user.user_metadata.consent_at,
+        },
+        followed_societies: follows.data,
+        event_plans: plans.data,
+        leader_requests: leaders.data,
+      };
+    },
+    // Contact the developers. Guests may send too (user_id stays empty); `replyEmail` is optional.
+    async sendFeedback({ kind, message, replyEmail }) {
+      const { error } = await state.sb.from('feedback').insert({
+        user_id: state.user ? state.user.id : null, kind, message, reply_email: replyEmail || null,
+      });
       return { error };
     },
     // Society ids the logged-in user follows (empty for guests).

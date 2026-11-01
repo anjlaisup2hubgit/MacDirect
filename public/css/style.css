@@ -560,6 +560,12 @@ button, input, select, textarea { font-family: inherit; }
 .auth-card .event-form input[type="checkbox"] { flex: none; width: 24px; height: 24px; min-height: 0; padding: 0; accent-color: var(--mq-red); }
 .auth-check { display: flex !important; align-items: center; min-height: 48px; gap: 12px; font-weight: 400 !important; }
 .auth-check small { display: block; font-size: 13px; font-weight: 400; }
+.auth-consent-info { margin: 0 0 4px; font-size: 14px; line-height: 1.4; }
+.privacy-box h3, .contact-box h3 { margin: 24px 0 8px; font-size: 18px; font-weight: 500; }
+.privacy-box ul { margin: 0 0 12px; padding-left: 20px; font-size: 14px; line-height: 1.5; }
+.privacy-box p, .contact-box p { margin: 0 0 12px; font-size: 14px; line-height: 1.4; }
+.contact-box .event-form { margin-top: 0; }
+.contact-box textarea { box-sizing: border-box; width: 100%; min-height: 96px; padding: 8px; font: inherit; font-size: 16px; border: 1px solid var(--control-line, #ccc); border-radius: 6px; resize: vertical; }
 .auth-card .form-submit { min-height: 52px; font-family: inherit; font-size: 18px; font-weight: 500; border-radius: 999px; }
 .auth-card .form-submit:hover, .auth-card .form-submit:active { background: #C42B68; }
 .auth-card .form-submit:disabled { opacity: 0.7; cursor: default; }

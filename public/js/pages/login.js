@@ -32,6 +32,7 @@
     form.querySelectorAll('[data-signup]').forEach((el) => { el.hidden = mode !== 'signup'; });
     submit.textContent = t(mode === 'signup' ? 'Sign up' : 'Log in');
     form.elements.password.autocomplete = mode === 'signup' ? 'new-password' : 'current-password';
+    form.elements.consent.required = mode === 'signup'; // a hidden required box would block logging in
     msg.hidden = true;
   }
 
