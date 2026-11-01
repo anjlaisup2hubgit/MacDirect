@@ -14,7 +14,8 @@
   const KEY = 'imcq-leader';
   let settled = false;
   const isLeader = () => {
-    if (!settled) {
+    // If the leader query failed, keep the remembered answer instead of overwriting it.
+    if (!settled || (typeof auth !== 'undefined' && auth.leaderError)) {
       try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; }
     }
     const leader = typeof auth !== 'undefined' && !!auth.user && auth.approvedSocieties.length > 0;

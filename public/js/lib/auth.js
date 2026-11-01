@@ -34,7 +34,8 @@ const auth = (function () {
       state.sb.from('society_leaders').select('society_id, status, societies(name)').eq('user_id', state.user.id),
     ]);
     state.profile = p.data || null;
-    state.leaderships = l.data || [];
+    state.leaderError = !!l.error;
+    if (!l.error) state.leaderships = l.data || [];
   }
 
   async function clearMyPlans() {
@@ -46,9 +47,12 @@ const auth = (function () {
   }
 
   async function refresh(session) {
+    // A failed leader query keeps the last answer for the same user, so the Event button does not vanish.
+    const sameUser = !!(state.user && session && state.user.id === session.user.id);
     state.user = session ? session.user : null;
     state.profile = null;
-    state.leaderships = [];
+    state.leaderError = false;
+    if (!sameUser) state.leaderships = [];
     if (state.user) {
       setGuest(false);
       await syncLeaderRequest();
@@ -78,6 +82,7 @@ const auth = (function () {
     get user() { return state.user; },
     get profile() { return state.profile; },
     get leaderships() { return state.leaderships; },
+    get leaderError() { return state.leaderError; },
     get isGuest() { return !state.user; },
     onChange(cb) { listeners.push(cb); },
 
