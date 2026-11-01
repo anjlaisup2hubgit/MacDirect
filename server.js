@@ -47,13 +47,28 @@ const buildings = {
     }),
 };
 
+const { buildGraph, routeTo } = require('./routes/walk');
+const graph = buildGraph(raw);
+if (buildings.features[0]) routeTo(graph, buildings.features[0]);
+
 app.get('/api/map', (req, res) => res.json(buildings));
+app.get('/api/route', (req, res) => {
+  const feature = buildings.features.find((f) => String(f.id) === req.query.id);
+  if (!feature) return res.status(404).json({ error: 'unknown building' });
+  const route = routeTo(graph, feature);
+  if (!route) return res.status(404).json({ error: 'no route' });
+  res.json(route);
+});
 // Public Supabase settings for the browser; the secret key is never sent.
 app.get('/api/config', (req, res) => res.json({
   supabaseUrl: process.env.SUPABASE_URL || null,
   supabaseKey: process.env.SUPABASE_PUBLISHABLE_KEY || null,
 }));
 app.use('/api/food', require('./routes/food'));
+app.get('/api/societies', (req, res) => {
+  const file = path.join(__dirname, 'data', 'societies.json');
+  res.json(JSON.parse(fs.readFileSync(file, 'utf8')));
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(PORT, () => console.log(`iMCQ running at http://localhost:${PORT}`));

@@ -1,5 +1,5 @@
 // Supabase session, profile and guest mode. Load after the supabase-js script.
-// Pages without a session and without guest mode are sent to /login.html.
+// The map and the other pages open without an account. Sign-in is only for actions that save data.
 const auth = (function () {
   const GUEST_KEY = 'imcq-guest';
   const state = { sb: null, user: null, profile: null, leaderships: [] };
@@ -70,10 +70,7 @@ const auth = (function () {
     });
   }
 
-  const ready = init().then(() => {
-    const onLogin = location.pathname.endsWith('/login.html');
-    if (state.sb && !state.user && !isGuest() && !onLogin) location.replace('/login.html');
-  });
+  const ready = init();
 
   return {
     ready,
@@ -160,7 +157,30 @@ const auth = (function () {
     async setLeaderStatus(id, status) {
       return state.sb.from('society_leaders').update({ status }).eq('id', id);
     },
-    // Events in the shape the UI uses; `time` is display text, `timeValue` is HH:MM for forms.
+    // Campus codes such as 12WW are the street abbreviation. Show the full address instead.
+  // Macquarie's own signage uses "12 Wally's Walk", with a building name in brackets when it has one.
+  fullBuildingName(name) {
+    const street = {
+      GR: 'Gymnasium Road', HA: 'Hadenfeld Avenue', SCO: 'Sir Christopher Ondaatje Avenue',
+      WW: "Wally's Walk", MW: 'Macquarie Walk', SW: 'Second Way', ARPD: 'Research Park Drive',
+      RPD: 'Research Park Drive', ER: 'Eastern Road', FW: 'First Walk', UA: 'University Avenue',
+      CC: 'Central Courtyard', IR: 'Innovation Road', TP: 'Technology Place', SR: 'Science Road',
+      TR: 'Talavera Road', LR: 'Link Road',
+    };
+    const proper = {
+      '10GR': 'Macquarie University Sport and Aquatic Centre', '12WW': 'Mitchell Building',
+      '14FW': 'Macquarie University Special Education Centre', '16MW': 'Waranara Library',
+      '16UA': 'Australian Hearing Hub', '16WW': 'Lincoln Building',
+      '17WW': 'Michael Kirby Law Building', '18WW': 'Service Connect',
+      '1WW': 'Ainsworth Building', '21WW': 'Macquarie Theatre', '23WW': 'Price Theatre',
+      '27WW': 'Lotus Theatre', '8HA': 'Macquarie University Incubator', '8LR': 'Banksia Cottage',
+    };
+    const coded = name && name.match(/^(\d+)([A-Z]+)(?: \((.+)\))?$/);
+    if (!coded || !street[coded[2]]) return name;
+    const title = proper[coded[1] + coded[2]] || coded[3] || '';
+    return title ? `${coded[1]} ${street[coded[2]]} (${title})` : `${coded[1]} ${street[coded[2]]}`;
+  },
+  // Events in the shape the UI uses; `time` is display text, `timeValue` is HH:MM for forms.
     async listEvents() {
       const cols = 'id, society_id, title, category, event_date, event_time, building, description';
       const order = (q) => q.order('event_date').order('event_time');
@@ -173,7 +193,7 @@ const auth = (function () {
           id: e.id, societyId: e.society_id, name: e.title, category: e.category, date: e.event_date,
           timeValue: e.event_time ? e.event_time.slice(0, 5) : '',
           time: h === null ? '' : `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`,
-          building: e.building || 'TBC', description: e.description,
+          building: this.fullBuildingName(e.building) || 'TBC', description: e.description,
           imageUrl: e.image_path ? posterUrl(e.image_path) : '',
         };
       });
@@ -229,7 +249,7 @@ const auth = (function () {
           id: e.id, mine: true, name: e.title, category: e.category, date: e.plan_date,
           timeValue: e.plan_time ? e.plan_time.slice(0, 5) : '',
           time: h === null ? '' : `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`,
-          building: e.building || 'TBC', description: e.description,
+          building: this.fullBuildingName(e.building) || 'TBC', description: e.description,
           imageUrl: e.image_path ? posterUrl(e.image_path) : '',
         };
       });
@@ -305,11 +325,28 @@ const auth = (function () {
       return { error: null };
     },
     async listSocieties() {
-      if (!state.sb) return [];
-      const cols = 'id, name, category, description, building, contact, website';
-      let { data, error } = await state.sb.from('societies').select(cols + ', hashtags').order('name');
-      if (error) ({ data } = await state.sb.from('societies').select(cols).order('name')); // hashtags column not added yet
-      return data || [];
+      let local = [];
+      try { local = await api('/societies'); } catch (e) { local = []; }
+      let remote = [];
+      if (state.sb) {
+        const cols = 'id, name, category, description, building, contact, website';
+        let { data, error } = await state.sb.from('societies').select(cols + ', hashtags').order('name');
+        if (error) ({ data } = await state.sb.from('societies').select(cols).order('name')); // hashtags column not added yet
+        remote = data || [];
+      }
+      if (!local.length) return remote.map((s) => ({ ...s, building: this.fullBuildingName(s.building) }));
+      const byName = new Map(remote.map((s) => [s.name, s]));
+      return local.map((s) => {
+        const row = byName.get(s.name);
+        const building = this.fullBuildingName(s.building);
+        if (!row) return { ...s, building };
+        return {
+          ...s,
+          id: row.id,
+          building,
+          hashtags: row.hashtags && row.hashtags.length ? row.hashtags : s.hashtags,
+        };
+      });
     },
     // `tags` is an array of clean tags (see parseHashtags). Leaders may change only this column.
     async updateSocietyHashtags(societyId, tags) {

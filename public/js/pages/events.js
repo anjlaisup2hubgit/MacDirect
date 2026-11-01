@@ -1,4 +1,4 @@
-// Calendar popup over the map (logged-in users only): events of the societies you follow, plus your own plans.
+// Calendar page: the month is visible to everyone. Followed events and private plans load after sign-in.
 // Month or Day view is chosen in User Settings (localStorage imcq-cal-view).
 // Pressing a day lists its events; pressing an event shows its building on the map.
 // Approved society leaders can edit and delete their society's events here (posting is in the Add event plan popup).
@@ -6,12 +6,8 @@
 (function () {
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-  const p = createPopup({ id: 'events-popup', title: 'Calendar', navHref: '/?events', hash: 'events' });
-  // Guests open the popup like Add event plan does and see the log in gate inside it.
+  const p = createPopup({ id: 'events-popup', title: 'Calendar', navHref: '/calendar.html' });
   p.results.innerHTML =
-    '<div class="account guest-gate" hidden>' +
-      '<p>' + t('Log in to view the calendar') + '.</p>' +
-      '<button class="form-submit" type="button">' + t('Log in or sign up') + '</button></div>' +
     '<div class="cal-body">' +
     '<p class="empty-msg follow-hint" role="status" hidden></p>' +
     '<div class="cal-view">' +
@@ -28,8 +24,6 @@
     '</div>';
   const calView = p.results.querySelector('.cal-view');
   const agendaEl = p.results.querySelector('.agenda-view');
-  const gate = p.results.querySelector('.guest-gate');
-  const bodyEl = p.results.querySelector('.cal-body');
   const hintEl = p.results.querySelector('.follow-hint');
   let agendaEvents = [];
   const titleEl = p.results.querySelector('.cal-title');
@@ -42,7 +36,6 @@
   let selected = iso(today);
   let base = [];
   let follows = new Set();
-  let ready = false; // true once auth has loaded, so a logged-in user never sees the gate flash
   let plans = [];
   let dayEvents = [];
 
@@ -53,16 +46,12 @@
   };
 
   function render() {
-    const guest = ready && !auth.user;
-    gate.hidden = !guest;
-    bodyEl.hidden = guest;
-    if (guest) return;
     let view = 'cal';
     try { if (localStorage.getItem('imcq-cal-view') === 'list') view = 'list'; } catch (err) { /* storage blocked: Month */ }
     calView.hidden = view !== 'cal';
     agendaEl.hidden = view !== 'list';
     hintEl.textContent = t('You are not following any societies.') + ' ' + t('Follow societies to see their events here.');
-    hintEl.hidden = follows.size > 0 || auth.approvedSocieties.length > 0;
+    hintEl.hidden = !auth.user || follows.size > 0 || auth.approvedSocieties.length > 0;
     const leaderIds = auth.approvedSocieties.map((s) => s.id);
     base.forEach((e) => { e.canEdit = leaderIds.includes(e.societyId); });
     const events = byDate();
@@ -150,23 +139,26 @@
     if (!btn) return false;
     const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
     if (!ev || !ev.canEdit) return true;
-    if (btn.hasAttribute('data-edit')) { if (window.editSocietyEvent) window.editSocietyEvent(ev); return true; }
+    if (btn.hasAttribute('data-edit')) {
+      try { sessionStorage.setItem('imcq-edit-event', JSON.stringify(ev)); } catch (err) { console.error(err); }
+      location.href = '/event-plan.html';
+      return true;
+    }
     if (await choose(t('Delete this event?'), [{ label: t('Delete'), value: true, danger: true }])) {
       const { error } = await auth.deleteEvent(ev.id);
-      if (error) console.error(error); else location.href = '/?events'; // reload the page and reopen the Calendar
+      if (error) console.error(error); else location.href = '/calendar.html';
     }
     return true;
   }
 
-  gate.querySelector('button').addEventListener('click', () => { location.href = '/login.html'; });
   agendaEl.addEventListener('click', async (e) => {
     if (calendarAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await postPlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = agendaEvents[[...agendaEl.querySelectorAll('.card')].indexOf(el)];
     if (!ev) return;
-    p.setOpen(false);
-    if (window.focusBuildingByName) window.focusBuildingByName(ev.building, ev.name);
+    const q = new URLSearchParams({ building: ev.building || '', label: ev.name || '' });
+    location.href = '/location.html?' + q.toString();
   });
   agendaEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
@@ -191,8 +183,8 @@
     if (!el) return;
     const ev = dayEvents[[...listEl.children].indexOf(el)];
     if (!ev) return;
-    p.setOpen(false);
-    if (window.focusBuildingByName) window.focusBuildingByName(ev.building, ev.name);
+    const q = new URLSearchParams({ building: ev.building || '', label: ev.name || '' });
+    location.href = '/location.html?' + q.toString();
   });
   listEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
@@ -201,7 +193,7 @@
   const loadPlans = () => auth.listMyPlans().then((data) => { plans = auth.user ? data : []; render(); }).catch(console.error);
   window.addEventListener('events-changed', () => { loadPlans(); loadEvents(); });
   auth.onChange(loadPlans);
-  auth.ready.then(() => { ready = true; render(); });
+  auth.ready.then(render);
   render();
   // Only events of followed societies are shown; own plans are not filtered. Guests load nothing.
   const loadEvents = () => auth.ready.then(() => (auth.user ? Promise.all([auth.listEvents(), auth.myFollows()]) : [[], []]))

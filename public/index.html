@@ -3,54 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>iMCQ</title>
+  <title>MacDirect</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,650&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div id="map"></div>
   <div id="search-bar-mount"></div>
-  <div id="societies-popup" class="societies-popup" hidden>
-    <div class="popup-island">
-      <div class="popup-head">
-        <h1 data-i18n="Societies">Societies</h1>
-        <button class="popup-close" type="button" aria-label="Close" data-i18n-attr="aria-label:Close">&times;</button>
-      </div>
-      <div class="list-toolbar">
-        <input class="page-search" type="search" placeholder="Search societies" aria-label="Search societies" data-i18n-attr="placeholder:Search societies|aria-label:Search societies" autocomplete="off">
-        <select class="list-sort" aria-label="Sort by" data-i18n-attr="aria-label:Sort by">
-          <option value="az" data-i18n="Name A–Z">Name A–Z</option>
-          <option value="za" data-i18n="Name Z–A">Name Z–A</option>
-        </select>
-      </div>
-    </div>
-    <div class="popup-results">
-      <ul class="card-list"></ul>
-      <p class="empty-msg" role="status" hidden data-i18n="No societies found.">No societies found.</p>
-    </div>
-  </div>
-  <div id="food-popup" class="societies-popup" hidden>
-    <div class="popup-island">
-      <div class="popup-head">
-        <h1 data-i18n="Restaurants">Restaurants</h1>
-        <button class="popup-close" type="button" aria-label="Close" data-i18n-attr="aria-label:Close">&times;</button>
-      </div>
-      <div class="list-toolbar">
-        <input class="page-search" type="search" placeholder="Search restaurants" aria-label="Search restaurants" data-i18n-attr="placeholder:Search restaurants|aria-label:Search restaurants" autocomplete="off">
-        <select class="list-sort" aria-label="Sort by" data-i18n-attr="aria-label:Sort by">
-          <option value="az" data-i18n="Name A–Z">Name A–Z</option>
-          <option value="za" data-i18n="Name Z–A">Name Z–A</option>
-        </select>
-      </div>
-    </div>
-    <div class="popup-results">
-      <ul class="card-list"></ul>
-      <p class="empty-msg" role="status" hidden data-i18n="No food outlets found.">No food outlets found.</p>
-    </div>
-  </div>
   <nav id="nav-mount"></nav>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -60,13 +22,6 @@
   <script src="js/lib/api.js"></script>
   <script src="js/components/nav.js"></script>
   <script src="js/components/search-bar.js"></script>
-  <script src="js/components/card.js"></script>
   <script src="js/pages/map.js"></script>
-  <script src="js/pages/societies.js"></script>
-  <script src="js/pages/food.js"></script>
-  <script src="js/components/popup.js"></script>
-  <script src="js/pages/settings.js"></script>
-  <script src="js/pages/events.js"></script>
-  <script src="js/pages/event-plan.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 // Both can carry a photo and show up in the Calendar. Leaders also get an Edit events tab (edit or delete the events
 // they posted) and a Cover photo tab (cover image and hashtags).
 (function () {
-  const p = createPopup({ id: 'event-plan-popup', title: 'Add event', navHref: '/?event-plan', hash: 'event-plan' });
+  const p = createPopup({ id: 'event-plan-popup', title: 'Add event', navHref: '/event-plan.html' });
   p.results.innerHTML =
     '<div class="account guest-gate" hidden>' +
       '<p>' + t('Log in to add event plans. Guests can browse everything but cannot save.') + '</p>' +
@@ -18,7 +18,7 @@
         ['Social', 'Academic', 'Career', 'Community'].map((c) => `<option value="${c}">${t(c)}</option>`).join('') + '</select></label>' +
       '<label>' + t('Date') + '<input name="date" type="date" required></label>' +
       '<label>' + t('Time') + '<input name="time" type="time" value="12:00"></label>' +
-      '<label>' + t('Building') + '<input name="building" list="event-buildings" placeholder="' + t('e.g. 1CC') + '"></label>' +
+      '<label>' + t('Building') + '<input name="building" list="event-buildings" placeholder="' + t('e.g. 1 Central Courtyard') + '"></label>' +
       '<datalist id="event-buildings"></datalist>' +
       '<label>' + t('Description') + '<textarea name="description" rows="3" maxlength="200"></textarea></label>' +
       '<img class="cover-preview" alt="" hidden>' +
@@ -153,7 +153,7 @@
     if (!await choose(t('Delete this event?'), [{ label: t('Delete'), value: true, danger: true }])) return;
     const { error } = await auth.deleteEvent(ev.id);
     if (error) { console.error(error); await choose(t('Could not save.'), [], t('Close')); return; }
-    location.href = '/?event-plan'; // reload the page and reopen this popup
+    location.href = '/event-plan.html';
   });
   window.addEventListener('events-changed', renderManage);
 
@@ -183,7 +183,13 @@
   }
   gate.querySelector('button').addEventListener('click', () => { location.href = '/login.html'; });
   auth.onChange(renderGate);
-  auth.ready.then(renderGate);
+  auth.ready.then(() => {
+    renderGate();
+    let raw = null;
+    try { raw = sessionStorage.getItem('imcq-edit-event'); sessionStorage.removeItem('imcq-edit-event'); } catch (err) { /* storage blocked */ }
+    if (!raw) return;
+    try { window.editSocietyEvent(JSON.parse(raw)); } catch (err) { console.error(err); }
+  });
 
   api('/map').then((data) => {
     form.querySelector('datalist').innerHTML =

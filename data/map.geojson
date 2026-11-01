@@ -3169,7 +3169,7 @@
     "addr:housenumber": "2",
     "addr:street": "Innovation Road",
     "building": "yes",
-    "name": "Siemens",
+    "name": "2 Innovation Road (Siemens)",
     "source": "bing",
     "type": "multipolygon",
     "id": "relation/6784971"
@@ -3466,7 +3466,7 @@
     "addr:suburb": "Macquarie Park",
     "building": "yes",
     "building:levels": "3",
-    "name": "17WW (Michael Kirby Building)",
+    "name": "17 Wally's Walk (Michael Kirby Law Building)",
     "type": "multipolygon",
     "id": "relation/7867502"
   },
@@ -19059,7 +19059,7 @@
     "addr:suburb": "Macquarie Park",
     "building": "college",
     "building:levels": "4",
-    "name": "8SCO",
+    "name": "8 Sir Christopher Ondaatje Avenue",
     "id": "way/23716703"
   },
   "geometry": {
@@ -19136,7 +19136,7 @@
     "building": "university",
     "building:levels": "4",
     "department": "environmental science",
-    "name": "11WW",
+    "name": "11 Wally's Walk",
     "id": "way/23716716"
   },
   "geometry": {
@@ -19225,7 +19225,7 @@
     "addr:street": "Talavera Road",
     "addr:suburb": "Macquarie Park",
     "building": "yes",
-    "name": "75TR",
+    "name": "75 Talavera Road",
     "id": "way/23716719"
   },
   "geometry": {
@@ -19327,7 +19327,7 @@
     "addr:suburb": "Macquarie Park",
     "building": "university",
     "fixme": "possition - relation to roads? - similar problems for sourounding buildings .. where is the source?",
-    "name": "13RPD",
+    "name": "13 Research Park Drive",
     "source": "local knowledge",
     "source:name": "survey",
     "id": "way/23716723"
@@ -19374,7 +19374,7 @@
     "addr:street": "Science Road",
     "addr:suburb": "Macquarie Park",
     "building": "university",
-    "name": "3SR",
+    "name": "3 Science Road",
     "source:name": "survey",
     "id": "way/23716725"
   },
@@ -19420,7 +19420,7 @@
     "building": "yes",
     "building:levels": "5",
     "description": "Macquarie University English Language Centre",
-    "name": "8SCO",
+    "name": "8 Sir Christopher Ondaatje Avenue",
     "source": "nearmap",
     "id": "way/51549358"
   },
@@ -19497,7 +19497,7 @@
     "addr:street": "Eastern Road",
     "building": "university",
     "building:levels": "8",
-    "name": "4ER",
+    "name": "4 Eastern Road",
     "source": "nearmap",
     "source:name": "survey",
     "id": "way/51673946"
@@ -19593,7 +19593,7 @@
     "addr:suburb": "Macquarie Park",
     "building": "university",
     "building:levels": "4",
-    "name": "6ER",
+    "name": "6 Eastern Road",
     "source": "nearmap",
     "source:name": "survey",
     "id": "way/51673951"
@@ -19672,7 +19672,7 @@
     "building": "yes",
     "building:levels": "3",
     "department": "geography and planning",
-    "name": "6FW",
+    "name": "6 First Walk",
     "source": "nearmap",
     "id": "way/62060227"
   },
@@ -19781,7 +19781,7 @@
     "addr:street": "Hadenfeld Avenue",
     "building": "university",
     "building:levels": "3",
-    "name": "10HA",
+    "name": "10 Hadenfeld Avenue",
     "id": "way/100955278"
   },
   "geometry": {
@@ -19996,7 +19996,7 @@
     "addr:housenumber": "17",
     "addr:street": "Macquarie Walk",
     "building": "yes",
-    "name": "17MW",
+    "name": "17 Macquarie Walk",
     "source": "Bing",
     "source:name": "survey",
     "id": "way/141281548"
@@ -20066,7 +20066,7 @@
     "addr:street": "Macquarie Walk",
     "building": "university",
     "building:levels": "8",
-    "name": "16MW (Waranara Library)",
+    "name": "16 Macquarie Walk (Waranara Library)",
     "old_name": "Macquarie University Library",
     "source": "survey;local knowledge",
     "id": "way/141281549"
@@ -20214,7 +20214,7 @@
     "addr:suburb": "Macquarie Park",
     "building": "yes",
     "building:levels": "3",
-    "name": "2FW",
+    "name": "2 First Walk",
     "source": "nearmap",
     "id": "way/148389591"
   },
@@ -20284,7 +20284,7 @@
     "addr:street": "First Walk",
     "addr:suburb": "Macquarie Park",
     "building": "university",
-    "name": "14FW",
+    "name": "14 First Walk (Macquarie University Special Education Centre)",
     "source": "survey",
     "id": "way/148389592"
   },
@@ -20371,7 +20371,7 @@
     "building:levels": "4",
     "department": "psychology",
     "faculty": "human sciences",
-    "name": "4FW",
+    "name": "4 First Walk",
     "source": "nearmap",
     "id": "way/148389593"
   },
@@ -20433,7 +20433,7 @@
     "addr:street": "Link Road",
     "addr:suburb": "Macquarie Park",
     "building": "yes",
-    "name": "8LR (Banksia Cottage)",
+    "name": "8 Link Road (Banksia Cottage)",
     "id": "way/148389594"
   },
   "geometry": {
@@ -20549,7 +20549,7 @@
     "addr:street": "Eastern Road",
     "building": "university",
     "faculty": "science",
-    "name": "14ER",
+    "name": "14 Eastern Road",
     "source": "Bing",
     "source:name": "survey",
     "id": "way/157975715"
@@ -20632,7 +20632,7 @@
     "building": "university",
     "building:levels": "7",
     "faculty": "sciences",
-    "name": "14SCO",
+    "name": "14 Sir Christopher Ondaatje Avenue",
     "source": "Bing",
     "source:name": "survey",
     "id": "way/157975716"
@@ -20735,7 +20735,7 @@
     "addr:street": "Science Road",
     "addr:suburb": "Macquarie Park",
     "building": "university",
-    "name": "6SR",
+    "name": "6 Science Road",
     "source": "Bing",
     "source:name": "survey",
     "id": "way/157975717"
@@ -20790,7 +20790,7 @@
     "building": "university",
     "building:levels": "3",
     "department": "biological sciences",
-    "name": "6WW",
+    "name": "6 Wally's Walk",
     "source": "Bing",
     "source:name": "survey",
     "id": "way/157975718"
@@ -20865,7 +20865,7 @@
     "designation": "Shopping Centre",
     "internet_access": "wlan",
     "layer": "2",
-    "name": "Macquarie Centre",
+    "name": "197-201 Herring Road (Macquarie Centre)",
     "opening_hours": "Mo-We 09:00-17:30; Fr 09:00-23:00; Sa 09:30-23:00; Th 09:00-21:00; Su 10:00-16:00",
     "phone": "+61 2 9887 0800",
     "shop": "mall",
@@ -21099,7 +21099,7 @@
     "addr:street": "Wally's Walk",
     "building": "university",
     "building:levels": "4",
-    "name": "18WW (Service Connect)",
+    "name": "18 Wally's Walk (Service Connect)",
     "source:name": "survey",
     "id": "way/205588336"
   },
@@ -21611,7 +21611,7 @@
     "addr:housenumber": "16",
     "addr:street": "Wally's Walk",
     "building": "university",
-    "name": "16WW (Lincoln Building)",
+    "name": "16 Wally's Walk (Lincoln Building)",
     "source:name": "survey",
     "id": "way/205588359"
   },
@@ -21698,7 +21698,7 @@
     "building": "yes",
     "fee": "yes",
     "leisure": "sports_centre",
-    "name": "10GR (Macquarie University Sport and Aquatic Centre)",
+    "name": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
     "name:zh": "麥覺理大學體育及水體館",
     "opening_hours": "Mo-Fr 05:30-22:00; Sa-Su 06:00-19:00",
     "phone": "+61 2 9850 7636",
@@ -21990,7 +21990,7 @@
     "addr:street": "University Avenue",
     "building": "commercial",
     "building:levels": "8",
-    "name": "Cochlear",
+    "name": "1 University Avenue (Cochlear)",
     "smoking": "no",
     "source": "bing",
     "id": "way/260224790"
@@ -22406,7 +22406,7 @@
     "building:levels": "8",
     "healthcare": "audiologist",
     "layer": "1",
-    "name": "16UA (Australian Hearing Hub)",
+    "name": "16 University Avenue (Australian Hearing Hub)",
     "source": "bing",
     "id": "way/271661421"
   },
@@ -22516,7 +22516,7 @@
     "building": "apartments",
     "building:levels": "28",
     "height": "86",
-    "name": "Destination Orana",
+    "name": "112-118 Talavera Road (Destination Orana)",
     "operator": "Meriton",
     "operator:wikidata": "Q17052987",
     "source": "Bing",
@@ -22611,7 +22611,7 @@
     "addr:suburb": "Macquarie Park",
     "building": "yes",
     "building:levels": "3",
-    "name": "3IR",
+    "name": "3 Innovation Road",
     "source": "bing;local knowledge",
     "id": "way/324612872"
   },
@@ -22721,7 +22721,7 @@
     "addr:street": "Research Park Drive",
     "addr:suburb": "Macquarie Park",
     "building": "university",
-    "name": "4RPD",
+    "name": "4 Research Park Drive",
     "source": "bing;local knowledge",
     "id": "way/324612875"
   },
@@ -22783,7 +22783,7 @@
     "addr:street": "Innovation Road",
     "addr:suburb": "Macquarie Park",
     "building": "yes",
-    "name": "1IR",
+    "name": "1 Innovation Road",
     "source": "bing;local knowledge",
     "id": "way/324612876"
   },
@@ -22904,7 +22904,7 @@
     "addr:street": "Talavera Road",
     "building": "office",
     "height": "28",
-    "name": "Fujitsu Australia Limited",
+    "name": "114 Talavera Road (Fujitsu Australia Limited)",
     "id": "way/412583875"
   },
   "geometry": {
@@ -22997,7 +22997,7 @@
     "addr:street": "Wally's Walk",
     "addr:suburb": "Macquarie Park",
     "building": "yes",
-    "name": "29WW",
+    "name": "29 Wally's Walk",
     "source": "survey",
     "id": "way/455246541"
   },
@@ -23187,7 +23187,7 @@
     "addr:street": "Wally's Walk",
     "addr:suburb": "Macquarie Park",
     "building": "yes",
-    "name": "27WW (Lotus Theatre)",
+    "name": "27 Wally's Walk (Lotus Theatre)",
     "source": "survey",
     "id": "way/455246542"
   },
@@ -23406,7 +23406,7 @@
     "addr:housenumber": "25",
     "addr:street": "Wally's Walk",
     "building": "university",
-    "name": "25WW",
+    "name": "25 Wally's Walk",
     "source": "survey",
     "id": "way/458998300"
   },
@@ -23508,7 +23508,7 @@
     "addr:street": "Wally's Walk",
     "addr:suburb": "Macquarie Park",
     "building": "yes",
-    "name": "23WW",
+    "name": "23 Wally's Walk (Price Theatre)",
     "source": "nearmap",
     "source_1": "survey",
     "id": "way/458998302"
@@ -23615,7 +23615,7 @@
     "addr:street": "Wally's Walk",
     "addr:suburb": "Macquarie Park",
     "building": "yes",
-    "name": "23WW",
+    "name": "23 Wally's Walk (Price Theatre)",
     "source": "survey",
     "id": "way/458998303"
   },
@@ -23696,7 +23696,7 @@
     "addr:street": "Wally's Walk",
     "building": "yes",
     "building:levels": "3",
-    "name": "21WW (Macquarie Theatre)",
+    "name": "21 Wally's Walk (Macquarie Theatre)",
     "source": "survey",
     "id": "way/458998304"
   },
@@ -23772,7 +23772,7 @@
     "addr:housenumber": "14",
     "addr:street": "Second Way",
     "building": "yes",
-    "name": "14SW",
+    "name": "14 Second Way",
     "id": "way/458998305"
   },
   "geometry": {
@@ -23816,7 +23816,7 @@
     "addr:street": "Second Way",
     "building": "university",
     "building:levels": "4",
-    "name": "12SW",
+    "name": "12 Second Way",
     "id": "way/458998306"
   },
   "geometry": {
@@ -23939,7 +23939,7 @@
     "addr:housenumber": "10",
     "addr:street": "Sir Christopher Ondaatje Avenue",
     "building": "university",
-    "name": "10SCO",
+    "name": "10 Sir Christopher Ondaatje Avenue",
     "id": "way/458998307"
   },
   "geometry": {
@@ -24128,7 +24128,7 @@
     "addr:street": "Research Park Drive",
     "addr:suburb": "Macquarie Park",
     "building": "yes",
-    "name": "15RPD",
+    "name": "15 Research Park Drive",
     "source": "survey",
     "id": "way/459015425"
   },
@@ -24375,7 +24375,7 @@
     "addr:street": "Technology Place",
     "building": "university",
     "building:levels": "5",
-    "name": "2TP",
+    "name": "2 Technology Place",
     "roof:levels": "0",
     "source": "survey",
     "id": "way/459015453"
@@ -24503,7 +24503,7 @@
     "check_date": "2024-03-26",
     "emergency": "no",
     "layer": "1",
-    "name": "Macquarie University Hospital",
+    "name": "3 Technology Place (Macquarie University Hospital)",
     "operator:type": "private",
     "website": "https://www.mqhealth.org.au/patients-and-visitors/macquarie-university-hospital",
     "wikidata": "Q6725036",
@@ -24639,7 +24639,7 @@
     "addr:street": "Wally's Walk",
     "building": "university",
     "department": "chemistry",
-    "name": "4WW",
+    "name": "4 Wally's Walk",
     "id": "way/459015462"
   },
   "geometry": {
@@ -24963,7 +24963,7 @@
     "addr:suburb": "Macquarie Park",
     "building": "dormitory",
     "building:levels": "4",
-    "name": "Dunmore Lang College - Old Wing",
+    "name": "130 Herring Road (Dunmore Lang College - Old Wing)",
     "smoking": "no",
     "id": "way/488128858"
   },
@@ -25201,7 +25201,7 @@
     "addr:street": "Herring Road",
     "addr:suburb": "Macquarie Park",
     "building": "dormitory",
-    "name": "Dunmore Lang College - New Wing",
+    "name": "130 Herring Road (Dunmore Lang College - New Wing)",
     "smoking": "no",
     "id": "way/488128859"
   },
@@ -25376,7 +25376,7 @@
     "addr:suburb": "Macquarie Park",
     "building": "university",
     "building:levels": "2",
-    "name": "Dunmore Lang College - Office",
+    "name": "130 Herring Road (Dunmore Lang College - Office)",
     "roof:levels": "0",
     "id": "way/488128860"
   },
@@ -26285,11 +26285,11 @@
     "uid": "11038197",
     "addr:housenumber": "12",
     "addr:state": "NSW",
-    "addr:street": "Wallys Walk",
+    "addr:street": "Wally's Walk",
     "addr:suburb": "Macquarie Park",
     "building": "university",
     "department": "Department of Mathematics",
-    "name": "12WW",
+    "name": "12 Wally's Walk (Mitchell Building)",
     "id": "way/613401543"
   },
   "geometry": {
@@ -27113,7 +27113,7 @@
     "addr:street": "Central Courtyard",
     "building": "university",
     "layer": "1",
-    "name": "1CC",
+    "name": "1 Central Courtyard",
     "id": "way/914350786"
   },
   "geometry": {
@@ -27167,7 +27167,7 @@
     "addr:suburb": "Macquarie Park",
     "building": "university",
     "layer": "1",
-    "name": "Student Accommodation",
+    "name": "15-17 Wally's Walk (Student Accommodation)",
     "id": "way/914350787"
   },
   "geometry": {
@@ -27863,7 +27863,7 @@
     "addr:street": "Hadenfeld Avenue",
     "addr:suburb": "Macquarie Park",
     "building": "university",
-    "name": "8HA (Incubator)",
+    "name": "8 Hadenfeld Avenue (Macquarie University Incubator)",
     "id": "way/1107882877"
   },
   "geometry": {
@@ -29993,7 +29993,7 @@
     "addr:street": "Macquarie Walk",
     "addr:suburb": "Macquarie Park",
     "building": "university",
-    "name": "12MW",
+    "name": "12 Macquarie Walk",
     "id": "way/1192234871"
   },
   "geometry": {
@@ -33969,7 +33969,7 @@
     "addr:street": "Macquarie Walk",
     "addr:suburb": "Macquarie Park",
     "building": "university",
-    "name": "12MW",
+    "name": "12 Macquarie Walk",
     "id": "way/1192236229"
   },
   "geometry": {
@@ -35774,7 +35774,7 @@
     "addr:street": "Eastern Road",
     "addr:suburb": "Macquarie Park",
     "building": "yes",
-    "name": "18ER",
+    "name": "18 Eastern Road",
     "id": "way/1192257351"
   },
   "geometry": {
@@ -37856,7 +37856,7 @@
     "addr:suburb": "Macquarie Park",
     "building": "university",
     "layer": "1",
-    "name": "1WW (Ainsworth Building)",
+    "name": "1 Wally's Walk (Ainsworth Building)",
     "id": "way/1303624871"
   },
   "geometry": {
@@ -37925,7 +37925,7 @@
     "addr:street": "Wally's Walk",
     "addr:suburb": "Macquarie Park",
     "building": "university",
-    "name": "2WW",
+    "name": "2 Wally's Walk",
     "id": "way/1303624872"
   },
   "geometry": {
@@ -37986,7 +37986,7 @@
     "addr:street": "Research Park Drive",
     "addr:suburb": "Macquarie Park",
     "building": "university",
-    "name": "13ARPD",
+    "name": "13 Research Park Drive",
     "id": "way/1303624873"
   },
   "geometry": {
@@ -40429,7 +40429,7 @@
     "brand": "Meriton",
     "brand:wikidata": "Q17052987",
     "building": "apartments",
-    "name": "Meriton Trilogy",
+    "name": "100 Talavera Road (Meriton Trilogy)",
     "website": "https://www.meriton.com.au/residential-buy/trilogy/",
     "id": "way/1387463441"
   },

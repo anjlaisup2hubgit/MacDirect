@@ -1,14 +1,12 @@
-// Builds a floating-island popup over the map: a pinned header island plus a scrolling body.
-// Opening one popup closes the others. Registered in window.popups so the nav link can toggle it.
-function createPopup({ id, title, navHref, hash, searchPlaceholder }) {
-  const popup = document.createElement('div');
+// Builds a full page (header plus scrolling body) in the phone column. The header link returns to the map.
+function createPopup({ id, title, navHref, searchPlaceholder }) {
+  const popup = document.createElement('main');
   popup.id = id;
   popup.className = 'societies-popup';
-  popup.hidden = true;
   popup.innerHTML =
     '<div class="popup-island">' +
       `<div class="popup-head"><h1>${esc(t(title))}</h1>` +
-      `<button class="popup-close" type="button" aria-label="${esc(t('Close'))}">&times;</button></div>` +
+      `<a class="popup-close" href="/" aria-label="${esc(t('Map'))}">&larr;</a></div>` +
       (searchPlaceholder
         ? `<input class="page-search" type="search" placeholder="${esc(searchPlaceholder)}" aria-label="${esc(searchPlaceholder)}" autocomplete="off">` +
           `<div class="chips" role="group" aria-label="${esc(t('Filter by category'))}"></div>`
@@ -18,25 +16,13 @@ function createPopup({ id, title, navHref, hash, searchPlaceholder }) {
   document.getElementById('nav-mount').before(popup);
 
   const navLink = document.querySelector(`.bottom-nav a[href="${navHref}"]`);
-
-  function setOpen(open) {
-    popup.hidden = !open;
-    if (open) {
-      document.querySelectorAll(`.societies-popup:not(#${id}) .popup-close`).forEach((b) => b.click());
-      if (window.clearBuildingSelection) window.clearBuildingSelection();
-    }
-    if (navLink) {
-      navLink.classList.toggle('active', open);
-      if (open) navLink.setAttribute('aria-current', 'page'); else navLink.removeAttribute('aria-current');
-    }
+  if (navLink) {
+    navLink.classList.add('active');
+    navLink.setAttribute('aria-current', 'page');
   }
 
-  (window.popups = window.popups || {})[navHref] = () => setOpen(popup.hidden);
-  popup.querySelector('.popup-close').addEventListener('click', () => setOpen(false));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
-  if (new URLSearchParams(location.search).has(hash)) {
-    setOpen(true);
-    history.replaceState(null, '', location.pathname);
+  function setOpen(open) {
+    if (!open) location.href = '/';
   }
 
   return { popup, results: popup.querySelector('.popup-results'), setOpen };

@@ -1,6 +1,6 @@
 // User settings popup: display name (logged-in users, saved to profiles), language, calendar view and log out.
 (function () {
-  const p = createPopup({ id: 'settings-popup', title: 'Settings', navHref: '/?tasks', hash: 'tasks' });
+  const p = createPopup({ id: 'settings-popup', title: 'Settings', navHref: '/settings.html' });
   p.results.innerHTML =
     '<div class="account"></div>' +
     '<form class="event-form">' +
@@ -47,7 +47,7 @@
   form.addEventListener('change', async (e) => {
     if (e.target.name === 'lang') {
       setLang(e.target.value);
-      location.href = '/?tasks'; // reload so every popup is rebuilt in the new language; reopens this popup
+      location.href = '/settings.html'; // reload so the page is rebuilt in the new language
     } else if (e.target.name === 'view') {
       try {
         localStorage.setItem('imcq-cal-view', e.target.value);
@@ -122,7 +122,7 @@
   p.results.addEventListener('click', async (e) => {
     const act = e.target.dataset.act;
     if (act === 'login') location.href = '/login.html';
-    if (act === 'logout') { await auth.signOut(); location.href = '/login.html'; }
+    if (act === 'logout') { await auth.signOut(); location.href = '/'; }
     if (act === 'delete-account') confirmDelete();
   });
 
@@ -148,7 +148,7 @@
       yes.disabled = true;
       yes.textContent = t('Please wait...');
       const { error } = await auth.deleteAccount();
-      if (!error) { location.href = '/login.html'; return; }
+      if (!error) { location.href = '/'; return; }
       console.error(error);
       dMsg.textContent = String(error.message || '').includes('only admin')
         ? t('You are the only admin, so you cannot delete your account.') : t('Could not save.');

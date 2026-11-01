@@ -1,8 +1,52 @@
+(function () {
+  const pages = { tasks: '/settings.html', events: '/calendar.html', 'event-plan': '/event-plan.html', food: '/food.html', societies: '/societies.html' };
+  const old = new URLSearchParams(location.search);
+  for (const key of Object.keys(pages)) {
+    if (old.has(key)) { location.replace(pages[key]); return; }
+  }
+  if (old.get('building') && !old.get('directions')) {
+    const q = new URLSearchParams({ building: old.get('building') });
+    if (old.get('label')) q.set('label', old.get('label'));
+    location.replace('/location.html?' + q.toString());
+  }
+})();
+
+// Back from the directions screen always loads the plain map. The entry under
+// the path is this same document with the address changed to /, so a
+// location.replace('/') is ignored and the next Back would open Societies,
+// Food, or a building page.
+(function () {
+  const asked = new URLSearchParams(location.search).get('directions');
+  if (!asked) return;
+  const here = location.pathname + location.search;
+  if (!(history.state && history.state.directionsBack)) {
+    history.replaceState({ directionsHome: true }, '', '/');
+    history.pushState({ directionsBack: true }, '', here);
+  }
+  window.addEventListener('popstate', () => {
+    if (location.pathname === '/' && !new URLSearchParams(location.search).get('directions')) location.reload();
+    else location.replace('/');
+  });
+})();
+
 const CAMPUS_CENTER = [-33.7744188, 151.1144426]; // Wally's Walk / Sir Christopher Ondaatje Ave T-junction
+// Campus-side exit of Macquarie University station (OSM subway entrance 951237975).
+// Every walking route starts here.
+const STATION_EXIT = [-33.777161, 151.118078];
 
 const CAMPUS_RADIUS_M = 500;
 
-const map = L.map('map', { zoomControl: false, minZoom: 15 }).setView(CAMPUS_CENTER, 17);
+// Open 70% of the way from the middle of campus toward the station, then nudge
+// north so the frame sits a little higher and more of the walk ahead is visible.
+const OPEN_TOWARD_STATION = 0.7;
+const OPEN_NUDGE_NORTH = 0.0011;
+const OPEN_CENTER = [
+  CAMPUS_CENTER[0] + (STATION_EXIT[0] - CAMPUS_CENTER[0]) * OPEN_TOWARD_STATION + OPEN_NUDGE_NORTH,
+  CAMPUS_CENTER[1] + (STATION_EXIT[1] - CAMPUS_CENTER[1]) * OPEN_TOWARD_STATION,
+];
+
+const map = L.map('map', { zoomControl: false, minZoom: 15 }).setView(OPEN_CENTER, 17);
+window.addEventListener('resize', () => map.invalidateSize());
 
 // Leaflet's maxBounds is rectangular, so a circular limit is enforced with a hard clamp.
 function clampToCampus(center) {
@@ -34,16 +78,42 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors',
 }).addTo(map);
 
+const stationIcon = L.divIcon({
+  className: 'station-start',
+  html: '<i></i><span>' + t('Station') + '</span>',
+  iconSize: [88, 28],
+  iconAnchor: [7, 21],
+});
+const station = L.marker(STATION_EXIT, {
+  icon: stationIcon,
+  interactive: false,
+  keyboard: false,
+  zIndexOffset: 800,
+}).addTo(map);
+
 const panel = document.createElement('aside');
 panel.className = 'building-panel';
 panel.setAttribute('aria-live', 'polite');
 document.body.appendChild(panel);
 
-const outlineStyle = { color: '#1d6fe8', weight: 4, fill: true, fillColor: '#1d6fe8', fillOpacity: 0.15 };
+const outlineStyle = { color: '#1d6fe8', weight: 2, fill: true, fillColor: '#1d6fe8', fillOpacity: 0.15 };
 const idleStyle = { color: '#1d6fe8', weight: 0, fill: true, fillColor: '#000', fillOpacity: 0 };
 
 const layers = new Map();
 let selected = null;
+
+function stepText(step) {
+  const place = step.name ? ' ' + step.name : '';
+  let text;
+  if (step.kind === 'head') text = t('Head ' + step.direction) + (step.name ? ' ' + t('on') + place : '');
+  else if (step.kind === 'left') text = t('Turn left') + (step.name ? ' ' + t('onto') + place : '');
+  else if (step.kind === 'right') text = t('Turn right') + (step.name ? ' ' + t('onto') + place : '');
+  else if (step.kind === 'uturn') text = t('Make a U-turn') + (step.name ? ' ' + t('onto') + place : '');
+  else if (step.kind === 'arrive') text = t('Arrive at') + place;
+  else text = t('Continue') + (step.name ? ' ' + t('on') + place : '');
+  if (step.steps) text += ' · ' + t('stairs');
+  return text;
+}
 
 function esc(t) {
   const d = document.createElement('div');
@@ -52,7 +122,13 @@ function esc(t) {
 }
 
 let societies = [];
-auth.ready.then(() => auth.listSocieties()).then((data) => { societies = data; }).catch(console.error);
+auth.ready.then(() => auth.listSocieties()).then((data) => {
+  societies = data;
+  window.searchExtras.push(...data.map((s) => ({ name: s.name, building: s.building, kind: 'Society' })));
+}).catch(console.error);
+api('/food').then((data) => {
+  window.searchExtras.push(...data.map((f) => ({ name: f.name, building: f.building, kind: 'Restaurant' })));
+}).catch(console.error);
 
 // The panel is full height and slid down so only the head (name and location) peeks above the nav.
 // Dragging the head up reveals the image, description and societies; it snaps to peek or expanded.
@@ -61,8 +137,6 @@ let expanded = false;
 const panelY = () => (expanded ? 0 : peekY);
 
 function selectBuilding(id, label) {
-  // A building and a nav popup never show together.
-  document.querySelectorAll('.societies-popup:not([hidden]) .popup-close').forEach((b) => b.click());
   if (selected) selected.setStyle(idleStyle);
   selected = layers.get(id);
   selected.setStyle(outlineStyle);
@@ -138,20 +212,73 @@ api('/map').then((data) => {
       layers.set(f.id, layer);
       layer.on('click', (e) => {
         L.DomEvent.stopPropagation(e);
-        selectBuilding(f.id);
+        location.href = '/location.html?id=' + encodeURIComponent(f.id);
       });
     },
   }).addTo(map);
 
-  const focusBuilding = (f, label) => {
-    map.fitBounds(layers.get(f.id).getBounds(), { maxZoom: 18, paddingBottomRight: [0, 200] });
-    selectBuilding(f.id, label);
+  const openLocation = (f) => {
+    location.href = '/location.html?id=' + encodeURIComponent(f.id);
   };
-  initSearchBar(data.features, focusBuilding);
+  initSearchBar(data.features, openLocation);
 
-  // Used by the societies popup: show a building, noting which society meets there.
   window.focusBuildingByName = (name, label) => {
-    const f = data.features.find((x) => x.properties.name === name);
-    if (f) focusBuilding(f, label);
+    const q = new URLSearchParams({ building: name });
+    if (label) q.set('label', label);
+    location.href = '/location.html?' + q.toString();
   };
+
+  const askedRoute = new URLSearchParams(location.search).get('directions');
+  if (askedRoute) {
+    const feature = data.features.find((f) => String(f.id) === askedRoute);
+    const layer = feature && layers.get(feature.id);
+    if (layer) {
+      layer.setStyle(outlineStyle);
+      layer.bringToFront();
+      api('/route?id=' + encodeURIComponent(feature.id)).then((route) => {
+        const routeLine = { lineCap: 'round', lineJoin: 'round', opacity: 1 };
+        const casing = L.polyline(route.coordinates, { ...routeLine, color: '#174EA6', weight: 3.5 }).addTo(map);
+        const line = L.polyline(route.coordinates, { ...routeLine, color: '#4285F4', weight: 2.5 }).addTo(map);
+        casing.bringToFront();
+        line.bringToFront();
+        map.fitBounds(line.getBounds(), { paddingTopLeft: [28, 88], paddingBottomRight: [28, 160] });
+        const minutes = Math.max(1, Math.round(route.metres / 83.3));
+        const card = document.createElement('div');
+        card.className = 'route-card';
+        const note = document.createElement('p');
+        note.className = 'route-note';
+        note.textContent = route.metres + ' m · ' + t('approx.') + ' ' + minutes + ' ' + t('min walk')
+          + (route.steps ? '. ' + t('This route includes stairs.') : '');
+        card.appendChild(note);
+        const steps = route.instructions || [];
+        if (steps[0]) {
+          const first = document.createElement('button');
+          first.type = 'button';
+          first.className = 'route-first';
+          first.innerHTML = '<span>' + esc(stepText(steps[0])) + '</span>' + (steps[0].metres ? '<b>' + steps[0].metres + ' m</b>' : '');
+          const list = document.createElement('ol');
+          list.className = 'route-steps';
+          list.hidden = true;
+          list.innerHTML = steps.slice(1).map((s) =>
+            '<li><span>' + esc(stepText(s)) + '</span>' + (s.metres ? '<b>' + s.metres + ' m</b>' : '') + '</li>').join('');
+          if (steps.length > 1) {
+            first.setAttribute('aria-expanded', 'false');
+            first.addEventListener('click', () => {
+              list.hidden = !list.hidden;
+              first.setAttribute('aria-expanded', String(!list.hidden));
+              card.classList.toggle('open', !list.hidden);
+            });
+          }
+          card.appendChild(first);
+          card.appendChild(list);
+        }
+        document.body.appendChild(card);
+      }).catch(() => {
+        const note = document.createElement('p');
+        note.className = 'route-note';
+        note.textContent = t('No walking route from the station.');
+        document.body.appendChild(note);
+      });
+    }
+  }
 }).catch((err) => console.error(err));

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Societies · iMCQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,650&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main id="societies-popup" class="societies-popup">
+    <div class="popup-island">
+      <div class="popup-head">
+        <h1 data-i18n="Societies">Societies</h1>
+        <a class="popup-close" href="/" aria-label="Map">&larr;</a>
+      </div>
+      <div class="list-toolbar">
+        <input class="page-search" type="search" placeholder="Search societies" aria-label="Search societies" data-i18n-attr="placeholder:Search societies|aria-label:Search societies" autocomplete="off">
+        <select class="list-sort" aria-label="Sort by" data-i18n-attr="aria-label:Sort by" hidden>
+          <option value="az" data-i18n="Name A–Z">Name A–Z</option>
+          <option value="za" data-i18n="Name Z–A">Name Z–A</option>
+        </select>
+      </div>
+    </div>
+    <div class="popup-results">
+      <div class="category-grid"></div>
+      <ul class="card-list" hidden></ul>
+      <p class="empty-msg" role="status" hidden data-i18n="No societies found.">No societies found.</p>
+    </div>
+  </main>
+  <nav id="nav-mount"></nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="js/lib/i18n.js"></script>
+  <script src="js/lib/auth.js"></script>
+  <script src="js/lib/api.js"></script>
+  <script src="js/components/nav.js"></script>
+  <script src="js/components/card.js"></script>
+  <script src="js/pages/societies.js"></script>
+</body>
+</html>
