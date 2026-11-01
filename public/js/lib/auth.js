@@ -171,6 +171,10 @@ const auth = (function () {
         : await q.delete().eq('user_id', state.user.id).eq('society_id', societyId);
       return { error };
     },
+    async unfollowMany(societyIds) {
+      const { error } = await state.sb.from('follows').delete().eq('user_id', state.user.id).in('society_id', societyIds);
+      return { error };
+    },
     // Societies the user may post events for.
     get approvedSocieties() {
       return state.leaderships.filter((l) => l.status === 'approved')

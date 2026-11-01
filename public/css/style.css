@@ -474,6 +474,12 @@ button, input, select, textarea { font-family: inherit; }
 .category-grid[hidden], .card-list[hidden] { display: none; }
 .category-wide { grid-column: 1 / -1; height: auto; }
 .request-lead { grid-column: 1 / -1; justify-self: start; margin: 0; }
+.manage-societies { grid-column: 1 / -1; border-top: 1px solid var(--control-line); padding-top: 16px; }
+.manage-societies h2 { margin: 0 0 8px; font-size: 16px; }
+.manage-societies ul { list-style: none; margin: 8px 0 12px; padding: 0; }
+.manage-societies label { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; }
+.manage-societies input[type="checkbox"] { width: 20px; height: 20px; flex: none; }
+.manage-societies .empty-msg { margin: 0; }
 .card-list:has(.card-info) { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 .card-info { cursor: default; }
 .card-info dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 8px 0 0; font-size: 14px; }
