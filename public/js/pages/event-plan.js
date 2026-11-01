@@ -21,6 +21,9 @@
       '<label>' + t('Building') + '<input name="building" list="event-buildings" placeholder="' + t('e.g. 1 Central Courtyard') + '"></label>' +
       '<datalist id="event-buildings"></datalist>' +
       '<label>' + t('Description') + '<textarea name="description" rows="3" maxlength="200"></textarea></label>' +
+      '<fieldset class="eco-field"><legend>' + t('Sustainability tags (optional)') + '</legend>' +
+        '<label><input type="checkbox" name="eco" value="cup"> ' + t('Bring your own cup') + '</label>' +
+        '<label><input type="checkbox" name="eco" value="plant"> ' + t('Plant-based food') + '</label></fieldset>' +
       '<img class="cover-preview" alt="" hidden>' +
       '<label class="ev-remove-photo" hidden><input type="checkbox" name="removeImage"> ' + t('Remove current photo') + '</label>' +
       '<label>' + t('Event photo (optional; JPEG, PNG or WebP, up to 5 MB)') + '<input name="photo" type="file" accept="image/jpeg,image/png,image/webp"></label>' +
@@ -228,6 +231,7 @@
     form.elements.time.value = ev.timeValue;
     form.elements.building.value = ev.building === 'TBC' ? '' : ev.building;
     form.elements.description.value = ev.description;
+    form.querySelectorAll('input[name="eco"]').forEach((c) => { c.checked = (ev.ecoTags || []).includes(c.value); });
     preview.hidden = !ev.imageUrl;
     if (ev.imageUrl) { preview.src = ev.imageUrl; preview.alt = ev.name; }
     removeRow.hidden = !ev.imageUrl;
@@ -256,7 +260,7 @@
     try {
       ({ error } = target === 'me'
         ? await auth.savePlan(fields, photo)
-        : await auth.saveEvent({ ...fields, id: editing ? editing.id : undefined, societyId: Number(target), removeImage: f.get('removeImage') === 'on' }, photo));
+        : await auth.saveEvent({ ...fields, id: editing ? editing.id : undefined, societyId: Number(target), ecoTags: f.getAll('eco'), removeImage: f.get('removeImage') === 'on' }, photo));
     } catch (err) { error = err; }
     submitBtn.disabled = false;
     msg.classList.toggle('error', !!error);

@@ -17,7 +17,7 @@
       '<button type="button" class="cal-next" aria-label="' + t('Next month') + '">&rsaquo;</button>' +
     '</div>' +
     '<div class="cal-grid"></div>' +
-    '<h2 class="cal-day-title"></h2>' +
+    '<h2 class="cal-day-title"></h2><div class="rest-slot"></div>' +
     '<ul class="card-list"></ul><p class="empty-msg" role="status" hidden></p>' +
     '</div>' +
     '<div class="agenda-view" hidden></div>' +
@@ -29,6 +29,7 @@
   const titleEl = p.results.querySelector('.cal-title');
   const gridEl = p.results.querySelector('.cal-grid');
   const dayTitleEl = p.results.querySelector('.cal-day-title');
+  const nudgeEl = p.results.querySelector('.rest-slot');
   const listEl = p.results.querySelector('.card-list');
   const emptyEl = p.results.querySelector('.empty-msg');
   const today = new Date();
@@ -72,11 +73,12 @@
     dayEvents = events[selected] || [];
     dayTitleEl.textContent = formatDate(selected);
     listEl.innerHTML = dayEvents.map((e) => eventCard(e)).join('');
+    nudgeEl.innerHTML = restNote(dayEvents.length);
 
     agendaEvents = [];
     let agenda = '';
     Object.keys(events).sort().forEach((key) => {
-      agenda += `<h2 class="cal-day-title">${esc(formatDate(key))}</h2><ul class="card-list">` +
+      agenda += `<h2 class="cal-day-title">${esc(formatDate(key))}</h2>${restNote(events[key].length)}<ul class="card-list">` +
         events[key].map((e) => { agendaEvents.push(e); return eventCard(e); }).join('') + '</ul>';
     });
     agendaEl.innerHTML = agenda || `<p class="empty-msg">${t('No events found.')}</p>`;

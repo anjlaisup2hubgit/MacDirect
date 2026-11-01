@@ -24,6 +24,7 @@
     '<section class="admin-feedback" hidden>' +
       `<h3>${t('Feedback')}</h3><ul class="card-list"></ul>` +
       `<p class="empty-msg" role="status" hidden>${t('No feedback yet.')}</p></section>` +
+    `<p class="help-link"><a href="https://students.mq.edu.au/support/health-and-wellbeing" target="_blank" rel="noopener">${t('Need help?')}</a></p>` +
     '<section class="privacy-box">' +
       `<h3>${t('Your data')}</h3>` +
       `<p class="privacy-guest">${t('You are browsing as a guest. iMCQ stores only your language choice and your guest choice in this browser. We do not store your location.')}</p>` +

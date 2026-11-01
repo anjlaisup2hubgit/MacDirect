@@ -64,6 +64,16 @@ function societyCard(s, following, imageUrl) {
     cardMenu([['data-map', 'Show on map']]) + '</div></li>';
 }
 
+// Society transparency: who leads a society and how to contact them. `leaders` is an array of names.
+function leadersCard(s, leaders) {
+  const row = (label, value) => `<dt>${t(label)}</dt><dd>${value}</dd>`;
+  const site = /^https?:\/\//i.test(s.website || '') ? `<a href="${esc(s.website)}" target="_blank" rel="noopener">${esc(s.website)}</a>` : '';
+  return `<li class="card card-info"><h2>${esc(s.name)}</h2><dl>` +
+    row('Leaders', leaders && leaders.length ? esc(leaders.join(', ')) : t('Not listed yet')) +
+    (s.contact ? row('Email', `<a href="mailto:${esc(s.contact)}">${esc(s.contact)}</a>`) : '') +
+    (site ? row('Website', site) : '') + '</dl></li>';
+}
+
 const WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 // Opening hours as { Mon: '...', ... }. Keys of the data may be days or ranges ("Mon-Fri").
@@ -155,13 +165,25 @@ function downloadIcs(ev) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
+const ECO_TAGS = { cup: 'Bring your own cup', plant: 'Plant-based food' };
+
+function ecoTagLine(e) {
+  const tags = (e.ecoTags || []).filter((k) => ECO_TAGS[k]);
+  return tags.length ? `<p class="eco-tags">${tags.map((k) => `<span class="eco-tag">${t(ECO_TAGS[k])}</span>`).join('')}</p>` : '';
+}
+
+// Gentle nudge for a day with many events.
+function restNote(count) {
+  return count >= 4 ? `<p class="rest-nudge" role="status">${t('Remember to rest')}</p>` : '';
+}
+
 function eventCard(e) {
   return `<li class="card card-society" data-id="${e.id}" tabindex="0">` +
     (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : coverDiv(e.name)) +
     `<div class="card-body"><span class="card-tag">${esc(e.category)}</span>` +
     `<h2 title="${esc(e.name)}">${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
-    `<p>${esc(e.description)}</p>` +
+    `<p>${esc(e.description)}</p>` + ecoTagLine(e) +
     `<p class="card-actions-label">${t('Add to calendar')}</p>` +
     `<div class="card-actions" role="group" aria-label="${t('Add to calendar')}"><button type="button" class="follow-btn" data-gcal>${t('Google')}</button>` +
       `<button type="button" class="follow-btn" data-ics>${t('Apple / Outlook')}</button></div>` +

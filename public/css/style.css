@@ -722,3 +722,12 @@ a.directions-btn {
 .route-steps { list-style: none; margin: 0; padding: 0; max-height: 38vh; overflow: auto; }
 .route-steps[hidden] { display: none; }
 .route-steps li { border-top: 1px solid #f2f0f4; }
+/* Wellbeing: help link, rest nudge, sustainability tags */
+.help-link { margin: 16px 0 0; font-size: 14px; }
+.help-link a { color: var(--mq-red); }
+.rest-nudge { margin: 0 0 12px; padding: 8px 12px; font-size: 14px; border-left: 4px solid #2e7d32; background: #f1f8f1; }
+.eco-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.eco-tag { padding: 2px 8px; font-size: 12px; border-radius: 999px; background: #e8f3e8; color: #1b5e20; }
+.eco-field { margin: 0; padding: 0; border: 0; display: grid; gap: 4px; }
+.eco-field legend { padding: 0; margin-bottom: 4px; }
+.eco-field label { display: flex; align-items: center; gap: 8px; min-height: 44px; }

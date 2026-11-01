@@ -229,7 +229,8 @@ const auth = (function () {
     async listEvents() {
       const cols = 'id, society_id, title, category, event_date, event_time, building, description';
       const order = (q) => q.order('event_date').order('event_time');
-      let { data, error } = await order(state.sb.from('events').select(cols + ', image_path'));
+      let { data, error } = await order(state.sb.from('events').select(cols + ', image_path, eco_tags'));
+      if (error) ({ data, error } = await order(state.sb.from('events').select(cols + ', image_path'))); // eco_tags column not added yet
       if (error) ({ data, error } = await order(state.sb.from('events').select(cols))); // image_path column not added yet
       if (error) throw error;
       return data.map((e) => {
@@ -239,7 +240,7 @@ const auth = (function () {
           timeValue: e.event_time ? e.event_time.slice(0, 5) : '',
           time: h === null ? '' : `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`,
           building: this.fullBuildingName(e.building) || 'TBC', description: e.description,
-          imageUrl: e.image_path ? posterUrl(e.image_path) : '',
+          imageUrl: e.image_path ? posterUrl(e.image_path) : '', ecoTags: e.eco_tags || [],
         };
       });
     },
@@ -250,6 +251,7 @@ const auth = (function () {
         society_id: ev.societyId, title: ev.name, category: ev.category, event_date: ev.date,
         event_time: ev.time || null, building: ev.building || null, description: ev.description,
       };
+      if (ev.ecoTags) row.eco_tags = ev.ecoTags;
       const bucket = state.sb.storage.from('society-images');
       let path = null;
       if (file) {
@@ -392,6 +394,15 @@ const auth = (function () {
           hashtags: row.hashtags && row.hashtags.length ? row.hashtags : s.hashtags,
         };
       });
+    },
+    // Society transparency: { societyId: [display names] } of approved leaders. Returns {} until the SQL function exists.
+    async listPublicLeaders() {
+      if (!state.sb) return {};
+      const { data, error } = await state.sb.rpc('public_society_leaders');
+      if (error) { console.error(error); return {}; }
+      const map = {};
+      (data || []).forEach((r) => { (map[r.society_id] = map[r.society_id] || []).push(r.display_name); });
+      return map;
     },
     // `tags` is an array of clean tags (see parseHashtags). Leaders may change only this column.
     async updateSocietyHashtags(societyId, tags) {

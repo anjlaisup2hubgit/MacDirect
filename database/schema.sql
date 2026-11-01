@@ -321,6 +321,23 @@ create policy "feedback admin update" on public.feedback
   for update to authenticated using (public.is_admin()) with check (public.is_admin());
 grant update (resolved_at) on public.feedback to authenticated;
 
+-- Sustainability tags on society events: 'cup' (bring your own cup) and 'plant' (plant-based food). Safe to run again.
+alter table public.events add column if not exists eco_tags text[] not null default '{}';
+
+-- Society transparency page: anyone (guests too) can see the display names of APPROVED leaders,
+-- and nothing else from profiles (no email, no role). Safe to run again.
+create or replace function public.public_society_leaders()
+returns table (society_id bigint, display_name text)
+language sql security definer set search_path = '' stable as $$
+  select l.society_id, p.display_name
+  from public.society_leaders l
+  join public.profiles p on p.id = l.user_id
+  where l.status = 'approved' and p.display_name <> ''
+  order by p.display_name;
+$$;
+revoke all on function public.public_society_leaders() from public;
+grant execute on function public.public_society_leaders() to anon, authenticated;
+
 -- Making yourself the first admin (SQL editor only, after signing up once):
 --   update public.profiles set role = 'admin' where id = '<your auth.users id>';
 -- Approving a leader request (the MVP "admin screen"):
