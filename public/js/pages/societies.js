@@ -61,6 +61,41 @@
   tBtn.querySelector('.category-more').textContent = t('Find out more') + ' ›';
   grid.append(tBtn);
 
+  // Logged in users ask to lead a society here; guests are asked to log in first.
+  const reqBtn = document.createElement('button');
+  reqBtn.type = 'button';
+  reqBtn.className = 'follow-btn request-lead';
+  reqBtn.textContent = t('Request to lead a society');
+  grid.append(reqBtn);
+
+  function openLeaderRequest() {
+    if (!auth.requireLogin('Log in to request to lead a society')) return;
+    const d = document.createElement('dialog');
+    d.className = 'login-prompt';
+    const options = societies.filter((s) => typeof s.id === 'number').sort((a, b) => a.name.localeCompare(b.name))
+      .map((s) => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
+    d.innerHTML = `<p>${t('An admin will approve this')}.</p>` +
+      `<label>${t('Society')}<select class="leader-pick">${options}</select></label>` +
+      '<p class="form-msg" role="status" hidden></p><div>' +
+      `<button class="form-submit" type="button" data-send>${t('Send request')}</button>` +
+      `<button class="auth-guest" type="button" data-close>${t('Cancel')}</button></div>`;
+    const msg = d.querySelector('.form-msg');
+    const send = d.querySelector('[data-send]');
+    d.addEventListener('click', async (e) => {
+      if (e.target.dataset.close !== undefined) d.remove();
+      if (e.target !== send) return;
+      send.disabled = true;
+      const { error } = await auth.requestLeadership(Number(d.querySelector('.leader-pick').value));
+      msg.textContent = error ? t(error.userMessage) : t('Request sent. An admin will review it.');
+      msg.hidden = false;
+      send.disabled = !error;
+    });
+    d.addEventListener('cancel', () => d.remove());
+    document.body.appendChild(d);
+    d.showModal();
+  }
+  reqBtn.addEventListener('click', openLeaderRequest);
+
   function render() {
     const q = searchInput.value.trim().toLowerCase().replace(/^#/, '');
     const home = !category && !q;

@@ -395,6 +395,19 @@ const auth = (function () {
         };
       });
     },
+    // Logged in users ask to lead a society. It starts pending until an admin approves it.
+    // On error, error.userMessage is an English i18n key.
+    async requestLeadership(societyId) {
+      const { error } = await state.sb.from('society_leaders').insert({ user_id: state.user.id, society_id: societyId, status: 'pending' });
+      if (error) {
+        console.error(error);
+        const key = error.code === '23505' ? 'You already asked to lead this society.' : 'Could not save.';
+        return { error: Object.assign(new Error(key), { userMessage: key }) };
+      }
+      await loadUserData();
+      listeners.forEach((cb) => cb());
+      return { error: null };
+    },
     // Society transparency: { societyId: [display names] } of approved leaders. Returns {} until the SQL function exists.
     async listPublicLeaders() {
       if (!state.sb) return {};

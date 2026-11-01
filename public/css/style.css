@@ -418,6 +418,8 @@ button, input, select, textarea { font-family: inherit; }
 .delete-btn:disabled { opacity: 0.5; cursor: default; }
 .login-prompt input { box-sizing: border-box; width: 100%; min-height: 48px; margin-bottom: 14px; padding: 8px; font: inherit; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
 .login-prompt > div > .delete-btn { margin-top: 0; }
+.login-prompt label { display: block; margin-bottom: 14px; }
+.login-prompt select { box-sizing: border-box; display: block; width: 100%; min-height: 48px; margin-top: 4px; padding: 8px; font: inherit; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
 .login-prompt .form-msg.error { margin: -6px 0 14px; }
 .hours { margin-top: 0; font-size: 14px; }
 .hours summary { display: flex; align-items: center; min-height: 48px; cursor: pointer; color: var(--mq-red); }
@@ -471,6 +473,7 @@ button, input, select, textarea { font-family: inherit; }
 .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .category-grid[hidden], .card-list[hidden] { display: none; }
 .category-wide { grid-column: 1 / -1; height: auto; }
+.request-lead { grid-column: 1 / -1; justify-self: start; margin: 0; }
 .card-list:has(.card-info) { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 .card-info { cursor: default; }
 .card-info dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 8px 0 0; font-size: 14px; }
