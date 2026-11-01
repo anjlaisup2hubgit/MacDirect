@@ -2,6 +2,7 @@
   "name": "imcq",
   "version": "0.1.0",
   "private": true,
+  "engines": { "node": ">=20.6" },
   "description": "iMCQ: interactive Macquarie University campus map",
   "main": "server.js",
   "scripts": {

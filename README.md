@@ -29,7 +29,7 @@ npm start              # http://localhost:3000 (set PORT to change)
 
 * **Map:** a Leaflet map (a JavaScript map library) on OpenStreetMap tiles, centred on Wally's Walk and locked to a 1.8 km circle around campus.
 * **Buildings:** named footprints come from `GET /api/map`, built from `data/map.geojson` (GeoJSON, a standard map data format). Tapping one outlines it and opens an info panel with name, address, description and website.
-* **Search bar:** one bar reading "Search buildings or ask mcqAI". Typing filters building names (up to 8 matches) and zooms to the one you pick. "Ask mcqAI" does nothing yet.
+* **Search bar:** one bar reading "Search buildings, societies or restaurants". Typing filters building names (up to 8 matches) plus societies and restaurants, and shows the one you pick.
 * **Accounts:** email and password sign-up and login, guest mode, and an "I lead a society" request at sign-up.
 * **Guest gating:** actions that need an account show "Log in to use this".
 * **Languages:** English, 简体中文, العربية, 粵語, Tiếng Việt, हिन्दी, Ελληνικά, Filipino, Italiano, 한국어, ਪੰਜਾਬੀ and नेपाली, chosen on the login page or in User settings and stored in `localStorage`. Changing it reloads the page. Society, event and food content from the database stays in English.

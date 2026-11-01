@@ -1,5 +1,5 @@
-// Floating search + mcqAI bar. Call initSearchBar(features, onSelect, onAsk) once pins are loaded.
-// Typing lists matching buildings plus an "Ask mcqAI" row; optional onAsk(text) returns the answer text to show.
+// Floating search bar. Call initSearchBar(features, onSelect) once pins are loaded.
+// Typing lists matching buildings.
 // Societies and food outlets add themselves here as { name, building, kind } so the bar finds them too.
 window.searchExtras = [];
 
@@ -61,12 +61,12 @@ function fuzzyRank(query, items, nameOf) {
     .map((x) => x.item);
 }
 
-function initSearchBar(features, onSelect, onAsk) {
+function initSearchBar(features, onSelect) {
   const mount = document.getElementById('search-bar-mount');
   mount.innerHTML =
     '<div class="search-bar">' +
     '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="#1A1220" stroke-width="1.6"/><path d="M15 15l9 9" stroke="#1A1220" stroke-width="1.8" stroke-linecap="round"/></svg>' +
-    '<input type="search" placeholder="' + t('Search buildings, societies, restaurants or ask mcqAI') + '" aria-label="' + t('Search campus or ask mcqAI') + '" autocomplete="off">' +
+    '<input type="search" placeholder="' + t('Search buildings, societies or restaurants') + '" aria-label="' + t('Search buildings, societies or restaurants') + '" autocomplete="off">' +
     '</div><ul class="search-results"></ul><div class="mcqai-panel" hidden></div>';
 
   const input = mount.querySelector('input');
@@ -119,7 +119,6 @@ function initSearchBar(features, onSelect, onAsk) {
           if (window.focusBuildingByName) window.focusBuildingByName(x.building, x.name);
         });
       });
-    addRow(t('Ask mcqAI') + ': ' + q, 'ask-ai', () => ask(q));
   });
 
   input.addEventListener('keydown', (e) => {
@@ -127,7 +126,7 @@ function initSearchBar(features, onSelect, onAsk) {
     if (!n) return;
     if (e.key === 'ArrowDown') { e.preventDefault(); setActive((active + 1) % n); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((active - 1 + n) % n); }
-    else if (e.key === 'Enter') { e.preventDefault(); list.children[active >= 0 ? active : n - 1].click(); }
+    else if (e.key === 'Enter') { e.preventDefault(); list.children[active >= 0 ? active : 0].click(); }
   });
 
 }

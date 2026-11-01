@@ -107,7 +107,10 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 
 | 50 | Link to Macquarie's Accessibility Map (1 Nov 2026): under the source note in the building panel's Accessibility block, and under the lit-paths source line on the route card, a link "Open the Macquarie University Accessibility Map" to `www.mq.edu.au/__data/assets/pdf_file/0011/1182683/map_accessibility.pdf` (new tab; `mapLinkHtml` in `map.js`). New key is English only | Partly. `node --check` passes. Preview as a guest: the link shows in the panel of 2 Innovation Road with the right URL and `_blank`. NOT checked: the route card link, the PDF URL staying live, other languages. |
 
+| 51 | Pre-deploy fixes (1 Nov 2026): the dead "Ask mcqAI" search row is removed (nothing handled it), so Enter now picks the first result; the search placeholder and label are "Search buildings, societies or restaurants" in all 11 languages (old key `...or ask mcqAI` replaced; `About mcqAI`/`Ask mcqAI` keys left unused); page titles and the login heading say iMCQ, not MacDirect; `package.json` has `engines.node >= 20.6` | Done. `node --check` passes. Preview (Hindi saved): placeholder shows the new text, searching "library" lists a building and a restaurant, no Ask row, no console errors. Not checked: Enter key by hand, the other 10 languages in a browser. Other deploy to-dos stay open: run the pending SQL blocks, test with real accounts, confirm Vercel env vars. |
+
 ## Next step
+Before deploying: run the pending SQL blocks in Supabase (see steps 37-40 and 28), test leader/admin/delete account with throwaway accounts, and confirm `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are set in Vercel.
 Step 49: owner adds 4 events on one day (logged in) and checks the note and link in the Calendar.
 Step 48: owner, as an approved leader, opens Add event > Cover photo, picks hashtags from the dropdown, saves, and checks the Societies card. Decide if the 16 choices are the right list.
 Step 46 (panel): spot-check a few buildings against Macquarie's PDF (lifts, toilets) on a phone.
