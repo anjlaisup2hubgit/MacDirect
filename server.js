@@ -28,6 +28,28 @@ function describe(p) {
 const raw = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'map.geojson'), 'utf8'));
 // Lifts, accessible toilets and so on per building, read off Macquarie's Accessibility Map (see tools/trace-lit-paths).
 const accessibility = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'accessibility.json'), 'utf8'));
+// Free drinking water points from the OSM data (the decorative fountain and the paid, seasonal one are left out).
+const drinkPoints = raw.features
+  .filter((f) => f.properties.amenity === 'drinking_water' && f.properties.fee !== 'yes' && f.geometry.type === 'Point')
+  .map((f) => ({ lng: f.geometry.coordinates[0], lat: f.geometry.coordinates[1], bottle: f.properties.bottle === 'yes' }));
+
+// Metres from a drink point to the closest corner of a building outline (flat-earth maths is fine on one campus).
+function nearestDrink(geometry) {
+  const rings = geometry.type === 'Polygon' ? [geometry.coordinates[0]] : geometry.coordinates.map((poly) => poly[0]);
+  let best = null;
+  for (const d of drinkPoints) {
+    for (const ring of rings) {
+      for (const [lng, lat] of ring) {
+        const dx = (lng - d.lng) * 111320 * Math.cos((lat * Math.PI) / 180);
+        const dy = (lat - d.lat) * 110540;
+        const m = Math.hypot(dx, dy);
+        if (!best || m < best.metres) best = { metres: Math.round(m), bottle: d.bottle };
+      }
+    }
+  }
+  return best;
+}
+
 const buildings = {
   type: 'FeatureCollection',
   features: raw.features
@@ -45,6 +67,7 @@ const buildings = {
           website: p.website || null,
           description: describe(p),
           accessibility: accessibility[f.id] || null,
+          drink: nearestDrink(f.geometry),
         },
       };
     }),

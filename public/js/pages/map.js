@@ -139,6 +139,14 @@ function accessibilityHtml(a) {
     `<p class="building-panel-note">${mapLinkHtml()}</p>`;
 }
 
+// Closest drinking water point, measured from the building's nearest corner.
+function drinkHtml(d) {
+  if (!d) return '';
+  const near = d.metres < 20 ? t('Right next to this building') : `${t('About')} ${Math.round(d.metres / 10) * 10} m ${t('away')}`;
+  return `<h3>${t('Drinking water')}</h3><p>${near}${d.bottle ? ' · ' + t('Bottle refill') : ''}</p>` +
+    `<p class="building-panel-note">${t('From OpenStreetMap, so a tap may be missing or moved.')}</p>`;
+}
+
 let societies = [];
 auth.ready.then(() => auth.listSocieties()).then((data) => {
   societies = data;
@@ -177,6 +185,7 @@ function selectBuilding(id, label) {
       `<p>${esc(p.description)}</p>` +
       (p.website ? `<a href="${esc(p.website)}" target="_blank" rel="noopener">${t('Website')}</a>` : '') +
       accessibilityHtml(p.accessibility) +
+      drinkHtml(p.drink) +
       `<h3>${t('Societies held here')}</h3>` +
       (here.length
         ? '<ul class="building-panel-societies">' +
