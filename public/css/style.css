@@ -186,6 +186,7 @@ button, input, select, textarea { font-family: inherit; }
 }
 .bottom-nav svg path[stroke] { stroke-width: 0.95; }
 .bottom-nav svg path:not([stroke]) { stroke: #fff; stroke-width: 1.6; }
+.bottom-nav a.active svg path[stroke] { stroke: #fff; fill: none; }
 .bottom-nav .nav-label,
 .bottom-nav .nav-status {
   max-width: 100%;
