@@ -642,35 +642,6 @@ button, input, select, textarea { font-family: inherit; }
   .card-list:has(.card-society) { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* Location page: the map is a square, and the details sit below it. */
-.location-map {
-  position: fixed;
-  top: 0;
-  left: var(--app-left);
-  width: var(--app-width);
-  height: min(var(--app-width), calc(100dvh - var(--nav-height) - 210px));
-  z-index: 1;
-  background: #d9d3c7;
-}
-.location-sheet {
-  position: fixed;
-  top: calc(min(var(--app-width), calc(100dvh - var(--nav-height) - 210px)) - 16px);
-  bottom: var(--nav-height);
-  left: var(--app-left);
-  width: var(--app-width);
-  z-index: 2;
-  overflow: auto;
-  box-sizing: border-box;
-  padding: 8px 16px 24px;
-  background: #fff;
-  border-radius: 22px 22px 0 0;
-  box-shadow: 0 -8px 24px rgba(80, 30, 60, 0.12);
-}
-.location-head { display: flex; align-items: center; gap: 4px; }
-.location-head h1 { margin: 0; font-family: Fraunces, serif; font-size: 26px; font-weight: 560; line-height: 1.15; }
-.location-address { margin: 4px 0 0; font-size: 14px; }
-.location-sheet p { font-size: 15px; line-height: 1.45; }
-.location-sheet h2 { margin: 20px 0 8px; font-size: 16px; }
 a.directions-btn {
   display: flex;
   align-items: center;
@@ -681,6 +652,24 @@ a.directions-btn {
   text-decoration: none;
 }
 .building-panel a.directions-btn { margin: 10px 0 4px; font-size: 14px; color: #fff; }
+/* Red X under the search bar, top right: leaves the directions screen. */
+.route-exit {
+  position: fixed;
+  top: calc(72px + env(safe-area-inset-top, 0px));
+  right: calc(100% - var(--app-left) - var(--app-width) + 16px);
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--mq-red);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--mq-red);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
 .route-note {
   position: fixed;
   left: calc(var(--app-left) + 16px);

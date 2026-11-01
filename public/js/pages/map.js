@@ -305,13 +305,22 @@ api('/map').then((data) => {
       let line = null;
       let card = null;
 
+      // Leave directions: back to the plain map with this building's panel open.
+      const exit = document.createElement('button');
+      exit.type = 'button';
+      exit.className = 'route-exit';
+      exit.setAttribute('aria-label', t('Close'));
+      exit.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+      exit.addEventListener('click', () => { location.href = '/?id=' + encodeURIComponent(feature.id); });
+      document.body.appendChild(exit);
+
       function showRoute(route, firstTime) {
         if (line) { map.removeLayer(casing); map.removeLayer(line); }
         casing = L.polyline(route.coordinates, { ...routeLine, color: '#174EA6', weight: 3.5 }).addTo(map);
         line = L.polyline(route.coordinates, { ...routeLine, color: '#4285F4', weight: 2.5 }).addTo(map);
         casing.bringToFront();
         line.bringToFront();
-        if (firstTime) map.fitBounds(line.getBounds(), { paddingTopLeft: [28, 88], paddingBottomRight: [28, 160] });
+        if (firstTime) map.fitBounds(line.getBounds(), { paddingTopLeft: [28, 128], paddingBottomRight: [28, 160] });
         const wasOpen = Boolean(card && card.classList.contains('open'));
         if (card) card.remove();
         const minutes = Math.max(1, Math.round(route.metres / 83.3));
