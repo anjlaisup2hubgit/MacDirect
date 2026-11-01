@@ -383,6 +383,12 @@ api('/map').then((data) => {
           credit.insertAdjacentHTML('beforeend', mapLinkHtml());
           card.appendChild(credit);
         }
+        if (askedWater !== null) {
+          const caveat = document.createElement('p');
+          caveat.className = 'route-credit';
+          caveat.textContent = startNote + ' ' + t('Tap positions come from Macquarie\'s Drinking Water Map and can be about 10 m out. The walk follows mapped footpaths, so the last stretch may be a straight line. Check on site.');
+          card.appendChild(caveat);
+        }
         const steps = (route.instructions || []).map((x) => (askedWater !== null && x.kind === 'arrive' ? { ...x, name: waterSpot || '' } : x));
         if (steps[0]) {
           const first = document.createElement('button');
@@ -413,8 +419,46 @@ api('/map').then((data) => {
         }).observe(card);
       }
 
+      // Drink point walks start where the user is. here: undefined = not asked yet, null = not available.
+      let here;
+      let hereMarker = null;
+      let startNote = '';
+      function findMe() {
+        return new Promise((resolve) => {
+          if (!navigator.geolocation) { resolve(null); return; }
+          navigator.geolocation.getCurrentPosition(
+            (p) => resolve({ lat: p.coords.latitude, lng: p.coords.longitude }),
+            () => resolve(null),
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 });
+        });
+      }
+      async function fetchRoute() {
+        const fromBuilding = () => api('/route?id=' + encodeURIComponent(feature.id) + (askedWater !== null ? '&water=' + encodeURIComponent(askedWater) : '') + (preferLit ? '&night=1' : ''));
+        if (askedWater === null) return fromBuilding();
+        if (here === undefined) {
+          const wait = document.createElement('p');
+          wait.className = 'route-note';
+          wait.textContent = t('Finding your location...');
+          document.body.appendChild(wait);
+          here = await findMe();
+          wait.remove();
+        }
+        if (here) {
+          const res = await fetch('/api/route-from', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ water: Number(askedWater), lat: here.lat, lng: here.lng, night: preferLit }) });
+          if (res.ok) {
+            startNote = t('The walk starts at your location. It is used only for this walk and is not stored.');
+            if (!hereMarker) hereMarker = L.circleMarker([here.lat, here.lng], { radius: 8, color: '#fff', weight: 3, fillColor: '#d93025', fillOpacity: 1 }).addTo(map).bindTooltip(t('You'), { permanent: true, direction: 'top', offset: [0, -8] });
+            return res.json();
+          }
+          startNote = t('You are not near the campus paths, so the walk starts at the building.');
+        } else {
+          startNote = t('Your location is not available, so the walk starts at the building.');
+        }
+        return fromBuilding();
+      }
+
       function loadRoute(firstTime) {
-        api('/route?id=' + encodeURIComponent(feature.id) + (askedWater !== null ? '&water=' + encodeURIComponent(askedWater) : '') + (preferLit ? '&night=1' : '')).then((route) => {
+        fetchRoute().then((route) => {
           showRoute(route, firstTime);
         }).catch(() => {
           if (card) return;

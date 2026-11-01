@@ -243,12 +243,14 @@ function routeTo(nodes, feature, night) {
   return { coordinates, metres: Math.round(walked), litMetres: Math.round(litWalked), steps, instructions };
 }
 
-// The walk from a building to a spot such as a drinking fountain, on the footpaths.
-// Starts at the footpath node nearest the building's outline; returns the same shape as routeTo.
+// The walk from a building, or from a point {lat, lng} such as the user's position, to a spot such as a drinking fountain, on the footpaths.
+// Starts at the footpath node nearest the building's outline (or the point); returns the same shape as routeTo.
 function routeBetween(nodes, feature, spot, night) {
-  const ring = feature.geometry.type === 'MultiPolygon'
-    ? feature.geometry.coordinates[0][0]
-    : feature.geometry.coordinates[0];
+  const isPoint = !feature.geometry;
+  const ring = isPoint ? [[feature.lng, feature.lat]]
+    : feature.geometry.type === 'MultiPolygon'
+      ? feature.geometry.coordinates[0][0]
+      : feature.geometry.coordinates[0];
   // Try every footpath node near the building (a virtual start joins them, costing their distance to the wall)
   // and every node near the spot, so one badly placed node cannot send the walk the long way round.
   // Widen the search only when the tight one finds nothing (a wide one lets a single node between the two count as a walk).
@@ -288,8 +290,11 @@ function routeBetween(nodes, feature, spot, night) {
   }
   hops.reverse();
   const start = hops.length ? hops[0].from : goal;
-  const coordinates = [[start.lat, start.lng]];
-  let walked = 0;
+  // The walk off the start point (or the wall) onto the footpath: drawn and counted, and added to the first instruction.
+  const origin = isPoint ? feature : closestOnRing(start, ring).point;
+  const lead = origin ? metres(origin, start) : 0;
+  const coordinates = lead > 1 ? [[origin.lat, origin.lng], [start.lat, start.lng]] : [[start.lat, start.lng]];
+  let walked = lead > 1 ? lead : 0;
   let litWalked = 0;
   let steps = false;
   for (const hop of hops) {
@@ -300,7 +305,14 @@ function routeBetween(nodes, feature, spot, night) {
   }
   const last = metres(goal, spot);
   if (last > 1) { coordinates.push([spot.lat, spot.lng]); walked += last; }
-  return { coordinates, metres: Math.round(walked), litMetres: Math.round(litWalked), steps, instructions: hops.length ? describeWalk(hops, spot.label || '') : [{ kind: 'arrive', name: spot.label || '', metres: 0, steps: false }] };
+  // A walk with no footpath in it (start and tap share a node) is one short step in a straight line.
+  const instructions = hops.length ? describeWalk(hops, spot.label || '')
+    : walked > 1 ? [{ kind: 'head', direction: cardinal(bearing({ lat: coordinates[0][0], lng: coordinates[0][1] }, spot)), name: '', metres: Math.round(walked), steps: false }, { kind: 'arrive', name: spot.label || '', metres: 0, steps: false }]
+      : [{ kind: 'arrive', name: spot.label || '', metres: 0, steps: false }];
+  // Every metre belongs to a step: the walk on to the footpath goes to the first, the walk off it to the last.
+  if (hops.length && lead > 1) instructions[0].metres += Math.round(lead);
+  if (last > 1 && hops.length) instructions[instructions.length - 2].metres += Math.round(last);
+  return { coordinates, metres: Math.round(walked), litMetres: Math.round(litWalked), steps, instructions };
 }
 
 function bearing(a, b) {

@@ -109,6 +109,18 @@ app.get('/api/route', (req, res) => {
   if (!route) return res.status(404).json({ error: 'no route' });
   res.json(route);
 });
+// Walk from the user's position to a drink point. POST so the position stays out of URLs and logs; nothing is stored.
+app.post('/api/route-from', express.json({ limit: '1kb' }), (req, res) => {
+  const { lat, lng, water, night } = req.body || {};
+  const spot = drinkPoints[Number(water)];
+  if (!spot) return res.status(404).json({ error: 'unknown drink point' });
+  if (![lat, lng].every(Number.isFinite) || lat < -33.79 || lat > -33.76 || lng < 151.09 || lng > 151.13) {
+    return res.status(422).json({ error: 'outside campus' });
+  }
+  const route = routeBetween(graph, { lat, lng }, { lat: spot.lat, lng: spot.lng, label: '' }, night === true);
+  if (!route) return res.status(404).json({ error: 'no route' });
+  res.json(route);
+});
 // Public Supabase settings for the browser; the secret key is never sent.
 app.get('/api/config', (req, res) => res.json({
   supabaseUrl: process.env.SUPABASE_URL || null,
