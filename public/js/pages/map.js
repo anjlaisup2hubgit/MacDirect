@@ -235,21 +235,50 @@ api('/map').then((data) => {
     if (layer) {
       layer.setStyle(outlineStyle);
       layer.bringToFront();
-      api('/route?id=' + encodeURIComponent(feature.id)).then((route) => {
-        const routeLine = { lineCap: 'round', lineJoin: 'round', opacity: 1 };
-        const casing = L.polyline(route.coordinates, { ...routeLine, color: '#174EA6', weight: 3.5 }).addTo(map);
-        const line = L.polyline(route.coordinates, { ...routeLine, color: '#4285F4', weight: 2.5 }).addTo(map);
+      const routeLine = { lineCap: 'round', lineJoin: 'round', opacity: 1 };
+      let preferLit = false;
+      try { preferLit = localStorage.getItem('imcq-prefer-lit') === '1'; } catch (e) { /* storage blocked */ }
+      let casing = null;
+      let line = null;
+      let card = null;
+
+      function showRoute(route, firstTime) {
+        if (line) { map.removeLayer(casing); map.removeLayer(line); }
+        casing = L.polyline(route.coordinates, { ...routeLine, color: '#174EA6', weight: 3.5 }).addTo(map);
+        line = L.polyline(route.coordinates, { ...routeLine, color: '#4285F4', weight: 2.5 }).addTo(map);
         casing.bringToFront();
         line.bringToFront();
-        map.fitBounds(line.getBounds(), { paddingTopLeft: [28, 88], paddingBottomRight: [28, 160] });
+        if (firstTime) map.fitBounds(line.getBounds(), { paddingTopLeft: [28, 88], paddingBottomRight: [28, 160] });
+        const wasOpen = Boolean(card && card.classList.contains('open'));
+        if (card) card.remove();
         const minutes = Math.max(1, Math.round(route.metres / 83.3));
-        const card = document.createElement('div');
+        card = document.createElement('div');
         card.className = 'route-card';
         const note = document.createElement('p');
         note.className = 'route-note';
         note.textContent = route.metres + ' m · ' + t('approx.') + ' ' + minutes + ' ' + t('min walk')
-          + (route.steps ? '. ' + t('This route includes stairs.') : '');
+          + (route.steps ? '. ' + t('This route includes stairs.') : '')
+          + (route.metres ? ' · ' + Math.round(100 * (route.litMetres || 0) / route.metres) + '% ' + t('on lit paths') : '');
         card.appendChild(note);
+        const pref = document.createElement('label');
+        pref.className = 'route-lit';
+        const box = document.createElement('input');
+        box.type = 'checkbox';
+        box.checked = preferLit;
+        box.addEventListener('change', () => {
+          preferLit = box.checked;
+          try { localStorage.setItem('imcq-prefer-lit', preferLit ? '1' : '0'); } catch (e) { /* storage blocked */ }
+          loadRoute(false);
+        });
+        pref.appendChild(box);
+        pref.appendChild(document.createTextNode(' ' + t('Prefer lit paths')));
+        card.appendChild(pref);
+        if (preferLit) {
+          const credit = document.createElement('p');
+          credit.className = 'route-credit';
+          credit.textContent = t('Source: Macquarie University Accessibility Map, April 2026. Paths not marked there may still be lit.');
+          card.appendChild(credit);
+        }
         const steps = route.instructions || [];
         if (steps[0]) {
           const first = document.createElement('button');
@@ -258,11 +287,12 @@ api('/map').then((data) => {
           first.innerHTML = '<span>' + esc(stepText(steps[0])) + '</span>' + (steps[0].metres ? '<b>' + steps[0].metres + ' m</b>' : '');
           const list = document.createElement('ol');
           list.className = 'route-steps';
-          list.hidden = true;
+          list.hidden = !(wasOpen && steps.length > 1);
           list.innerHTML = steps.slice(1).map((s) =>
             '<li><span>' + esc(stepText(s)) + '</span>' + (s.metres ? '<b>' + s.metres + ' m</b>' : '') + '</li>').join('');
           if (steps.length > 1) {
-            first.setAttribute('aria-expanded', 'false');
+            first.setAttribute('aria-expanded', String(!list.hidden));
+            card.classList.toggle('open', !list.hidden);
             first.addEventListener('click', () => {
               list.hidden = !list.hidden;
               first.setAttribute('aria-expanded', String(!list.hidden));
@@ -273,12 +303,20 @@ api('/map').then((data) => {
           card.appendChild(list);
         }
         document.body.appendChild(card);
-      }).catch(() => {
-        const note = document.createElement('p');
-        note.className = 'route-note';
-        note.textContent = t('No walking route from the station.');
-        document.body.appendChild(note);
-      });
+      }
+
+      function loadRoute(firstTime) {
+        api('/route?id=' + encodeURIComponent(feature.id) + (preferLit ? '&night=1' : '')).then((route) => {
+          showRoute(route, firstTime);
+        }).catch(() => {
+          if (card) return;
+          const note = document.createElement('p');
+          note.className = 'route-note';
+          note.textContent = t('No walking route from the station.');
+          document.body.appendChild(note);
+        });
+      }
+      loadRoute(true);
     }
   }
 }).catch((err) => console.error(err));
