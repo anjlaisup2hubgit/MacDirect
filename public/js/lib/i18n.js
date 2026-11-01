@@ -2,7 +2,7 @@
 // missing translation falls back to English. The choice is stored in localStorage and
 // applied on page load; changing it reloads the page. Database content is not translated.
 // Static HTML is translated through data-i18n (text) and data-i18n-attr="attr:Text|attr:Text".
-const I18N_LANGS = { en: 'English', zh: '简体中文 (Chinese, Simplified)', ar: 'العربية (Arabic)', yue: '粵語 (Cantonese)', vi: 'Tiếng Việt (Vietnamese)', hi: 'हिन्दी (Hindi)', el: 'Ελληνικά (Greek)', fil: 'Filipino', it: 'Italiano (Italian)', ko: '한국어 (Korean)', pa: 'ਪੰਜਾਬੀ (Punjabi)', ne: 'नेपाली (Nepali)' };
+const I18N_LANGS = { en: 'English', zh: '简体中文 (Chinese, Simplified)', ar: 'العربية (Arabic)', yue: '粵語 (Cantonese)', vi: 'Tiếng Việt (Vietnamese)', hi: 'हिन्दी (Hindi)', el: 'Ελληνικά (Greek)', fil: 'Filipino (Tagalog)', it: 'Italiano (Italian)', ko: '한국어 (Korean)', pa: 'ਪੰਜਾਬੀ (Punjabi)', ne: 'नेपाली (Nepali)' };
 const I18N_LOCALES = { en: 'en-AU', zh: 'zh-CN', ar: 'ar', yue: 'zh-HK', vi: 'vi', hi: 'hi', el: 'el', fil: 'fil', it: 'it', ko: 'ko', pa: 'pa', ne: 'ne' };
 const I18N = {
   zh: {
