@@ -45,6 +45,7 @@
       '<ul class="privacy-list" hidden></ul>' +
       '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</section>' +
+    `<p class="help-link"><a href="/privacy.html">${t('Privacy policy')}</a></p>` +
     '<div class="card-actions account-actions">' +
     `<button class="follow-btn" type="button" data-act="download-data" hidden>${t('Download my data')}</button>` +
     `<button class="follow-btn delete-btn" type="button" data-act="delete-account" hidden>${t('Delete account')}</button></div>` +
