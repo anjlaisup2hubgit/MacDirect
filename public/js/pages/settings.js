@@ -66,7 +66,7 @@
       '</form>' +
     '</section>' +
     '</div>' +
-    `<p class="help-link"><a href="https://students.mq.edu.au/support/health-and-wellbeing" target="_blank" rel="noopener">${t('Need help?')}</a></p>` +
+    `<p class="help-link"><a href="https://students.mq.edu.au/support/personal/wellbeing" target="_blank" rel="noopener">${t('Need help?')}</a></p>` +
     '<div class="card-actions account-actions">' +
     `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button></div>`;
   const form = p.results.querySelector('form');
