@@ -182,8 +182,17 @@
     renderCover();
   }
   gate.querySelector('button').addEventListener('click', () => { location.href = '/login.html'; });
-  auth.onChange(renderGate);
+  // Only approved society leaders use this page; everyone else goes back to the map.
+  let loaded = false;
+  const leadersOnly = () => {
+    if (auth.user && auth.approvedSocieties.length) return true;
+    location.replace('/');
+    return false;
+  };
+  auth.onChange(() => { if (!loaded || leadersOnly()) renderGate(); });
   auth.ready.then(() => {
+    loaded = true;
+    if (!leadersOnly()) return;
     renderGate();
     let raw = null;
     try { raw = sessionStorage.getItem('imcq-edit-event'); sessionStorage.removeItem('imcq-edit-event'); } catch (err) { /* storage blocked */ }
