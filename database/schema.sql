@@ -321,6 +321,32 @@ create policy "feedback admin update" on public.feedback
   for update to authenticated using (public.is_admin()) with check (public.is_admin());
 grant update (resolved_at) on public.feedback to authenticated;
 
+-- Feedback spam limit: a logged in user can send 5 per hour, and guests share a pool of 20 per hour
+-- (guests have no identity the database can see). Over the limit the insert fails and the app shows
+-- "Could not send." Safe to run again.
+create or replace function public.feedback_rate_limit()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.user_id is not null then
+    if (select count(*) from public.feedback
+        where user_id = new.user_id and created_at > now() - interval '1 hour') >= 5 then
+      raise exception 'Too many messages. Try again later.';
+    end if;
+  elsif (select count(*) from public.feedback
+         where user_id is null and created_at > now() - interval '1 hour') >= 20 then
+    raise exception 'Too many messages. Try again later.';
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists feedback_rate_limit on public.feedback;
+create trigger feedback_rate_limit before insert on public.feedback
+  for each row execute function public.feedback_rate_limit();
+
 -- Sustainability tags on society events: 'cup' (bring your own cup) and 'plant' (plant-based food). Safe to run again.
 alter table public.events add column if not exists eco_tags text[] not null default '{}';
 
