@@ -749,6 +749,9 @@ a.directions-btn {
 .help-link { margin: 16px 0 0; font-size: 14px; }
 .help-link a { color: var(--mq-red); }
 .rest-nudge { margin: 0 0 12px; padding: 8px 12px; font-size: 14px; border-left: 4px solid #2e7d32; background: #f1f8f1; }
+.rest-nudge p { margin: 0; }
+.rest-nudge p + p { margin-top: 4px; }
+.rest-nudge a { display: inline-block; padding: 12px 4px; margin: -12px 0; color: var(--mq-red, #a6192e); font-weight: 500; }
 .eco-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
 .eco-tag { padding: 2px 8px; font-size: 12px; border-radius: 999px; background: #e8f3e8; color: #1b5e20; }
 .tag-picker { border: 1px solid var(--control-line); border-radius: 6px; }

@@ -174,7 +174,11 @@ function ecoTagLine(e) {
 
 // Gentle nudge for a day with many events.
 function restNote(count) {
-  return count >= 4 ? `<p class="rest-nudge" role="status">${t('Remember to rest')}</p>` : '';
+  return count >= 4
+    ? `<div class="rest-nudge" role="status"><p>${t('Remember to rest')}</p>` +
+      `<p>${t('Feeling overloaded? Macquarie wellbeing can help.')} ` +
+      `<a href="https://students.mq.edu.au/support/personal/wellbeing" target="_blank" rel="noopener">${t('Get support')}</a></p></div>`
+    : '';
 }
 
 function eventCard(e) {

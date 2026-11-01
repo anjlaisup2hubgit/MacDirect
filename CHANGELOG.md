@@ -103,7 +103,10 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 
 | 48 | Settings tabs (1 Nov 2026): a Moodle-style tab bar (same `.mode-tabs` look as Add event) with General (Language, Calendar view, Week starts on, High contrast), Username, Data (Your data, Download my data, Delete account), Username (display name saves on change, Change password) and Contact (Contact the developers). Guests see only General and Data. Leader requests, Feedback, Need help? and Log out stay below the tabs. 'General', 'Data', 'Username', 'Contact' added in all 11 languages (machine-written) | Partly. `node --check` passes. Preview at 480px as a guest and with a faked login: tab bar hidden for guests, tabs switch panels, no sideways scroll. NOT checked: a real login, saving the name from the new form, Change password via the moved form, Contact send, admin sections, non-English wording. |
 
+| 49 | Help link on a busy day (1 Nov 2026): the "Remember to rest" note (`restNote` in `card.js`, `.rest-nudge` in `style.css`) now also says "Feeling overloaded? Macquarie wellbeing can help." with a "Get support" link to `students.mq.edu.au/support/personal/wellbeing` (new tab). 2 new keys in all 11 languages (machine-written) | Partly. `node --check` passes. Preview at 320px with `restNote` loaded by hand: link correct, 4 events show the note and 3 do not, no sideways scroll, link about 42px high (just under 44px). NOT checked: the real Calendar with a busy day, non-English wording, Arabic layout. |
+
 ## Next step
+Step 49: owner adds 4 events on one day (logged in) and checks the note and link in the Calendar.
 Step 48: owner, as an approved leader, opens Add event > Cover photo, picks hashtags from the dropdown, saves, and checks the Societies card. Decide if the 16 choices are the right list.
 Step 47: owner tries High contrast across every screen, logged in too. Step 46 (panel): spot-check a few buildings against Macquarie's PDF (lifts, toilets) on a phone.
 Steps 45-46: owner tries tapping buildings on a phone (panel drag, Back, Directions, Show on map from Societies) and the red X on the directions screen.
