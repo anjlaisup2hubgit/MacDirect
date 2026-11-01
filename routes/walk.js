@@ -1,5 +1,8 @@
 // Walking routes from the campus-side station exit, using the footpaths in map.geojson.
 const STATION = { lat: -33.777161, lng: 151.118078 };
+// Footpath pieces that are lit, traced from Macquarie's Accessibility Map (April 2026); see tools/trace-lit-paths.
+const LIT = require('../data/lit-paths.json');
+const NIGHT_UNLIT_COST = 2;
 const WALK = new Set([
   'footway', 'pedestrian', 'path', 'steps', 'crossing', 'corridor',
   'living_street', 'service', 'unclassified', 'residential',
@@ -58,6 +61,12 @@ function insideAvoid(lng, lat, areas) {
   return false;
 }
 
+const litEdges = new Set();
+for (const [lng1, lat1, lng2, lat2] of LIT) {
+  litEdges.add(keyOf(lng1, lat1) + '|' + keyOf(lng2, lat2));
+  litEdges.add(keyOf(lng2, lat2) + '|' + keyOf(lng1, lat1));
+}
+
 function buildGraph(raw) {
   const nodes = new Map();
   const ensure = (lng, lat) => {
@@ -73,14 +82,17 @@ function buildGraph(raw) {
     if (a === b) return;
     const w = metres(a, b);
     if (w < 0.5) return;
+    const lit = litEdges.has(keyOf(a.lng, a.lat) + '|' + keyOf(b.lng, b.lat));
+    const nightCost = lit ? cost : cost * NIGHT_UNLIT_COST;
     const add = (from, to) => {
       const existing = from.edges.find((e) => e.to === to);
       if (existing) {
         if (name && !existing.name) existing.name = name;
         if (steps) existing.steps = true;
+        if (lit && !existing.lit) { existing.lit = true; existing.nightCost = Math.min(existing.nightCost, nightCost); }
         return;
       }
-      from.edges.push({ to, w, cost, steps, name: name || '' });
+      from.edges.push({ to, w, cost, nightCost, lit, steps, name: name || '' });
     };
     add(a, b);
     add(b, a);
@@ -128,7 +140,7 @@ function ringPoint(feature) {
   return { lng: lng / n, lat: lat / n };
 }
 
-function fromStation(nodes) {
+function fromStation(nodes, night) {
   const start = nearest(nodes, STATION, 80);
   const dist = new Map(start ? [[start, 0]] : []);
   const prev = new Map();
@@ -141,10 +153,10 @@ function fromStation(nodes) {
     if (used.has(node)) continue;
     used.add(node);
     for (const edge of node.edges) {
-      const next = dist.get(node) + edge.cost;
+      const next = dist.get(node) + (night ? edge.nightCost : edge.cost);
       if (next < (dist.get(edge.to) ?? Infinity)) {
         dist.set(edge.to, next);
-        prev.set(edge.to, { node, steps: edge.steps, w: edge.w, name: edge.name || '' });
+        prev.set(edge.to, { node, steps: edge.steps, w: edge.w, lit: edge.lit, name: edge.name || '' });
         queue.push(edge.to);
       }
     }
@@ -178,9 +190,10 @@ function closestOnRing(point, ring) {
 
 // Shortest walk from the station to the footpath nearest this building.
 // Returns coordinates as [lat, lng], or null when no path comes close.
-function routeTo(nodes, feature) {
-  if (!nodes.fromStation) nodes.fromStation = fromStation(nodes);
-  const { start, dist, prev } = nodes.fromStation;
+function routeTo(nodes, feature, night) {
+  const cacheKey = night ? 'fromStationNight' : 'fromStation';
+  if (!nodes[cacheKey]) nodes[cacheKey] = fromStation(nodes, night);
+  const { start, dist, prev } = nodes[cacheKey];
   if (!start) return null;
   const ring = feature.geometry.type === 'MultiPolygon'
     ? feature.geometry.coordinates[0][0]
@@ -204,16 +217,18 @@ function routeTo(nodes, feature) {
   let cursor = goal;
   while (cursor) {
     const hop = prev.get(cursor);
-    if (hop) hops.push({ from: hop.node, to: cursor, w: hop.w, steps: hop.steps, name: hop.name || '' });
+    if (hop) hops.push({ from: hop.node, to: cursor, w: hop.w, steps: hop.steps, lit: hop.lit, name: hop.name || '' });
     cursor = hop && hop.node;
   }
   hops.reverse();
   const coordinates = hops.length ? [[hops[0].from.lat, hops[0].from.lng]] : [[start.lat, start.lng]];
   let steps = false;
   let walked = 0;
+  let litWalked = 0;
   for (const hop of hops) {
     coordinates.push([hop.to.lat, hop.to.lng]);
     walked += hop.w;
+    if (hop.lit) litWalked += hop.w;
     if (hop.steps) steps = true;
   }
   const door = closestOnRing(goal, ring);
@@ -222,7 +237,7 @@ function routeTo(nodes, feature) {
     walked += door.metres;
   }
   const instructions = describeWalk(hops, feature.properties.name || '');
-  return { coordinates, metres: Math.round(walked), steps, instructions };
+  return { coordinates, metres: Math.round(walked), litMetres: Math.round(litWalked), steps, instructions };
 }
 
 function bearing(a, b) {

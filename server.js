@@ -55,7 +55,7 @@ app.get('/api/map', (req, res) => res.json(buildings));
 app.get('/api/route', (req, res) => {
   const feature = buildings.features.find((f) => String(f.id) === req.query.id);
   if (!feature) return res.status(404).json({ error: 'unknown building' });
-  const route = routeTo(graph, feature);
+  const route = routeTo(graph, feature, req.query.night === '1');
   if (!route) return res.status(404).json({ error: 'no route' });
   res.json(route);
 });
