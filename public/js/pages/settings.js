@@ -289,13 +289,24 @@
     if (!isAdmin) return;
     let rows;
     try { rows = await auth.listFeedback(); } catch (err) { console.error(err); return; }
+    rows = [...rows.filter((r) => !r.resolved_at), ...rows.filter((r) => r.resolved_at)]; // open ones first
     feedbackList.innerHTML = rows.map((r) =>
-      `<li class="card"><h2>${esc(t(KIND_LABELS[r.kind] || 'Something else'))}</h2>` +
+      `<li class="card${r.resolved_at ? ' feedback-done' : ''}" data-id="${r.id}" data-done="${r.resolved_at ? 1 : 0}"><h2>${esc(t(KIND_LABELS[r.kind] || 'Something else'))}${r.resolved_at ? ' · ' + esc(t('Done')) : ''}</h2>` +
       `<p class="feedback-text">${esc(r.message)}</p>` +
       `<p>${esc(new Date(r.created_at).toLocaleDateString('en-AU'))} · ${esc((r.profiles && r.profiles.display_name) || t('Guest'))}` +
-      `${r.reply_email ? ' · ' + esc(r.reply_email) : ''}</p></li>`).join('');
+      `${r.reply_email ? ' · ' + esc(r.reply_email) : ''}</p>` +
+      `<div class="card-actions"><button type="button" class="follow-btn" data-toggle>${t(r.resolved_at ? 'Reopen' : 'Mark as done')}</button></div></li>`).join('');
     feedbackEmpty.hidden = rows.length > 0;
   }
+  feedbackList.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-toggle]');
+    if (!btn) return;
+    const card = btn.closest('.card');
+    btn.disabled = true;
+    const { error } = await auth.setFeedbackDone(Number(card.dataset.id), card.dataset.done !== '1');
+    if (error) { console.error(error); btn.disabled = false; flash(t('Could not save.'), true); return; }
+    renderFeedback();
+  });
   auth.onChange(renderFeedback);
   auth.ready.then(renderFeedback);
   auth.onChange(renderRequests);

@@ -185,10 +185,18 @@ const auth = (function () {
     },
     // Admin only (row-level security returns nothing for anyone else): newest feedback first.
     async listFeedback() {
-      const { data, error } = await state.sb.from('feedback')
-        .select('id, kind, message, reply_email, created_at, profiles(display_name)').order('created_at', { ascending: false }).limit(100);
+      const cols = 'id, kind, message, reply_email, created_at, profiles(display_name)';
+      const q = (c) => state.sb.from('feedback').select(c).order('created_at', { ascending: false }).limit(100);
+      let { data, error } = await q(cols + ', resolved_at');
+      if (error) ({ data, error } = await q(cols)); // resolved_at column not added yet
       if (error) throw error;
       return data;
+    },
+    // Admin only: mark a message done, or reopen it.
+    async setFeedbackDone(id, done) {
+      const { data, error } = await state.sb.from('feedback')
+        .update({ resolved_at: done ? new Date().toISOString() : null }).eq('id', id).select('id');
+      return { error: error || (data && data.length ? null : new Error('Could not save.')) };
     },
     // Admin only: status is 'approved' or 'rejected'.
     async setLeaderStatus(id, status) {

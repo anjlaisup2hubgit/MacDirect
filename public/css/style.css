@@ -564,6 +564,7 @@ button, input, select, textarea { font-family: inherit; }
 .admin-feedback h3 { margin: 24px 0 8px; font-size: 18px; font-weight: 500; }
 .admin-feedback .card p { overflow-wrap: anywhere; }
 .admin-feedback .feedback-text { white-space: pre-wrap; }
+.admin-feedback .feedback-done { opacity: 0.6; }
 .privacy-box h3, .contact-box h3 { margin: 24px 0 8px; font-size: 18px; font-weight: 500; }
 .privacy-box ul { margin: 0 0 12px; padding-left: 20px; font-size: 14px; line-height: 1.5; }
 .privacy-box p, .contact-box p { margin: 0 0 12px; font-size: 14px; line-height: 1.4; }

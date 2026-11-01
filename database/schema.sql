@@ -314,6 +314,13 @@ create policy "feedback admin read" on public.feedback
 grant insert on public.feedback to anon, authenticated;
 grant select on public.feedback to authenticated;
 
+-- Marking feedback as done: an admin sets or clears resolved_at (the only column they may change). Safe to run again.
+alter table public.feedback add column if not exists resolved_at timestamptz;
+drop policy if exists "feedback admin update" on public.feedback;
+create policy "feedback admin update" on public.feedback
+  for update to authenticated using (public.is_admin()) with check (public.is_admin());
+grant update (resolved_at) on public.feedback to authenticated;
+
 -- Making yourself the first admin (SQL editor only, after signing up once):
 --   update public.profiles set role = 'admin' where id = '<your auth.users id>';
 -- Approving a leader request (the MVP "admin screen"):
