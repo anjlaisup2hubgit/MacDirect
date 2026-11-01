@@ -69,7 +69,10 @@ iMCQ is a mobile-first Macquarie University campus map (Node/Express serving sta
 
 | 35 | Owner feedback round (28 Oct 2026): popup headings are 24px bold with NO subtitle line (the "Society/Food overview" subtitles of step 32 and the subtitle option in `createPopup` are gone; `.page-subtitle` CSS removed); header space smaller; Add event, Calendar and Settings popups capped at 480px wide at >= 768px (Societies and Food stay 880px); panel text unbolded (form labels, month title, Follow buttons weight 500, nav active label); main search bar and list search bars all 44px with 6px radius; "Food and Drinks" is now "Restaurants" (panel title, nav label, `Search restaurants`, result tag "Restaurant"; the data file, `food.js` and URL `/?food` keep the old name); "User Settings" title is "Settings"; main search placeholder "Search buildings, societies, restaurants or ask mcqAI" (cut off at phone width, loses "mcqAI"); login page is regular weight except the iMCQ title; Settings buttons: Change password + Delete account share one outlined row (`.account-actions`, `follow-btn`; Change password sits outside its form via `form="pw-form"`), Log out is the filled red `form-submit` below with 32px gap; **Post button** on a private plan's Calendar card for approved leaders (`postPlan` in `events.js`): copies the plan to a society they lead with `auth.saveEvent` (photo refetched as a File), then `auth.deletePlan`; one society asks to confirm, several use a numbered `prompt`; `listMyPlans` now returns `timeValue`; zh/es/vi strings added | Partly. `node --check` passes and every served script parses. Preview as a guest: headings, 44px bars, Restaurants wording, login weights, Settings button layout (buttons force-unhidden). NOT tested: Post with a real leader (the posted event only shows in the poster's own Calendar if they follow that society; it shows under Edit events), Change password via the `form=` submit button, logged-in Settings, Add event/Calendar at desktop width, zh/es/vi wording. |
 
+| 36 | Leader-only Add event nav button (1 Nov 2026): `nav.js` now repaints on `auth.ready`/`auth.onChange` and shows the Add event link, between Calendar and Food, only when signed in with an approved society (`auth.approvedSocieties`); guests and non-leaders do not see it; orange icon colour in `style.css`; the active link also gets `aria-current` | Partly. Preview at 375px: guest nav has 4 items; with a faked leader (auth getters overridden, nav.js re-run) the order is Account, Calendar, Add event, Food, Societies and it fits. NOT tested: a real leader account, the page itself still opens for anyone at `/event-plan.html` (private plans), zh/es/vi label. |
+
 ## Next step
+Step 36: owner should log in as an approved leader on the live site and check the Add event button shows between Calendar and Food, and is missing as a guest. Ask whether non-leaders should also be blocked from opening `/event-plan.html` directly (it still lets them add private plans).
 After deleting a society event (Calendar or Edit events) the page reloads and reopens the same popup (`/?events`, `/?event-plan`); a plain reload would close it because popups strip their URL. Checked in the preview with stubs.
 Owner reported a posted event missing from Edit events (28 Oct). Not reproduced: with stubbed data the tab lists it. `choose()` moved to `card.js`; Edit events now shows an error line if loading fails and uses the in-page Delete dialog. Ask the owner whether the event was added with "Just me" (a private plan) or a society, and for the console error.
 Owner feedback (28 Oct): dialog buttons (`.login-prompt`) now use 6px corners, 14px text and a red outline for Cancel; after adding an event the "Added!" message has a tinted background and scrolls into view (`event-plan.js`). Not checked: the Add event form logged in.
@@ -104,50 +107,3 @@ Steps 0-14 are done; steps 15, 16, 17, 19 and 20 are Partly (see their NOT check
 * Event times in Supabase are `time` values (`12:00:00`); the UI expects strings like `12:00pm`, so format when Step 6 lands.
 * If email confirmation is on in Supabase, sign-up needs a confirm-then-login round trip; the leader request is filed on first login from sign-up metadata.
 * `.claude/launch.json` server name is still `mcq-imap`.
-
-## Last updated
-2026-10-28, after Step 35 (owner feedback round, Post button). Dev server for the preview is `.claude/launch.json` `mcq-imap`; the live site is https://mcq-i-map.vercel.app (auto-deploys from `main`, commit and push every change). Gotcha: the preview pane is never the focused window, so `:focus` / `:focus-visible` styles cannot be checked there; the Calendar and forms are login-gated, so check them with a real login or by injecting markup (`eventCard` is a global).
-
-### 2026-10-28 (dialog consistency check)
-* **Change:** `events.js` `choose()` takes `danger: true` per choice (adds `delete-btn`; used by Remove and Delete); `style.css` one rule `.login-prompt > div > .delete-btn { margin-top: 0; }`.
-* **Reasoning:** the destructive confirm now has the same dark red as Delete account. Margin zeroed so the grid gap spaces it like the other buttons. Not checked in a browser.
-
-### 2026-10-26 (Calendar)
-* **Change:** step 16 above: files `nav.js`, `events.js`, `event-plan.js`, `settings.js`, `societies.js`, `i18n.js`, orphaned `.cal-tabs` CSS removed, README table row and roadmap item 1 (done) updated.
-* **Reasoning:** project owner decisions: Calendar is for logged-in users, shows followed societies' events plus own plans, view (Month/Day) is a setting. Old keys "What's Happening" and "Added! Find it in What's Happening." removed from all three dictionaries.
-
-### 2026-10-26 (tester risks, step 10)
-* **Change:** `login.js` saves email and display name to sessionStorage (`imcq-login-*`) just before the language reload, restores them on load and removes them; the password is never stored. `vi` strings 'Leader of', 'Leader request pending/declined for', 'I lead a society', 'Societies held here' reworded.
-* **Reasoning:** the reload wiped typed input. Not restored: the sign-up/log-in tab (page reopens on Log in, so a typed display name sits in a hidden field until the user clicks Sign up) and any shown message. Not checked in a browser.
-
-### 2026-10-26
-* **Change:** Display name linked to `profiles`, Text size and its CSS removed, language switching added (`i18n.js`), leader post/edit/delete UI removed from the Calendar, macqAI renamed mcqAI (including CSS class names `mcqai-*`).
-* **Reasoning:** project owner request. Language reloads the page because it is the simplest way to rebuild every popup; English text as keys keeps the dictionary small.
-
-### 2026-10-26 (tester findings 5-7)
-* **Change:** Building panel, Category options (values stay English), "e.g. 1CC", "a society" now use `t()` with zh/es entries; events month title uses the language locale; `requireLogin` callers pass full sentences; login.js arrow parameter renamed `tab`.
-* **Reasoning:** remove untranslated visible English and a shadowed global `t`. Checked as a guest in headless Chrome (en, zh, es); month title and logged-in flows not checked.
-
-### 2026-10-26 (login redesign)
-* **Change:** `login.html`, `login.js`, "Login page" block of `style.css` and `i18n.js`. Key 'I lead a society (an admin will approve this)' replaced by 'I lead a society' + 'An admin will approve this'; new keys for the 4 mapped errors, 'Please wait...' and 'or'. Larger sizes are scoped to `.auth-card`. Raw Supabase `error.message` is no longer shown (matched on 'invalid login credentials', 'already registered', 'at least 6 characters').
-* **Reasoning:** approved design. Gotcha: grid columns on `.auth-page`, `.auth-card` and `.event-form` need `minmax(0, 1fr)` or inputs overflow at 360px.
-
-### 2026-10-26 (society cover image)
-* **Change:** step 17 above: `database/schema.sql` (bucket, table, RLS, Storage policies, grants), `auth.js`, `event-plan.js`, `societies.js`, `card.js`, `style.css`, `i18n.js` (4 new keys per language), README roles and data model.
-* **Reasoning:** owner-approved: Supabase Storage, public read, 5 MB, JPEG/PNG/WebP only, no moderation. Random file names avoid caching of replaced images; the old file is removed after the row is updated. Leader event posting was not brought back.
-
-### 2026-10-27 (delete account)
-* **Change:** step 28 above: `schema.sql`, `auth.js` (`clearPlans` body moved to a private `clearMyPlans` because `auth` methods cannot safely call each other via `this`), `settings.js`, `style.css` (`.delete-btn`, `.login-prompt input`, `.login-prompt .form-msg.error`), `i18n.js` (5 keys), README.
-* **Reasoning:** owner decision: society events are kept (`created_by` set null). Admin guard added so the app is never left with no admin.
-
-### 2026-10-27 (change password)
-* **Change:** step 27 above: `auth.js`, `settings.js`, `i18n.js` (5 new keys per language). Reuses the login page's 'Password must be at least 6 characters.' string.
-* **Reasoning:** owner asked for it from the settings ideas list. Separate form so the main form's save-on-change handler never sees the password fields.
-
-### 2026-10-27 (week start, add to calendar)
-* **Change:** steps 25 and 26 above: `settings.js`, `events.js`, `card.js`, `style.css` (two `.card-society .card-actions` rules), `i18n.js` (6 new keys per language).
-* **Reasoning:** owner replaced "event reminders" with Add to calendar. 1-hour default and floating local time were assumed (events have no end time or timezone); owner has not confirmed.
-
-### 2026-10-27 (desktop layout, Moodle look)
-* **Change:** step 24 above: `style.css`, `card.js` (`foodCard`).
-* **Reasoning:** owner feedback; tab bar kept the `.chip` markup so `event-plan.js` needed no change.

@@ -175,6 +175,7 @@ button, input, select, textarea { font-family: inherit; }
 .bottom-nav svg { width: 28px; height: 28px; flex: none; }
 .bottom-nav a[href="/settings.html"] svg { color: #E23E7A; }
 .bottom-nav a[href="/calendar.html"] svg { color: #7B5CFF; }
+.bottom-nav a[href="/event-plan.html"] svg { color: #F2A100; }
 .bottom-nav a[href="/food.html"] svg { color: #14A38B; }
 .bottom-nav a[href="/societies.html"] svg { color: #FF5A36; }
 .bottom-nav a.active svg {
