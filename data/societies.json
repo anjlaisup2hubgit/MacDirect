@@ -1,0 +1,1738 @@
+[
+  {
+    "id": "180-degrees-consulting",
+    "name": "180 Degrees Consulting",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Eastern Road",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "180",
+      "degrees",
+      "consulting"
+    ]
+  },
+  {
+    "id": "a-cappella-society",
+    "name": "A Cappella Society",
+    "category": "Hobbies",
+    "description": "A singing group for new and experienced voices, brought together through music.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "arts",
+      "cappella"
+    ]
+  },
+  {
+    "id": "accounting-students-association",
+    "name": "Accounting Students Association",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Eastern Road",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "accounting"
+    ]
+  },
+  {
+    "id": "actuarial-students-society",
+    "name": "Actuarial Students Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Eastern Road",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "actuarial"
+    ]
+  },
+  {
+    "id": "african-society",
+    "name": "African Society",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "african"
+    ]
+  },
+  {
+    "id": "afl-club",
+    "name": "AFL Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "afl"
+    ]
+  },
+  {
+    "id": "ai-and-data-science-society",
+    "name": "AI and Data Science Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Research Park Drive",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "data",
+      "science"
+    ]
+  },
+  {
+    "id": "aiesec",
+    "name": "AIESEC",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "aiesec"
+    ]
+  },
+  {
+    "id": "ancient-history-association",
+    "name": "Ancient History Association",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "ancient",
+      "history"
+    ]
+  },
+  {
+    "id": "anime-mq",
+    "name": "Anime MQ",
+    "category": "Hobbies",
+    "description": "A society for students who enjoy anime, manga and Japanese pop culture.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "social",
+      "anime"
+    ]
+  },
+  {
+    "id": "applied-finance",
+    "name": "Applied Finance",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Eastern Road",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "applied",
+      "finance"
+    ]
+  },
+  {
+    "id": "arab-society",
+    "name": "Arab Society",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "arab"
+    ]
+  },
+  {
+    "id": "armenian-students-society",
+    "name": "Armenian Students Society",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "armenian"
+    ]
+  },
+  {
+    "id": "arts-and-craft-society",
+    "name": "Arts and Craft Society",
+    "category": "Hobbies",
+    "description": "Workshops and social events for visual art and hands-on making.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "arts",
+      "craft"
+    ]
+  },
+  {
+    "id": "asia-australia-youth-association",
+    "name": "Asia-Australia Youth Association",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "asia",
+      "australia",
+      "youth"
+    ]
+  },
+  {
+    "id": "association-of-computing-students",
+    "name": "Association of Computing Students",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Research Park Drive",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "computing"
+    ]
+  },
+  {
+    "id": "australasian-union-of-jewish-students",
+    "name": "Australasian Union of Jewish Students",
+    "category": "Cultural",
+    "description": "A Macquarie University faith student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "faith",
+      "australasian",
+      "union",
+      "jewish"
+    ]
+  },
+  {
+    "id": "badminton-club",
+    "name": "Badminton Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "badminton"
+    ]
+  },
+  {
+    "id": "business-analytics-club",
+    "name": "Business Analytics Club",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Eastern Road",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "business",
+      "analytics"
+    ]
+  },
+  {
+    "id": "business-society",
+    "name": "Business Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Eastern Road",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "business"
+    ]
+  },
+  {
+    "id": "biology-ecology-environment-society-bees",
+    "name": "Biology, Ecology & Environment Society (BEES)",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "biology",
+      "ecology",
+      "environment"
+    ]
+  },
+  {
+    "id": "calisthenics-mq",
+    "name": "Calisthenics MQ",
+    "category": "Hobbies",
+    "description": "Weekly bodyweight training sessions for beginners and experienced students.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "calisthenics"
+    ]
+  },
+  {
+    "id": "career-advancement-society",
+    "name": "Career Advancement Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "career",
+      "advancement"
+    ]
+  },
+  {
+    "id": "catholic-society",
+    "name": "Catholic Society",
+    "category": "Religious and Spiritual",
+    "description": "A Macquarie University faith student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "faith",
+      "catholic"
+    ]
+  },
+  {
+    "id": "cheerleading-club",
+    "name": "Cheerleading Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "cheerleading"
+    ]
+  },
+  {
+    "id": "chess-club",
+    "name": "Chess Club",
+    "category": "Hobbies",
+    "description": "Casual play, tournaments and learning for chess players of every level.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "social",
+      "chess"
+    ]
+  },
+  {
+    "id": "chinese-students-and-scholars-association",
+    "name": "Chinese Students and Scholars Association",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "chinese",
+      "scholars"
+    ]
+  },
+  {
+    "id": "chiropractic-students-association",
+    "name": "Chiropractic Students Association",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "3 Technology Place (Macquarie University Hospital)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "chiropractic"
+    ]
+  },
+  {
+    "id": "christian-union",
+    "name": "Christian Union",
+    "category": "Religious and Spiritual",
+    "description": "A Macquarie University faith student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "faith",
+      "christian",
+      "union"
+    ]
+  },
+  {
+    "id": "clinical-science-society",
+    "name": "Clinical Science Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "3 Technology Place (Macquarie University Hospital)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "clinical",
+      "science"
+    ]
+  },
+  {
+    "id": "cognitive-and-brain-science-student-society",
+    "name": "Cognitive and Brain Science Student Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "cognitive",
+      "brain",
+      "science"
+    ]
+  },
+  {
+    "id": "coptic-orthodox-society-cos",
+    "name": "Coptic Orthodox Society (COS)",
+    "category": "Religious and Spiritual",
+    "description": "A Macquarie University faith student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "faith",
+      "coptic",
+      "orthodox",
+      "cos"
+    ]
+  },
+  {
+    "id": "cricket-club",
+    "name": "Cricket Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "cricket"
+    ]
+  },
+  {
+    "id": "dance-academy",
+    "name": "Dance Academy",
+    "category": "Hobbies",
+    "description": "Street-dance workshops, jam sessions and showcases with other Sydney universities.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "arts",
+      "dance",
+      "academy"
+    ]
+  },
+  {
+    "id": "dance-club",
+    "name": "Dance Club",
+    "category": "Hobbies",
+    "description": "A Macquarie University arts and performance student group.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "arts",
+      "dance"
+    ]
+  },
+  {
+    "id": "debating-society",
+    "name": "Debating Society",
+    "category": "Hobbies",
+    "description": "Monday-night debates in semester, plus seminars and intervarsity competitions.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "debating"
+    ]
+  },
+  {
+    "id": "drone-society",
+    "name": "Drone Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "drone"
+    ]
+  },
+  {
+    "id": "education-society",
+    "name": "Education Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "education"
+    ]
+  },
+  {
+    "id": "fellowship-of-overseas-christian-university-students-focus",
+    "name": "Fellowship of Overseas Christian University Students (FOCUS)",
+    "category": "Religious and Spiritual",
+    "description": "A Macquarie University faith student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "faith",
+      "fellowship",
+      "overseas",
+      "christian"
+    ]
+  },
+  {
+    "id": "fencing-club",
+    "name": "Fencing Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "fencing"
+    ]
+  },
+  {
+    "id": "filipino-students-society",
+    "name": "Filipino Students Society",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "filipino"
+    ]
+  },
+  {
+    "id": "french-society",
+    "name": "French Society",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "french"
+    ]
+  },
+  {
+    "id": "global-health-society",
+    "name": "Global Health Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "3 Technology Place (Macquarie University Hospital)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "global",
+      "health"
+    ]
+  },
+  {
+    "id": "grapeshot-publication",
+    "name": "Grapeshot Publication",
+    "category": "Hobbies",
+    "description": "Macquarie's student magazine, in print during semester and online.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "arts",
+      "grapeshot",
+      "publication"
+    ]
+  },
+  {
+    "id": "greek-association",
+    "name": "Greek Association",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "greek"
+    ]
+  },
+  {
+    "id": "hillsong-on-campus",
+    "name": "Hillsong on Campus",
+    "category": "Religious and Spiritual",
+    "description": "A Macquarie University faith student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "faith",
+      "hillsong",
+      "campus"
+    ]
+  },
+  {
+    "id": "hindu-society",
+    "name": "Hindu Society",
+    "category": "Cultural",
+    "description": "A Macquarie University faith student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "faith",
+      "hindu"
+    ]
+  },
+  {
+    "id": "hockey-club",
+    "name": "Hockey Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "hockey"
+    ]
+  },
+  {
+    "id": "indigenous-student-association",
+    "name": "Indigenous Student Association",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "indigenous"
+    ]
+  },
+  {
+    "id": "indonesian-student-society-ppia",
+    "name": "Indonesian Student Society (PPIA)",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "indonesian",
+      "ppia"
+    ]
+  },
+  {
+    "id": "italian-society",
+    "name": "Italian Society",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "italian"
+    ]
+  },
+  {
+    "id": "japanese-association",
+    "name": "Japanese Association",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "japanese"
+    ]
+  },
+  {
+    "id": "kpop-society",
+    "name": "KPOP Society",
+    "category": "Hobbies",
+    "description": "Dance workshops and social events for students interested in Korean pop culture.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "kpop"
+    ]
+  },
+  {
+    "id": "lacrosse-club",
+    "name": "Lacrosse Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "lacrosse"
+    ]
+  },
+  {
+    "id": "labor-club",
+    "name": "Labor Club",
+    "category": "Political and Social Justice",
+    "description": "A Macquarie University political student club.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "political",
+      "labor"
+    ]
+  },
+  {
+    "id": "law-society",
+    "name": "Law Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "17 Wally's Walk (Michael Kirby Law Building)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "law"
+    ]
+  },
+  {
+    "id": "liberal-club",
+    "name": "Liberal Club",
+    "category": "Political and Social Justice",
+    "description": "A Macquarie University political student club.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "political",
+      "liberal"
+    ]
+  },
+  {
+    "id": "macalpine-ski-club",
+    "name": "MacAlpine Ski Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "macalpine",
+      "ski"
+    ]
+  },
+  {
+    "id": "macbuddhi",
+    "name": "MacBuddhi",
+    "category": "Religious and Spiritual",
+    "description": "A Macquarie University faith student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "faith",
+      "macbuddhi"
+    ]
+  },
+  {
+    "id": "macquarie-aerospace-rover-society",
+    "name": "Macquarie Aerospace Rover Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "aerospace",
+      "rover"
+    ]
+  },
+  {
+    "id": "macquarie-cinema-society",
+    "name": "Macquarie Cinema Society",
+    "category": "Hobbies",
+    "description": "Film nights, cinema outings and trivia for students who love movies.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "arts",
+      "cinema"
+    ]
+  },
+  {
+    "id": "macquarie-engineering-students-society",
+    "name": "Macquarie Engineering Students Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "engineering"
+    ]
+  },
+  {
+    "id": "macquarie-marketing-students-association-mmsa",
+    "name": "Macquarie Marketing Students Association (MMSA)",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Eastern Road",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "marketing",
+      "mmsa"
+    ]
+  },
+  {
+    "id": "macquarie-musical-society",
+    "name": "Macquarie Musical Society",
+    "category": "Hobbies",
+    "description": "A Macquarie University arts and performance student group.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "arts",
+      "musical"
+    ]
+  },
+  {
+    "id": "macquarie-neurodivergent-society",
+    "name": "Macquarie Neurodivergent Society",
+    "category": "Hobbies",
+    "description": "A community and advocacy group for neurodivergent students.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "social",
+      "neurodivergent"
+    ]
+  },
+  {
+    "id": "macquarie-overseas-vietnamese",
+    "name": "Macquarie Overseas Vietnamese",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "overseas",
+      "vietnamese"
+    ]
+  },
+  {
+    "id": "macquarie-tesol-society",
+    "name": "Macquarie TESOL Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "tesol"
+    ]
+  },
+  {
+    "id": "macquarie-united-nations-society",
+    "name": "Macquarie United Nations Society",
+    "category": "Political and Social Justice",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "united",
+      "nations"
+    ]
+  },
+  {
+    "id": "macquarie-university-audiology-students-society",
+    "name": "Macquarie University Audiology Students Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "16 University Avenue (Australian Hearing Hub)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "audiology"
+    ]
+  },
+  {
+    "id": "macquarie-university-automotive-society",
+    "name": "Macquarie University Automotive Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "social",
+      "automotive"
+    ]
+  },
+  {
+    "id": "macquarie-university-bangladesh-students-association",
+    "name": "Macquarie University Bangladesh Students Association",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "bangladesh"
+    ]
+  },
+  {
+    "id": "macquarie-university-critical-care-society",
+    "name": "Macquarie University Critical Care Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "3 Technology Place (Macquarie University Hospital)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "critical",
+      "care"
+    ]
+  },
+  {
+    "id": "macquarie-university-diplomats-society",
+    "name": "Macquarie University Diplomats Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "diplomats"
+    ]
+  },
+  {
+    "id": "macquarie-university-economics-society",
+    "name": "Macquarie University Economics Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Eastern Road",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "economics"
+    ]
+  },
+  {
+    "id": "macquarie-university-geography-and-planning-student-society",
+    "name": "Macquarie University Geography and Planning Student Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "geography",
+      "planning"
+    ]
+  },
+  {
+    "id": "macquarie-university-indian-society",
+    "name": "Macquarie University Indian Society",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "indian"
+    ]
+  },
+  {
+    "id": "macquarie-university-musician-s-society-mq-muso",
+    "name": "Macquarie University Musician's Society (MQ MUSO)",
+    "category": "Hobbies",
+    "description": "A Macquarie University arts and performance student group.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "arts",
+      "musician",
+      "muso"
+    ]
+  },
+  {
+    "id": "macquarie-university-nationals-society",
+    "name": "Macquarie University Nationals Society",
+    "category": "Political and Social Justice",
+    "description": "A Macquarie University political student club.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "political",
+      "nationals"
+    ]
+  },
+  {
+    "id": "macquarie-university-robotics-club",
+    "name": "Macquarie University Robotics Club",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Research Park Drive",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "robotics"
+    ]
+  },
+  {
+    "id": "macquarie-university-speech-and-hearing",
+    "name": "Macquarie University Speech and Hearing",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "16 University Avenue (Australian Hearing Hub)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "speech",
+      "hearing"
+    ]
+  },
+  {
+    "id": "macquarie-university-symphony-orchestra",
+    "name": "Macquarie University Symphony Orchestra",
+    "category": "Hobbies",
+    "description": "A Macquarie University arts and performance student group.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "arts",
+      "symphony",
+      "orchestra"
+    ]
+  },
+  {
+    "id": "medical-society-postgraduate",
+    "name": "Medical Society (Postgraduate)",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "3 Technology Place (Macquarie University Hospital)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "medical",
+      "postgraduate"
+    ]
+  },
+  {
+    "id": "medicine-society",
+    "name": "Medicine Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "3 Technology Place (Macquarie University Hospital)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "medicine"
+    ]
+  },
+  {
+    "id": "mongolian-society",
+    "name": "Mongolian Society",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "mongolian"
+    ]
+  },
+  {
+    "id": "mq-climbing-society",
+    "name": "MQ Climbing Society",
+    "category": "Hobbies",
+    "description": "A student climbing group for workouts and climbs together.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "climbing"
+    ]
+  },
+  {
+    "id": "mq-cybersec",
+    "name": "MQ CyberSec",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Research Park Drive",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "cybersec"
+    ]
+  },
+  {
+    "id": "mq-gaming-society",
+    "name": "MQ Gaming Society",
+    "category": "Hobbies",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "social",
+      "gaming"
+    ]
+  },
+  {
+    "id": "mq-greens",
+    "name": "MQ Greens",
+    "category": "Political and Social Justice",
+    "description": "A Macquarie University political student club.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "political",
+      "greens"
+    ]
+  },
+  {
+    "id": "mq-mathematics-statistics-society-mass",
+    "name": "MQ Mathematics & Statistics Society (MASS)",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "mathematics",
+      "statistics",
+      "mass"
+    ]
+  },
+  {
+    "id": "mq-progressives",
+    "name": "MQ Progressives",
+    "category": "Political and Social Justice",
+    "description": "A Macquarie University political student club.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "political",
+      "progressives"
+    ]
+  },
+  {
+    "id": "mq-socialists",
+    "name": "MQ Socialists",
+    "category": "Political and Social Justice",
+    "description": "A Macquarie University political student club.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "political",
+      "socialists"
+    ]
+  },
+  {
+    "id": "mq-speed",
+    "name": "MQ Speed",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "speed"
+    ]
+  },
+  {
+    "id": "mq-swifties",
+    "name": "MQ Swifties",
+    "category": "Hobbies",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "social",
+      "swifties"
+    ]
+  },
+  {
+    "id": "muslim-student-association",
+    "name": "Muslim Student Association",
+    "category": "Religious and Spiritual",
+    "description": "A Macquarie University faith student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "faith",
+      "muslim"
+    ]
+  },
+  {
+    "id": "nepalese-student-association",
+    "name": "Nepalese Student Association",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "nepalese"
+    ]
+  },
+  {
+    "id": "pakistanis-at-macquarie",
+    "name": "Pakistanis at Macquarie",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "pakistanis"
+    ]
+  },
+  {
+    "id": "persian-society",
+    "name": "Persian Society",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "persian"
+    ]
+  },
+  {
+    "id": "photography-society",
+    "name": "Photography Society",
+    "category": "Hobbies",
+    "description": "A Macquarie University arts and performance student group.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "arts",
+      "photography"
+    ]
+  },
+  {
+    "id": "physics-and-astronomy-society",
+    "name": "Physics and Astronomy Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "physics",
+      "astronomy"
+    ]
+  },
+  {
+    "id": "physiotherapy-society",
+    "name": "Physiotherapy Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "3 Technology Place (Macquarie University Hospital)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "physiotherapy"
+    ]
+  },
+  {
+    "id": "psychology-society",
+    "name": "Psychology Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "psychology"
+    ]
+  },
+  {
+    "id": "quadball-club",
+    "name": "Quadball Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "quadball"
+    ]
+  },
+  {
+    "id": "reach-mq",
+    "name": "Reach MQ",
+    "category": "Hobbies",
+    "description": "A Macquarie University faith student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "faith",
+      "reach"
+    ]
+  },
+  {
+    "id": "rowing-club",
+    "name": "Rowing Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "rowing"
+    ]
+  },
+  {
+    "id": "rugby-football-club",
+    "name": "Rugby Football Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "rugby",
+      "football"
+    ]
+  },
+  {
+    "id": "rugby-league-club",
+    "name": "Rugby League Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "rugby",
+      "league"
+    ]
+  },
+  {
+    "id": "rural-health-club",
+    "name": "Rural Health Club",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "3 Technology Place (Macquarie University Hospital)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "rural",
+      "health"
+    ]
+  },
+  {
+    "id": "science-fiction-and-fantasy-association",
+    "name": "Science Fiction and Fantasy Association",
+    "category": "Hobbies",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "social",
+      "science",
+      "fiction",
+      "fantasy"
+    ]
+  },
+  {
+    "id": "security-studies-and-criminology-society",
+    "name": "Security Studies and Criminology Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "security",
+      "studies",
+      "criminology"
+    ]
+  },
+  {
+    "id": "singapore-students-association",
+    "name": "Singapore Students Association",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "singapore"
+    ]
+  },
+  {
+    "id": "soccer-club",
+    "name": "Soccer Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "soccer"
+    ]
+  },
+  {
+    "id": "socialists",
+    "name": "Socialists",
+    "category": "Political and Social Justice",
+    "description": "A Macquarie University political student club.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "political",
+      "socialists"
+    ]
+  },
+  {
+    "id": "squash-club",
+    "name": "Squash Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "squash"
+    ]
+  },
+  {
+    "id": "sri-lankan-student-society",
+    "name": "Sri Lankan Student Society",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "sri",
+      "lankan"
+    ]
+  },
+  {
+    "id": "surgical-society",
+    "name": "Surgical Society",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "3 Technology Place (Macquarie University Hospital)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "surgical"
+    ]
+  },
+  {
+    "id": "table-tennis-club",
+    "name": "Table Tennis Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "table",
+      "tennis"
+    ]
+  },
+  {
+    "id": "tabletop-society",
+    "name": "Tabletop Society",
+    "category": "Hobbies",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "social",
+      "tabletop"
+    ]
+  },
+  {
+    "id": "tamil-sangam",
+    "name": "Tamil Sangam",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "tamil",
+      "sangam"
+    ]
+  },
+  {
+    "id": "tennis-club",
+    "name": "Tennis Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "tennis"
+    ]
+  },
+  {
+    "id": "thai-students-association",
+    "name": "Thai Students Association",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "thai"
+    ]
+  },
+  {
+    "id": "ultimate-frisbee-club",
+    "name": "Ultimate Frisbee Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "ultimate",
+      "frisbee"
+    ]
+  },
+  {
+    "id": "vietnamese-students-association",
+    "name": "Vietnamese Students Association",
+    "category": "Cultural",
+    "description": "A Macquarie University cultural student group.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "cultural",
+      "vietnamese"
+    ]
+  },
+  {
+    "id": "volleyball-club",
+    "name": "Volleyball Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "volleyball"
+    ]
+  },
+  {
+    "id": "waterpolo-club",
+    "name": "Waterpolo Club",
+    "category": "Sports",
+    "description": "A Macquarie University sports club.",
+    "building": "10 Gymnasium Road (Macquarie University Sport and Aquatic Centre)",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "sport",
+      "waterpolo"
+    ]
+  },
+  {
+    "id": "women-entering-business",
+    "name": "Women Entering Business",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Eastern Road",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "women",
+      "entering",
+      "business"
+    ]
+  },
+  {
+    "id": "women-in-computing",
+    "name": "Women in Computing",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "4 Research Park Drive",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "women",
+      "computing"
+    ]
+  },
+  {
+    "id": "women-in-engineering-wei",
+    "name": "Women in Engineering (WEI)",
+    "category": "Professional and Faculty",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "academic",
+      "women",
+      "engineering",
+      "wei"
+    ]
+  },
+  {
+    "id": "women-s-collective",
+    "name": "Women's Collective",
+    "category": "Hobbies",
+    "description": "A Macquarie University academic student society.",
+    "building": "1 Central Courtyard",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "social",
+      "women",
+      "collective"
+    ]
+  },
+  {
+    "id": "writers-mqu",
+    "name": "Writers@MQU",
+    "category": "Hobbies",
+    "description": "A Macquarie University arts and performance student group.",
+    "building": "25 Wally's Walk",
+    "contact": "studentgroups@mq.edu.au",
+    "website": "https://students.mq.edu.au/uni-life/clubs-societies/a-to-z",
+    "hashtags": [
+      "arts",
+      "writers",
+      "mqu"
+    ]
+  }
+]

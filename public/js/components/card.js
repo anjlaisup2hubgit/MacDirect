@@ -58,7 +58,9 @@ function societyCard(s, following, imageUrl) {
     (imageUrl ? `<img class="society-cover" src="${esc(imageUrl)}" alt="${esc(s.name)}" loading="lazy">` : coverDiv(s.name)) +
     `<div class="card-body"><h2 title="${esc(s.name)}">${esc(s.name)}</h2>` +
     `<p>${esc(s.description)}</p>` +
-    `<div class="card-foot">${hashtagLine(s)}<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button></div>` +
+    `<div class="card-foot">${hashtagLine(s)}` +
+    (typeof s.id === 'number' ? `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button>` : '') +
+    '</div>' +
     cardMenu([['data-map', 'Show on map']]) + '</div></li>';
 }
 
