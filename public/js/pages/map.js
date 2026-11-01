@@ -116,6 +116,23 @@ function esc(t) {
   return d.innerHTML;
 }
 
+// Accessibility block of the building panel; a building with no data says so instead of staying blank.
+function accessibilityHtml(a) {
+  if (!a) return `<h3>${t('Accessibility')}</h3><p>${t('Not confirmed for this building. Check the Macquarie University Accessibility Map.')}</p>`;
+  const rows = [];
+  if (a.lifts) rows.push(`${t('Lifts')}: ${a.lifts}`);
+  if (a.toilets) {
+    const doors = [];
+    if (a.sliding) doors.push(`${t('Automatic sliding door')}: ${a.sliding}`);
+    if (a.swing) doors.push(`${t('Automatic swing door')}: ${a.swing}`);
+    rows.push(`${t('Accessible toilets')}: ${a.toilets}` + (doors.length ? ` (${doors.join('; ')})` : ''));
+  }
+  if (a.showers) rows.push(`${t('Accessible showers')}: ${a.showers}`);
+  if (a.stairs) rows.push(`${t('External stairs')}: ${a.stairs}`);
+  return `<h3>${t('Accessibility')}</h3><ul class="building-panel-access">${rows.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>` +
+    `<p class="building-panel-note">${t('Source: Macquarie University Accessibility Map, April 2026. Positions are approximate, so check before you rely on them.')}</p>`;
+}
+
 let societies = [];
 auth.ready.then(() => auth.listSocieties()).then((data) => {
   societies = data;
@@ -153,6 +170,7 @@ function selectBuilding(id, label) {
       `<div class="building-panel-image">${t('No photo available')}</div>` +
       `<p>${esc(p.description)}</p>` +
       (p.website ? `<a href="${esc(p.website)}" target="_blank" rel="noopener">${t('Website')}</a>` : '') +
+      accessibilityHtml(p.accessibility) +
       `<h3>${t('Societies held here')}</h3>` +
       (here.length
         ? '<ul class="building-panel-societies">' +

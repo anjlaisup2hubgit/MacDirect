@@ -304,6 +304,8 @@ button, input, select, textarea { font-family: inherit; }
 .building-panel-societies { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
 .building-panel-societies li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid #e5e5e5; border-radius: 6px; font-size: 14px; }
 .building-panel-societies span { color: #666; }
+.building-panel-access { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 14px; }
+.building-panel-note { margin: 8px 0 0; font-size: 12px; }
 
 /* List pages (societies) */
 .page-content {

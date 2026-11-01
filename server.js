@@ -26,6 +26,8 @@ function describe(p) {
 
 // Named building footprints: clicking one on the map outlines it and opens its info panel.
 const raw = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'map.geojson'), 'utf8'));
+// Lifts, accessible toilets and so on per building, read off Macquarie's Accessibility Map (see tools/trace-lit-paths).
+const accessibility = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'accessibility.json'), 'utf8'));
 const buildings = {
   type: 'FeatureCollection',
   features: raw.features
@@ -42,6 +44,7 @@ const buildings = {
           address: address || null,
           website: p.website || null,
           description: describe(p),
+          accessibility: accessibility[f.id] || null,
         },
       };
     }),
