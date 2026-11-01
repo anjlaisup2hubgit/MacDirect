@@ -41,7 +41,7 @@
       '<label>' + t('Choose image (JPEG, PNG or WebP, up to 5 MB)') + '<input name="cover" type="file" accept="image/jpeg,image/png,image/webp"></label>' +
       '<button class="auth-guest" type="button" data-remove-cover hidden>' + t('Remove') + '</button>' +
       '<p class="form-msg" aria-live="polite" hidden></p>' +
-      '<label>' + t('Hashtags (up to 5, e.g. social games)') + '<input name="hashtags" maxlength="120" autocomplete="off"></label>' +
+      '<details class="tag-picker"><summary></summary><div class="tag-options"></div></details>' +
       '<button class="form-submit" type="button" data-save-tags>' + t('Save hashtags') + '</button>' +
       '<p class="form-msg tags-msg" aria-live="polite" hidden></p>' +
     '</section>';
@@ -63,8 +63,22 @@
   const coverFile = cover.querySelector('input[type="file"]');
   const coverRemove = cover.querySelector('[data-remove-cover]');
   const coverMsg = cover.querySelector('.form-msg');
-  const tagsInput = cover.querySelector('input[name="hashtags"]');
+  const tagPicker = cover.querySelector('.tag-picker');
+  const tagOptions = tagPicker.querySelector('.tag-options');
   const tagsMsg = cover.querySelector('.tags-msg');
+  const TAG_CHOICES = ['social', 'games', 'sport', 'music', 'art', 'food', 'career', 'study', 'volunteering', 'culture', 'faith', 'science', 'tech', 'wellbeing', 'outdoors', 'networking'];
+  const MAX_TAGS = 5;
+  function pickedTags() {
+    return [...tagOptions.querySelectorAll('input:checked')].map((i) => i.value);
+  }
+  function updateTagPicker() {
+    const picked = pickedTags();
+    tagPicker.querySelector('summary').textContent = picked.length
+      ? picked.map((h) => '#' + h).join(' ')
+      : t('Choose hashtags (up to 5)');
+    tagOptions.querySelectorAll('input:not(:checked)').forEach((i) => { i.disabled = picked.length >= MAX_TAGS; });
+  }
+  tagOptions.addEventListener('change', updateTagPicker);
   let coverUrls = {};
   let societyTags = {};
 
@@ -80,7 +94,11 @@
     coverRemove.hidden = !url;
   }
   function showTags() {
-    tagsInput.value = (societyTags[coverSelect.value] || []).map((h) => '#' + h).join(' ');
+    const current = societyTags[coverSelect.value] || [];
+    const choices = [...new Set([...TAG_CHOICES, ...current])]; // keep tags saved earlier that are not in the list
+    tagOptions.innerHTML = choices.map((h) =>
+      `<label><input type="checkbox" value="${esc(h)}"${current.includes(h) ? ' checked' : ''}> #${esc(h)}</label>`).join('');
+    updateTagPicker();
   }
   async function renderCover() {
     const mine = auth.user ? auth.approvedSocieties : [];
@@ -121,7 +139,7 @@
     flash(t('Saved.'));
   });
   cover.querySelector('[data-save-tags]').addEventListener('click', async () => {
-    const tags = parseHashtags(tagsInput.value);
+    const tags = pickedTags();
     const { error } = await auth.updateSocietyHashtags(Number(coverSelect.value), tags);
     tagsMsg.classList.toggle('error', !!error);
     tagsMsg.textContent = error ? t('Could not save.') : t('Saved.');
