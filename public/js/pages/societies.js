@@ -145,7 +145,7 @@
 
   function showOnMap(building, label) {
     const q = new URLSearchParams({ building: building || '', label: label || building || '' });
-    location.href = '/location.html?' + q.toString();
+    location.href = '/?' + q.toString();
   }
 
   grid.addEventListener('click', (e) => {

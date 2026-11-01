@@ -4,11 +4,6 @@
   for (const key of Object.keys(pages)) {
     if (old.has(key)) { location.replace(pages[key]); return; }
   }
-  if (old.get('building') && !old.get('directions')) {
-    const q = new URLSearchParams({ building: old.get('building') });
-    if (old.get('label')) q.set('label', old.get('label'));
-    location.replace('/location.html?' + q.toString());
-  }
 })();
 
 // Back from the directions screen always loads the plain map. The entry under
@@ -144,6 +139,7 @@ function selectBuilding(id, label) {
   const p = selected.feature.properties;
   const c = selected.getBounds().getCenter();
   const here = societies.filter((s) => s.building === p.name);
+  document.title = p.name + ' · iMCQ';
   panel.innerHTML =
     '<div class="building-panel-head">' +
       '<div class="building-panel-handle"></div>' +
@@ -151,6 +147,7 @@ function selectBuilding(id, label) {
       `<p class="building-panel-address">${p.address ? esc(p.address) + ' &middot; ' : ''}` +
         `<a href="https://www.google.com/maps/search/?api=1&query=${c.lat},${c.lng}" target="_blank" rel="noopener">${t('Google Maps')}</a></p>` +
       (label ? `<p><strong>${esc(label)}</strong> ${t('meets here.')}</p>` : '') +
+      `<a class="follow-btn directions-btn" href="/?directions=${encodeURIComponent(selected.feature.id)}">${t('Directions')}</a>` +
     '</div>' +
     '<div class="building-panel-body">' +
       `<div class="building-panel-image">${t('No photo available')}</div>` +
@@ -172,11 +169,56 @@ function selectBuilding(id, label) {
 function clearSelection() {
   if (selected) selected.setStyle(idleStyle);
   selected = null;
+  document.title = 'iMCQ';
   panel.classList.remove('open');
   panel.style.transform = '';
 }
 
 window.clearBuildingSelection = clearSelection; // called when a nav popup opens
+
+// Show a building in the panel and glide the map to it. Each pick adds one history entry
+// (Back closes the panel); picking another building while one is open replaces it.
+// While a route is on screen (?directions=) the address bar and Back button belong to
+// the directions logic above, so a pick there reloads the plain map with the building open.
+function openBuilding(feature, label) {
+  const q = new URLSearchParams({ id: feature.id });
+  if (label) q.set('label', label);
+  if (new URLSearchParams(location.search).get('directions')) { location.href = '/?' + q.toString(); return; }
+  const url = '/?' + q.toString();
+  if (history.state && history.state.building) history.replaceState({ building: feature.id }, '', url);
+  else history.pushState({ building: feature.id }, '', url);
+  showBuilding(feature.id, label);
+}
+
+function showBuilding(id, label) {
+  selectBuilding(id, label);
+  const room = panel.offsetHeight - peekY; // height of the peeking head
+  map.flyToBounds(selected.getBounds(), { paddingTopLeft: [40, 90], paddingBottomRight: [40, room + 24], maxZoom: 18, duration: 0.8 });
+}
+
+function closeBuilding() {
+  if (history.state && history.state.building) history.back(); // popstate clears the panel
+  else {
+    clearSelection();
+    // Opened from a link: drop ?id=/?building= so a refresh does not reopen it.
+    if (/[?&](id|building)=/.test(location.search)) history.replaceState(null, '', '/');
+  }
+}
+
+// The building named by the address bar (?id= or ?building=), if any.
+let allFeatures = [];
+function featureFromQuery(q) {
+  if (q.get('id')) return allFeatures.find((f) => f.id === q.get('id'));
+  if (q.get('building')) return allFeatures.find((f) => f.properties.name === q.get('building'));
+}
+
+window.addEventListener('popstate', () => {
+  const q = new URLSearchParams(location.search);
+  if (q.get('directions')) return;
+  const f = featureFromQuery(q);
+  if (f) showBuilding(f.id, q.get('label'));
+  else clearSelection();
+});
 
 let drag = null;
 panel.addEventListener('pointerdown', (e) => {
@@ -203,7 +245,7 @@ function endDrag(e) {
 panel.addEventListener('pointerup', endDrag);
 panel.addEventListener('pointercancel', endDrag);
 
-map.on('click', clearSelection);
+map.on('click', closeBuilding);
 
 api('/map').then((data) => {
   L.geoJSON(data, {
@@ -212,21 +254,24 @@ api('/map').then((data) => {
       layers.set(f.id, layer);
       layer.on('click', (e) => {
         L.DomEvent.stopPropagation(e);
-        location.href = '/location.html?id=' + encodeURIComponent(f.id);
+        openBuilding(f);
       });
     },
   }).addTo(map);
 
-  const openLocation = (f) => {
-    location.href = '/location.html?id=' + encodeURIComponent(f.id);
-  };
-  initSearchBar(data.features, openLocation);
+  initSearchBar(data.features, (f) => openBuilding(f));
 
+  allFeatures = data.features;
   window.focusBuildingByName = (name, label) => {
-    const q = new URLSearchParams({ building: name });
-    if (label) q.set('label', label);
-    location.href = '/location.html?' + q.toString();
+    const f = allFeatures.find((x) => x.properties.name === name);
+    if (f) openBuilding(f, label);
   };
+
+  // Opened from a link (?id= or ?building=): show that building, keeping the address as it is.
+  // No history entry is added, so Back goes to the page the link came from.
+  const wanted = new URLSearchParams(location.search);
+  const linked = wanted.get('directions') ? null : featureFromQuery(wanted);
+  if (linked) showBuilding(linked.id, wanted.get('label'));
 
   const askedRoute = new URLSearchParams(location.search).get('directions');
   if (askedRoute) {

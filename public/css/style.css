@@ -678,6 +678,7 @@ a.directions-btn {
   box-sizing: border-box;
   text-decoration: none;
 }
+.building-panel a.directions-btn { margin: 10px 0 4px; font-size: 14px; color: #fff; }
 .route-note {
   position: fixed;
   left: calc(var(--app-left) + 16px);

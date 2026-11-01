@@ -160,7 +160,7 @@
     const ev = agendaEvents[[...agendaEl.querySelectorAll('.card')].indexOf(el)];
     if (!ev) return;
     const q = new URLSearchParams({ building: ev.building || '', label: ev.name || '' });
-    location.href = '/location.html?' + q.toString();
+    location.href = '/?' + q.toString();
   });
   agendaEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
@@ -186,7 +186,7 @@
     const ev = dayEvents[[...listEl.children].indexOf(el)];
     if (!ev) return;
     const q = new URLSearchParams({ building: ev.building || '', label: ev.name || '' });
-    location.href = '/location.html?' + q.toString();
+    location.href = '/?' + q.toString();
   });
   listEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
