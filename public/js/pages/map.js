@@ -139,12 +139,17 @@ function accessibilityHtml(a) {
     `<p class="building-panel-note">${mapLinkHtml()}</p>`;
 }
 
-// Closest drinking water point, measured from the building's nearest corner.
-function drinkHtml(d) {
-  if (!d) return '';
-  const near = d.metres < 20 ? t('Right next to this building') : `${t('About')} ${Math.round(d.metres / 10) * 10} m ${t('away')}`;
-  return `<h3>${t('Drinking water')}</h3><p>${near}${d.bottle ? ' · ' + t('Bottle refill') : ''}</p>` +
-    `<p class="building-panel-note">${t('From OpenStreetMap, so a tap may be missing or moved.')}</p>`;
+// Nearest drinking fountain and Tap It refill tower, each with a walking route from this building.
+function drinkHtml(d, id) {
+  if (!d || !(d.fountain || d.tapit)) return '';
+  const rows = [['fountain', 'Drinking fountain'], ['tapit', 'Tap It refill tower']].filter(([k]) => d[k]).map(([k, label]) => {
+    const p = d[k];
+    const dist = p.metres < 20 ? t('Right next to this building') : `${t('About')} ${Math.round(p.metres / 10) * 10} m ${t('away')}`;
+    return `<li><span><strong>${t(label)}</strong>: ${dist}</span>` +
+      `<a class="follow-btn" href="/?directions=${encodeURIComponent(id)}&water=${p.index}">${t('Directions')}</a></li>`;
+  });
+  return `<h3>${t('Drinking water')}</h3><ul class="building-panel-drink">${rows.join('')}</ul>` +
+    `<p class="building-panel-note">${t('Source: Macquarie University Drinking Water Map, September 2025. Positions are approximate. A Tap It tower refills bottles.')}</p>`;
 }
 
 let societies = [];
@@ -185,7 +190,7 @@ function selectBuilding(id, label) {
       `<p>${esc(p.description)}</p>` +
       (p.website ? `<a href="${esc(p.website)}" target="_blank" rel="noopener">${t('Website')}</a>` : '') +
       accessibilityHtml(p.accessibility) +
-      drinkHtml(p.drink) +
+      drinkHtml(p.drink, selected.feature.id) +
       `<h3>${t('Societies held here')}</h3>` +
       (here.length
         ? '<ul class="building-panel-societies">' +
@@ -307,6 +312,7 @@ api('/map').then((data) => {
   if (linked) showBuilding(linked.id, wanted.get('label'));
 
   const askedRoute = new URLSearchParams(location.search).get('directions');
+  const askedWater = new URLSearchParams(location.search).get('water'); // a drink point index: route from the building to it
   if (askedRoute) {
     const feature = data.features.find((f) => String(f.id) === askedRoute);
     const layer = feature && layers.get(feature.id);
@@ -327,6 +333,15 @@ api('/map').then((data) => {
       exit.setAttribute('aria-label', t('Close'));
       exit.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
       exit.addEventListener('click', () => { location.href = '/?id=' + encodeURIComponent(feature.id); });
+      let waterSpot = null;
+      if (askedWater !== null) {
+        api('/drink').then((all) => {
+          const w = all[Number(askedWater)];
+          if (!w) return;
+          waterSpot = w.kind === 'tapit' ? t('the Tap It tower') : t('the drinking fountain');
+          L.circleMarker([w.lat, w.lng], { radius: 8, color: '#fff', weight: 3, fillColor: '#1d6fe8', fillOpacity: 1 }).addTo(map).bindTooltip(waterSpot.replace(/^the /, ''), { permanent: true, direction: 'top', offset: [0, -8] });
+        }).catch(() => {});
+      }
       document.body.appendChild(exit);
 
       function showRoute(route, firstTime) {
@@ -367,7 +382,7 @@ api('/map').then((data) => {
           credit.insertAdjacentHTML('beforeend', mapLinkHtml());
           card.appendChild(credit);
         }
-        const steps = route.instructions || [];
+        const steps = (route.instructions || []).map((x) => (askedWater !== null && x.kind === 'arrive' ? { ...x, name: waterSpot || '' } : x));
         if (steps[0]) {
           const first = document.createElement('button');
           first.type = 'button';
@@ -398,13 +413,13 @@ api('/map').then((data) => {
       }
 
       function loadRoute(firstTime) {
-        api('/route?id=' + encodeURIComponent(feature.id) + (preferLit ? '&night=1' : '')).then((route) => {
+        api('/route?id=' + encodeURIComponent(feature.id) + (askedWater !== null ? '&water=' + encodeURIComponent(askedWater) : '') + (preferLit ? '&night=1' : '')).then((route) => {
           showRoute(route, firstTime);
         }).catch(() => {
           if (card) return;
           const note = document.createElement('p');
           note.className = 'route-note';
-          note.textContent = t('No walking route from the station.');
+          note.textContent = askedWater !== null ? t('No walking route found.') : t('No walking route from the station.');
           document.body.appendChild(note);
         });
       }

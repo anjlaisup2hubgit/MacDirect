@@ -4,8 +4,14 @@ try { process.loadEnvFile(); } catch (err) { /* no .env */ }
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
+// Security headers. The page CSP is off because the pages use inline scripts and CDN files.
+app.set('trust proxy', 1);
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use('/api', rateLimit({ windowMs: 60 * 1000, limit: 120 }));
 const PORT = process.env.PORT || 3000;
 
 const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
@@ -28,25 +34,23 @@ function describe(p) {
 const raw = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'map.geojson'), 'utf8'));
 // Lifts, accessible toilets and so on per building, read off Macquarie's Accessibility Map (see tools/trace-lit-paths).
 const accessibility = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'accessibility.json'), 'utf8'));
-// Free drinking water points from the OSM data (the decorative fountain and the paid, seasonal one are left out).
-const drinkPoints = raw.features
-  .filter((f) => f.properties.amenity === 'drinking_water' && f.properties.fee !== 'yes' && f.geometry.type === 'Point')
-  .map((f) => ({ lng: f.geometry.coordinates[0], lat: f.geometry.coordinates[1], bottle: f.properties.bottle === 'yes' }));
+// Drinking fountains and Tap It refill towers, read off Macquarie's Drinking Water Map (see tools/trace-lit-paths).
+const drinkPoints = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'drinking-water.json'), 'utf8'));
 
-// Metres from a drink point to the closest corner of a building outline (flat-earth maths is fine on one campus).
+// Metres from each kind of drink point to the closest corner of a building outline (flat-earth maths is fine on one campus).
 function nearestDrink(geometry) {
   const rings = geometry.type === 'Polygon' ? [geometry.coordinates[0]] : geometry.coordinates.map((poly) => poly[0]);
-  let best = null;
-  for (const d of drinkPoints) {
+  const best = {};
+  drinkPoints.forEach((d, index) => {
     for (const ring of rings) {
       for (const [lng, lat] of ring) {
         const dx = (lng - d.lng) * 111320 * Math.cos((lat * Math.PI) / 180);
         const dy = (lat - d.lat) * 110540;
-        const m = Math.hypot(dx, dy);
-        if (!best || m < best.metres) best = { metres: Math.round(m), bottle: d.bottle };
+        const metres = Math.round(Math.hypot(dx, dy));
+        if (!best[d.kind] || metres < best[d.kind].metres) best[d.kind] = { index, metres, near: d.near };
       }
     }
-  }
+  });
   return best;
 }
 
@@ -73,15 +77,20 @@ const buildings = {
     }),
 };
 
-const { buildGraph, routeTo } = require('./routes/walk');
+const { buildGraph, routeTo, routeBetween } = require('./routes/walk');
 const graph = buildGraph(raw);
 if (buildings.features[0]) routeTo(graph, buildings.features[0]);
 
 app.get('/api/map', (req, res) => res.json(buildings));
+app.get('/api/drink', (req, res) => res.json(drinkPoints));
 app.get('/api/route', (req, res) => {
   const feature = buildings.features.find((f) => String(f.id) === req.query.id);
   if (!feature) return res.status(404).json({ error: 'unknown building' });
-  const route = routeTo(graph, feature, req.query.night === '1');
+  const water = req.query.water === undefined ? null : drinkPoints[Number(req.query.water)];
+  if (req.query.water !== undefined && !water) return res.status(404).json({ error: 'unknown drink point' });
+  const route = water
+    ? routeBetween(graph, feature, { lat: water.lat, lng: water.lng, label: '' }, req.query.night === '1')
+    : routeTo(graph, feature, req.query.night === '1');
   if (!route) return res.status(404).json({ error: 'no route' });
   res.json(route);
 });

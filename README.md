@@ -4,6 +4,12 @@ iMCQ is a mobile-first campus map for Macquarie University students. It shows bu
 
 Current progress and the next task live in [CHANGELOG.md](CHANGELOG.md).
 
+**Disclaimer:** iMCQ is an unofficial student project. It is not affiliated with or endorsed by Macquarie University. "Macquarie" and its logos belong to the university.
+
+**Licence:** Copyright (c) 2026 the iMCQ developers. All rights reserved. See [LICENSE](LICENSE).
+
+**Data credits:** map data and building outlines are from OpenStreetMap, © OpenStreetMap contributors, available under the [ODbL](https://opendatacommons.org/licenses/odbl/1-0/). `data/map.geojson` is a derived database and stays under the ODbL.
+
 **Branches:** `main` is the full app. `pre-database` is the earlier version from before the Supabase database, login and users were added (commit `5c1faf9`). It is kept for a separate developer to work from. Get it with `git fetch origin` then `git checkout pre-database`.
 
 ## 1. Overview

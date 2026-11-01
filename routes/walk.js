@@ -141,7 +141,10 @@ function ringPoint(feature) {
 }
 
 function fromStation(nodes, night) {
-  const start = nearest(nodes, STATION, 80);
+  return shortestFrom(nearest(nodes, STATION, 80), night);
+}
+
+function shortestFrom(start, night) {
   const dist = new Map(start ? [[start, 0]] : []);
   const prev = new Map();
   const used = new Set();
@@ -240,6 +243,47 @@ function routeTo(nodes, feature, night) {
   return { coordinates, metres: Math.round(walked), litMetres: Math.round(litWalked), steps, instructions };
 }
 
+// The walk from a building to a spot such as a drinking fountain, on the footpaths.
+// Starts at the footpath node nearest the building's outline; returns the same shape as routeTo.
+function routeBetween(nodes, feature, spot, night) {
+  const ring = feature.geometry.type === 'MultiPolygon'
+    ? feature.geometry.coordinates[0][0]
+    : feature.geometry.coordinates[0];
+  let start = null;
+  let startD = 90;
+  for (const node of nodes.values()) {
+    for (const [lng, lat] of ring) {
+      const d = metres(node, { lng, lat });
+      if (d < startD) { start = node; startD = d; }
+    }
+  }
+  const goal = nearest(nodes, spot, 90);
+  if (!start || !goal) return null;
+  const { dist, prev } = shortestFrom(start, night);
+  if (!dist.has(goal)) return null;
+  const hops = [];
+  let cursor = goal;
+  while (cursor && cursor !== start) {
+    const hop = prev.get(cursor);
+    hops.push({ from: hop.node, to: cursor, w: hop.w, steps: hop.steps, lit: hop.lit, name: hop.name || '' });
+    cursor = hop.node;
+  }
+  hops.reverse();
+  const coordinates = [[start.lat, start.lng]];
+  let walked = 0;
+  let litWalked = 0;
+  let steps = false;
+  for (const hop of hops) {
+    coordinates.push([hop.to.lat, hop.to.lng]);
+    walked += hop.w;
+    if (hop.lit) litWalked += hop.w;
+    if (hop.steps) steps = true;
+  }
+  const last = metres(goal, spot);
+  if (last > 1) { coordinates.push([spot.lat, spot.lng]); walked += last; }
+  return { coordinates, metres: Math.round(walked), litMetres: Math.round(litWalked), steps, instructions: hops.length ? describeWalk(hops, spot.label || '') : [{ kind: 'arrive', name: spot.label || '', metres: 0, steps: false }] };
+}
+
 function bearing(a, b) {
   const lat1 = a.lat * Math.PI / 180;
   const lat2 = b.lat * Math.PI / 180;
@@ -308,4 +352,4 @@ function describeWalk(hops, destination) {
   return instructions;
 }
 
-module.exports = { buildGraph, routeTo, nearest, ringPoint, metres, STATION };
+module.exports = { buildGraph, routeTo, routeBetween, nearest, ringPoint, metres, STATION };
