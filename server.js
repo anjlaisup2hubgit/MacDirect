@@ -47,7 +47,7 @@ function nearestDrink(geometry) {
         const dx = (lng - d.lng) * 111320 * Math.cos((lat * Math.PI) / 180);
         const dy = (lat - d.lat) * 110540;
         const metres = Math.round(Math.hypot(dx, dy));
-        if (!best[d.kind] || metres < best[d.kind].metres) best[d.kind] = { index, metres, near: d.near };
+        if (!best[d.kind] || metres < best[d.kind].metres) best[d.kind] = { index, metres, near: d.near, floors: d.floors || null };
       }
     }
   });

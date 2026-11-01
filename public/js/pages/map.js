@@ -145,7 +145,8 @@ function drinkHtml(d, id) {
   const rows = [['fountain', 'Drinking fountain'], ['tapit', 'Tap It refill tower']].filter(([k]) => d[k]).map(([k, label]) => {
     const p = d[k];
     const dist = p.metres < 20 ? t('Right next to this building') : `${t('About')} ${Math.round(p.metres / 10) * 10} m ${t('away')}`;
-    return `<li><span><strong>${t(label)}</strong>: ${dist}</span>` +
+    const floors = p.floors ? ` · ${t(/[,-]/.test(p.floors) ? 'Floors' : 'Floor')} ${p.floors}` : '';
+    return `<li><span><strong>${t(label)}</strong>: ${dist}${floors}</span>` +
       `<a class="follow-btn" href="/?directions=${encodeURIComponent(id)}&water=${p.index}">${t('Directions')}</a></li>`;
   });
   return `<h3>${t('Drinking water')}</h3><ul class="building-panel-drink">${rows.join('')}</ul>` +
