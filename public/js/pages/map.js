@@ -113,7 +113,7 @@ function stepText(step) {
 function esc(t) {
   const d = document.createElement('div');
   d.textContent = t;
-  return d.innerHTML;
+  return d.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;'); // quotes too, so it is safe inside attributes
 }
 
 const MQ_ACCESS_MAP = 'https://www.mq.edu.au/__data/assets/pdf_file/0011/1182683/map_accessibility.pdf';

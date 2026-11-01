@@ -1,7 +1,7 @@
 function esc(t) {
   const d = document.createElement('div');
   d.textContent = t;
-  return d.innerHTML;
+  return d.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;'); // quotes too, so it is safe inside attributes
 }
 
 // Hashtags of a society or food outlet; the category stands in until some are set.
