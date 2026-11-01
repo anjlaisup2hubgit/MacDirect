@@ -10,7 +10,7 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 // Security headers. The page CSP is off because the pages use inline scripts and CDN files.
 app.set('trust proxy', 1);
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet({ contentSecurityPolicy: false, referrerPolicy: { policy: 'strict-origin-when-cross-origin' } }));
 app.use('/api', rateLimit({ windowMs: 60 * 1000, limit: 120 }));
 const PORT = process.env.PORT || 3000;
 
