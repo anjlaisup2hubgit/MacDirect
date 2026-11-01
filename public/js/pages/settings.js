@@ -3,6 +3,12 @@
   const p = createPopup({ id: 'settings-popup', title: 'Settings', navHref: '/settings.html' });
   p.results.innerHTML =
     '<div class="account"></div>' +
+    '<div class="chips mode-tabs" role="group">' +
+      `<button type="button" class="chip active" data-tab="general">${t('General')}</button>` +
+      `<button type="button" class="chip" data-tab="name">${t('Username')}</button>` +
+      `<button type="button" class="chip" data-tab="data">${t('Data')}</button>` +
+      `<button type="button" class="chip" data-tab="contact">${t('Contact')}</button></div>` +
+    '<div class="tab-panel" data-panel="general">' +
     '<form class="event-form">' +
       `<label>${t('Language')}<select name="lang">` +
         Object.entries(I18N_LANGS).map(([v, l]) => `<option value="${v}">${l}</option>`).join('') + '</select></label>' +
@@ -13,10 +19,7 @@
       `<label class="check-field"><input type="checkbox" name="contrast"> ${t('High contrast')}</label>` +
       '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</form>' +
-    '<div class="chips mode-tabs" role="group" hidden>' +
-      `<button type="button" class="chip active" data-tab="data">${t('Data')}</button>` +
-      `<button type="button" class="chip" data-tab="name">${t('Username')}</button>` +
-      `<button type="button" class="chip" data-tab="contact">${t('Contact')}</button></div>` +
+    '</div>' +
     '<div class="tab-panel" data-panel="name" hidden>' +
     '<form class="event-form name-form" novalidate>' +
       `<label>${t('Display name')}<input name="name" maxlength="40" autocomplete="off"></label>` +
@@ -36,7 +39,7 @@
     '<section class="admin-feedback" hidden>' +
       `<h3>${t('Feedback')}</h3><ul class="card-list"></ul>` +
       `<p class="empty-msg" role="status" hidden>${t('No feedback yet.')}</p></section>` +
-    '<div class="tab-panel" data-panel="data">' +
+    '<div class="tab-panel" data-panel="data" hidden>' +
     '<section class="privacy-box">' +
       `<h3>${t('Your data')}</h3>` +
       `<p class="privacy-guest">${t('You are browsing as a guest. iMCQ stores only your language choice and your guest choice in this browser. We do not store your location.')}</p>` +
@@ -119,12 +122,14 @@
     nameMsg.hidden = false;
   });
 
-  // Tabs under the main settings: Data, Username and Contact (signed-in users); guests only see Data.
-  let tab = 'data';
+  // Tabs: General, Username, Data and Contact; guests only see General and Data.
+  let tab = 'general';
   function showTab() {
-    if (!auth.user) tab = 'data';
-    tabs.hidden = !auth.user;
-    tabs.querySelectorAll('.chip').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
+    if (!auth.user && (tab === 'name' || tab === 'contact')) tab = 'general';
+    tabs.querySelectorAll('.chip').forEach((b) => {
+      b.hidden = !auth.user && (b.dataset.tab === 'name' || b.dataset.tab === 'contact');
+      b.classList.toggle('active', b.dataset.tab === tab);
+    });
     panels.forEach((el) => { el.hidden = el.dataset.panel !== tab; });
   }
   tabs.addEventListener('click', (e) => {
