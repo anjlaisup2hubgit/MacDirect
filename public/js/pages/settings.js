@@ -11,6 +11,7 @@
         `<option value="cal">${t('Month')}</option><option value="list">${t('Day')}</option></select></label>` +
       `<label class="weekstart-field" hidden>${t('Week starts on')}<select name="weekstart">` +
         `<option value="mon">${t('Monday')}</option><option value="sun">${t('Sunday')}</option></select></label>` +
+      `<label class="check-field"><input type="checkbox" name="contrast"> ${t('High contrast')}</label>` +
       '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</form>' +
     '<form class="event-form pw-form" id="pw-form" novalidate hidden>' +
@@ -60,6 +61,7 @@
   const viewField = form.querySelector('.view-field');
   const weekField = form.querySelector('.weekstart-field');
   form.elements.lang.value = i18nLang();
+  form.elements.contrast.checked = document.documentElement.dataset.contrast === 'high';
   try { form.elements.weekstart.value = localStorage.getItem('imcq-week-start') === 'sun' ? 'sun' : 'mon'; } catch (err) { /* storage blocked: keep Monday */ }
   try { form.elements.view.value = localStorage.getItem('imcq-cal-view') === 'list' ? 'list' : 'cal'; } catch (err) { /* storage blocked: keep Month */ }
 
@@ -80,6 +82,9 @@
         flash(t('Saved.'));
         window.dispatchEvent(new Event('events-changed')); // Calendar switches to the chosen view
       } catch (err) { console.error(err); flash(t('Could not save.'), true); }
+    } else if (e.target.name === 'contrast') {
+      setContrast(e.target.checked);
+      flash(t('Saved.'));
     } else if (e.target.name === 'weekstart') {
       try {
         localStorage.setItem('imcq-week-start', e.target.value);

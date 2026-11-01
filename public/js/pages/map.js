@@ -110,6 +110,29 @@ function stepText(step) {
   return text;
 }
 
+const SPEECH_LANG = { en: 'en-AU', zh: 'zh-CN', ar: 'ar', yue: 'zh-HK', vi: 'vi-VN', hi: 'hi-IN', el: 'el-GR', fil: 'fil-PH', it: 'it-IT', ko: 'ko-KR', pa: 'pa-IN', ne: 'ne-NP' };
+
+// A browser voice for the chosen language, or null (the Read aloud button then stays hidden).
+function speechVoice() {
+  if (!('speechSynthesis' in window)) return null;
+  const lang = i18nLang();
+  const want = (SPEECH_LANG[lang] || 'en-AU').toLowerCase();
+  const base = want.split('-')[0];
+  const voices = speechSynthesis.getVoices();
+  const code = (v) => v.lang.toLowerCase().replace('_', '-');
+  return voices.find((v) => code(v) === want) || voices.find((v) => {
+    const l = code(v);
+    return l.startsWith(base + '-') || l === base
+      || (lang === 'fil' && l.startsWith('tl')) || (lang === 'yue' && l.startsWith('yue'));
+  }) || null;
+}
+
+function routeSpeech(route) {
+  return (route.instructions || [])
+    .map((s) => stepText(s).replace(/ · /g, ', ') + (s.metres ? ', ' + s.metres + ' ' + t('metres') : ''))
+    .join('. ');
+}
+
 function esc(t) {
   const d = document.createElement('div');
   d.textContent = t;
@@ -316,8 +339,10 @@ api('/map').then((data) => {
 
       function showRoute(route, firstTime) {
         if (line) { map.removeLayer(casing); map.removeLayer(line); }
-        casing = L.polyline(route.coordinates, { ...routeLine, color: '#174EA6', weight: 3.5 }).addTo(map);
-        line = L.polyline(route.coordinates, { ...routeLine, color: '#4285F4', weight: 2.5 }).addTo(map);
+        if ('speechSynthesis' in window) speechSynthesis.cancel();
+        const hc = document.documentElement.dataset.contrast === 'high';
+        casing = L.polyline(route.coordinates, { ...routeLine, color: hc ? '#000' : '#174EA6', weight: hc ? 8 : 3.5 }).addTo(map);
+        line = L.polyline(route.coordinates, { ...routeLine, color: hc ? '#FFD400' : '#4285F4', weight: hc ? 4 : 2.5 }).addTo(map);
         casing.bringToFront();
         line.bringToFront();
         if (firstTime) map.fitBounds(line.getBounds(), { paddingTopLeft: [28, 88], paddingBottomRight: [28, 212] });
@@ -345,6 +370,26 @@ api('/map').then((data) => {
         pref.appendChild(box);
         pref.appendChild(document.createTextNode(' ' + t('Prefer lit paths')));
         card.appendChild(pref);
+        const speak = document.createElement('button');
+        speak.type = 'button';
+        speak.className = 'route-speak';
+        speak.textContent = t('Read aloud');
+        speak.hidden = !speechVoice();
+        if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => { speak.hidden = !speechVoice(); };
+        speak.addEventListener('click', () => {
+          if (speechSynthesis.speaking) { speechSynthesis.cancel(); return; }
+          const voice = speechVoice();
+          if (!voice) return;
+          const utterance = new SpeechSynthesisUtterance(routeSpeech(route));
+          utterance.voice = voice;
+          utterance.lang = voice.lang;
+          const reset = () => { speak.textContent = t('Read aloud'); };
+          utterance.onend = reset;
+          utterance.onerror = reset;
+          speak.textContent = t('Stop reading');
+          speechSynthesis.speak(utterance);
+        });
+        card.appendChild(speak);
         if (preferLit) {
           const credit = document.createElement('p');
           credit.className = 'route-credit';
@@ -375,6 +420,10 @@ api('/map').then((data) => {
           card.appendChild(list);
         }
         document.body.appendChild(card);
+        // Keep the X on the card's top right corner, also when the steps list opens.
+        new ResizeObserver(() => {
+          exit.style.bottom = `calc(var(--nav-height) + 8px + ${card.offsetHeight}px + 8px)`;
+        }).observe(card);
       }
 
       function loadRoute(firstTime) {
@@ -392,7 +441,3 @@ api('/map').then((data) => {
     }
   }
 }).catch((err) => console.error(err));
-        // Keep the X on the card's top right corner, also when the steps list opens.
-        new ResizeObserver(() => {
-          exit.style.bottom = `calc(var(--nav-height) + 8px + ${card.offsetHeight}px + 8px)`;
-        }).observe(card);
