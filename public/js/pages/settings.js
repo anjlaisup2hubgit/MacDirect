@@ -4,7 +4,6 @@
   p.results.innerHTML =
     '<div class="account"></div>' +
     '<form class="event-form">' +
-      `<label class="name-field" hidden>${t('Display name')}<input name="name" maxlength="40" autocomplete="off"></label>` +
       `<label>${t('Language')}<select name="lang">` +
         Object.entries(I18N_LANGS).map(([v, l]) => `<option value="${v}">${l}</option>`).join('') + '</select></label>' +
       `<label class="view-field" hidden>${t('Calendar view')}<select name="view">` +
@@ -14,18 +13,30 @@
       `<label class="check-field"><input type="checkbox" name="contrast"> ${t('High contrast')}</label>` +
       '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</form>' +
-    '<form class="event-form pw-form" id="pw-form" novalidate hidden>' +
+    '<div class="chips mode-tabs" role="group" hidden>' +
+      `<button type="button" class="chip active" data-tab="data">${t('Data')}</button>` +
+      `<button type="button" class="chip" data-tab="name">${t('Username')}</button>` +
+      `<button type="button" class="chip" data-tab="contact">${t('Contact')}</button></div>` +
+    '<div class="tab-panel" data-panel="name" hidden>' +
+    '<form class="event-form name-form" novalidate>' +
+      `<label>${t('Display name')}<input name="name" maxlength="40" autocomplete="off"></label>` +
+      '<p class="form-msg" aria-live="polite" hidden></p>' +
+    '</form>' +
+    '<form class="event-form pw-form" id="pw-form" novalidate>' +
       `<label>${t('New password')}<input type="password" name="newPassword" minlength="6" autocomplete="new-password" required></label>` +
       `<label>${t('Confirm new password')}<input type="password" name="confirmPassword" minlength="6" autocomplete="new-password" required></label>` +
       '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</form>' +
+    '<div class="card-actions account-actions">' +
+    `<button class="follow-btn pw-btn" type="submit" form="pw-form" hidden>${t('Change password')}</button></div>` +
+    '</div>' +
     '<section class="admin-requests" hidden>' +
       `<h3>${t('Leader requests')}</h3><ul class="card-list"></ul>` +
       `<p class="empty-msg" role="status" hidden>${t('No pending requests.')}</p></section>` +
     '<section class="admin-feedback" hidden>' +
       `<h3>${t('Feedback')}</h3><ul class="card-list"></ul>` +
       `<p class="empty-msg" role="status" hidden>${t('No feedback yet.')}</p></section>` +
-    `<p class="help-link"><a href="https://students.mq.edu.au/support/health-and-wellbeing" target="_blank" rel="noopener">${t('Need help?')}</a></p>` +
+    '<div class="tab-panel" data-panel="data">' +
     '<section class="privacy-box">' +
       `<h3>${t('Your data')}</h3>` +
       `<p class="privacy-guest">${t('You are browsing as a guest. iMCQ stores only your language choice and your guest choice in this browser. We do not store your location.')}</p>` +
@@ -33,7 +44,10 @@
       '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</section>' +
     '<div class="card-actions account-actions">' +
-    `<button class="follow-btn" type="button" data-act="download-data" hidden>${t('Download my data')}</button></div>` +
+    `<button class="follow-btn" type="button" data-act="download-data" hidden>${t('Download my data')}</button>` +
+    `<button class="follow-btn delete-btn" type="button" data-act="delete-account" hidden>${t('Delete account')}</button></div>` +
+    '</div>' +
+    '<div class="tab-panel" data-panel="contact" hidden>' +
     '<section class="contact-box">' +
       `<h3>${t('Contact the developers')}</h3>` +
       `<p>${t('Found a problem, a wrong result or something unfair? Tell us.')}</p>` +
@@ -48,14 +62,16 @@
         '<p class="form-msg" aria-live="polite" hidden></p>' +
       '</form>' +
     '</section>' +
-    '<div class="card-actions account-actions">' +
-    `<button class="follow-btn pw-btn" type="submit" form="pw-form" hidden>${t('Change password')}</button>` +
-    `<button class="follow-btn delete-btn" type="button" data-act="delete-account" hidden>${t('Delete account')}</button></div>` +
+    '</div>' +
+    `<p class="help-link"><a href="https://students.mq.edu.au/support/health-and-wellbeing" target="_blank" rel="noopener">${t('Need help?')}</a></p>` +
     '<div class="card-actions account-actions">' +
     `<button class="form-submit logout-btn" type="button" data-act="logout" hidden>${t('Log out')}</button></div>`;
   const form = p.results.querySelector('form');
   const msg = form.querySelector('.form-msg');
-  const nameField = form.querySelector('.name-field');
+  const nameForm = p.results.querySelector('.name-form');
+  const nameMsg = nameForm.querySelector('.form-msg');
+  const tabs = p.results.querySelector('.mode-tabs');
+  const panels = p.results.querySelectorAll('.tab-panel');
   const logoutBtn = p.results.querySelector('.logout-btn');
   const deleteBtn = p.results.querySelector('.delete-btn');
   const viewField = form.querySelector('.view-field');
@@ -91,10 +107,31 @@
         flash(t('Saved.'));
         window.dispatchEvent(new Event('events-changed')); // Calendar redraws with the chosen first day
       } catch (err) { console.error(err); flash(t('Could not save.'), true); }
-    } else if (e.target.name === 'name') {
-      const { error } = await auth.updateDisplayName(e.target.value.trim());
-      if (error) { console.error(error); flash(t('Could not save.'), true); } else flash(t('Saved.'));
     }
+  });
+
+  nameForm.addEventListener('submit', (e) => e.preventDefault());
+  nameForm.addEventListener('change', async (e) => {
+    const { error } = await auth.updateDisplayName(e.target.value.trim());
+    nameMsg.classList.toggle('error', !!error);
+    if (error) console.error(error);
+    nameMsg.textContent = error ? t('Could not save.') : t('Saved.');
+    nameMsg.hidden = false;
+  });
+
+  // Tabs under the main settings: Data, Username and Contact (signed-in users); guests only see Data.
+  let tab = 'data';
+  function showTab() {
+    if (!auth.user) tab = 'data';
+    tabs.hidden = !auth.user;
+    tabs.querySelectorAll('.chip').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
+    panels.forEach((el) => { el.hidden = el.dataset.panel !== tab; });
+  }
+  tabs.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-tab]');
+    if (!b) return;
+    tab = b.dataset.tab;
+    showTab();
   });
 
   const pwForm = p.results.querySelector('.pw-form');
@@ -133,16 +170,14 @@
   }
   function renderAccount() {
     logoutBtn.hidden = !auth.user;
-    p.results.querySelector('.contact-box').hidden = !auth.user;
     deleteBtn.hidden = !auth.user;
-    nameField.hidden = !auth.user;
     viewField.hidden = !auth.user;
     weekField.hidden = !auth.user;
-    pwForm.hidden = !auth.user;
     pwSubmit.hidden = !auth.user;
     renderPrivacy();
+    showTab();
     if (auth.user) {
-      form.elements.name.value = (auth.profile && auth.profile.display_name) || '';
+      nameForm.elements.name.value = (auth.profile && auth.profile.display_name) || '';
       const name = (auth.profile && auth.profile.display_name) || t('Signed in');
       account.innerHTML =
         `<p><strong>${esc(name)}</strong><br>${esc(auth.user.email)}</p><p>${esc(roleLine())}</p>`;

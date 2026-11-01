@@ -545,6 +545,7 @@ button, input, select, textarea { font-family: inherit; }
 .chips.mode-tabs { gap: 20px; margin: 0 0 12px; padding: 0; border-bottom: 1px solid #d0d5da; }
 .mode-tabs .chip { min-height: 48px; padding: 8px 0 6px; font-size: 18px; color: var(--mq-red); background: none; border: 0; border-bottom: 4px solid transparent; border-radius: 0; }
 .mode-tabs .chip.active { color: var(--ink); background: none; border-bottom-color: var(--mq-red); }
+.mode-tabs[hidden], .tab-panel[hidden] { display: none; }
 
 /* Calendar */
 .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
