@@ -320,7 +320,7 @@ api('/map').then((data) => {
         line = L.polyline(route.coordinates, { ...routeLine, color: '#4285F4', weight: 2.5 }).addTo(map);
         casing.bringToFront();
         line.bringToFront();
-        if (firstTime) map.fitBounds(line.getBounds(), { paddingTopLeft: [28, 128], paddingBottomRight: [28, 160] });
+        if (firstTime) map.fitBounds(line.getBounds(), { paddingTopLeft: [28, 88], paddingBottomRight: [28, 212] });
         const wasOpen = Boolean(card && card.classList.contains('open'));
         if (card) card.remove();
         const minutes = Math.max(1, Math.round(route.metres / 83.3));
@@ -392,3 +392,7 @@ api('/map').then((data) => {
     }
   }
 }).catch((err) => console.error(err));
+        // Keep the X on the card's top right corner, also when the steps list opens.
+        new ResizeObserver(() => {
+          exit.style.bottom = `calc(var(--nav-height) + 8px + ${card.offsetHeight}px + 8px)`;
+        }).observe(card);

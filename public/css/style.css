@@ -652,11 +652,12 @@ a.directions-btn {
   text-decoration: none;
 }
 .building-panel a.directions-btn { margin: 10px 0 4px; font-size: 14px; color: #fff; }
-/* Red X under the search bar, top right: leaves the directions screen. */
+/* Red X sitting on the route card's top right corner: leaves the directions screen.
+   map.js moves `bottom` to follow the card's height; this value is the fallback. */
 .route-exit {
   position: fixed;
-  top: calc(72px + env(safe-area-inset-top, 0px));
-  right: calc(100% - var(--app-left) - var(--app-width) + 16px);
+  bottom: calc(var(--nav-height) + 72px);
+  right: calc(100% - var(--app-left) - var(--app-width) + 12px);
   z-index: 1000;
   display: grid;
   place-items: center;
