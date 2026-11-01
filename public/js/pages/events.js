@@ -55,7 +55,7 @@
     const leaderIds = auth.approvedSocieties.map((s) => s.id);
     base.forEach((e) => { e.canEdit = leaderIds.includes(e.societyId); });
     const events = byDate();
-    titleEl.textContent = month.toLocaleDateString({ en: 'en-AU', zh: 'zh-CN', es: 'es', vi: 'vi' }[i18nLang()], { month: 'long', year: 'numeric' });
+    titleEl.textContent = month.toLocaleDateString(I18N_LOCALES[i18nLang()], { month: 'long', year: 'numeric' });
     let sunStart = false;
     try { sunStart = localStorage.getItem('imcq-week-start') === 'sun'; } catch (err) { /* storage blocked: Monday */ }
     const lead = sunStart ? month.getDay() : (month.getDay() + 6) % 7;

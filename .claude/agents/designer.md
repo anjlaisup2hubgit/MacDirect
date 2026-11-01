@@ -59,7 +59,7 @@ Apply these to every screen unless the user says otherwise.
 1. iMCQ is mobile-first. Design for a phone screen first, then say what changes on a larger screen.
 2. Reuse the colours, fonts, spacing and classes already in `style.css` when they match the Macquarie style. Do not invent a new style when an existing one fits.
 3. Respect the "Decisions already made" list in `CHANGELOG.md`.
-4. Every visible word must work in English, 简体中文 and Español. Keep text short, and tell the builder which new words need translations.
+4. Every visible word must work in English, 简体中文 and the other languages. Keep text short, and tell the builder which new words need translations.
 5. Design the guest view too. Say what a logged-out visitor sees.
 6. Keep buttons large enough to tap and text easy to read.
 7. If something is unclear, stop and ask the user.
