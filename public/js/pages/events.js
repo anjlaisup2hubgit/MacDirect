@@ -151,6 +151,20 @@
     return true;
   }
 
+  // Cancel or restore a society event (leaders only); true if it handled the click.
+  async function cancelAction(e, list) {
+    const btn = e.target.closest('[data-cancel]');
+    if (!btn) return false;
+    const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
+    if (!ev || !ev.canEdit) return true;
+    btn.disabled = true;
+    const { error } = await auth.setEventCancelled(ev.id, !ev.cancelled);
+    if (error) { console.error(error); btn.disabled = false; await choose(t('Could not save.'), [], t('Close')); return true; }
+    ev.cancelled = !ev.cancelled;
+    render();
+    return true;
+  }
+
   // Handles Edit and Delete on a society event card; true if it handled the click.
   async function leaderAction(e, list) {
     const btn = e.target.closest('[data-edit], [data-delete]');
@@ -171,7 +185,7 @@
 
   agendaEl.addEventListener('click', async (e) => {
     if (e.target.closest('a')) return; // Walk there links navigate on their own
-    if (calendarAction(e, agendaEvents) || await goingAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await postPlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
+    if (calendarAction(e, agendaEvents) || await goingAction(e, agendaEvents) || await cancelAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await postPlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = agendaEvents[[...agendaEl.querySelectorAll('.card')].indexOf(el)];
@@ -198,7 +212,7 @@
   });
   listEl.addEventListener('click', async (e) => {
     if (e.target.closest('a')) return;
-    if (calendarAction(e, dayEvents) || await goingAction(e, dayEvents) || await removePlan(e, dayEvents) || await postPlan(e, dayEvents) || await leaderAction(e, dayEvents)) return;
+    if (calendarAction(e, dayEvents) || await goingAction(e, dayEvents) || await cancelAction(e, dayEvents) || await removePlan(e, dayEvents) || await postPlan(e, dayEvents) || await leaderAction(e, dayEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = dayEvents[[...listEl.children].indexOf(el)];
@@ -220,18 +234,27 @@
     .then(([data, ids, rsvps]) => { follows = new Set(ids); const own = new Set(auth.approvedSocieties.map((s) => s.id)); // leaders also see their own society's events
       base = data.filter((e) => follows.has(e.societyId) || own.has(e.societyId));
       if (rsvps) base.forEach((e) => { e.going = rsvps.mine.has(e.id); e.goingCount = rsvps.counts[e.id] || 0; });
-      render(); })
+      return loadWalkTimes(base).then(render); })
     .catch((err) => { console.error(err); emptyEl.textContent = t('Could not load events.'); emptyEl.hidden = false; });
   // Lifts and accessible toilets per building name, for the Venue access line on event cards. Failure just hides the line.
   let venueLoaded = false;
+  let venueIds = {};
   async function loadVenueAccess() {
     if (venueLoaded) return;
     try {
       const data = await fetch('/api/map').then((r) => r.json());
       window.venueAccess = {};
-      data.features.forEach((f) => { if (f.properties && f.properties.name) window.venueAccess[f.properties.name] = f.properties.accessibility || null; });
+      venueIds = {};
+      data.features.forEach((f) => { if (f.properties && f.properties.name) { window.venueAccess[f.properties.name] = f.properties.accessibility || null; venueIds[f.properties.name] = f.id; } });
       venueLoaded = true;
     } catch (err) { console.error(err); }
+  }
+  // Walking minutes from the station to each event's building (80 m a minute), for the Leave the station by line.
+  window.venueWalk = {};
+  async function loadWalkTimes(events) {
+    const names = [...new Set(events.map((e) => e.building))].filter((n) => venueIds[n] !== undefined && window.venueWalk[n] === undefined);
+    await Promise.all(names.map((n) => fetch('/api/route?id=' + encodeURIComponent(venueIds[n])).then((r) => (r.ok ? r.json() : null))
+      .then((route) => { if (route && route.metres) window.venueWalk[n] = Math.max(1, Math.round(route.metres / 80)); }).catch(() => {})));
   }
   loadEvents();
   auth.ready.then(loadPlans);

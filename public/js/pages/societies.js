@@ -23,6 +23,7 @@
   let follows = new Set();
   let images = {};
   let leaders = {};
+  let activity = null; // newest event post per society; null until loaded
   let category = '';
 
   CATEGORIES.forEach((c, i) => {
@@ -139,7 +140,7 @@
       return (s.name + ' ' + s.description + ' ' + hashtagsOf(s).join(' ')).toLowerCase().includes(q);
     });
     shown.sort((a, b) => a.name.localeCompare(b.name) * (sortEl.value === 'za' ? -1 : 1));
-    listEl.innerHTML = shown.map((s) => societyCard(s, follows.has(s.id), images[s.id])).join('');
+    listEl.innerHTML = shown.map((s) => societyCard(s, follows.has(s.id), images[s.id], activity && (activity[s.id] || null))).join('');
     emptyEl.hidden = shown.length > 0;
   }
 
@@ -210,7 +211,8 @@
     auth.listSocietyImages().then((map) => { images = map; render(); }).catch(console.error);
   });
 
-  Promise.all([auth.ready.then(() => auth.listSocieties()), auth.ready.then(() => auth.myFollows()), auth.ready.then(() => auth.listSocietyImages()), auth.ready.then(() => auth.listPublicLeaders())]).then(([data, ids, imgs, people]) => {
+  Promise.all([auth.ready.then(() => auth.listSocieties()), auth.ready.then(() => auth.myFollows()), auth.ready.then(() => auth.listSocietyImages()), auth.ready.then(() => auth.listPublicLeaders()), auth.ready.then(() => auth.societyActivity())]).then(([data, ids, imgs, people, last]) => {
+    activity = last;
     societies = data;
     follows = new Set(ids);
     images = imgs;

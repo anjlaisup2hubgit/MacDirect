@@ -394,6 +394,9 @@ $$;
 revoke all on function public.event_rsvp_counts() from public;
 grant execute on function public.event_rsvp_counts() to authenticated;
 
+-- Leaders can cancel an event without deleting it (the existing leader update policy covers it). Safe to run again.
+alter table public.events add column if not exists cancelled boolean not null default false;
+
 -- Making yourself the first admin (SQL editor only, after signing up once):
 --   update public.profiles set role = 'admin' where id = '<your auth.users id>';
 -- Approving a leader request (the MVP "admin screen"):

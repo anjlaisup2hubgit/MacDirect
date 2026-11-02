@@ -257,7 +257,8 @@ const auth = (function () {
     async listEvents() {
       const cols = 'id, society_id, title, category, event_date, event_time, building, description';
       const order = (q) => q.order('event_date').order('event_time');
-      let { data, error } = await order(state.sb.from('events').select(cols + ', image_path, eco_tags'));
+      let { data, error } = await order(state.sb.from('events').select(cols + ', image_path, eco_tags, cancelled'));
+      if (error) ({ data, error } = await order(state.sb.from('events').select(cols + ', image_path, eco_tags'))); // cancelled column not added yet
       if (error) ({ data, error } = await order(state.sb.from('events').select(cols + ', image_path'))); // eco_tags column not added yet
       if (error) ({ data, error } = await order(state.sb.from('events').select(cols))); // image_path column not added yet
       if (error) throw error;
@@ -268,9 +269,22 @@ const auth = (function () {
           timeValue: e.event_time ? e.event_time.slice(0, 5) : '',
           time: h === null ? '' : `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`,
           building: this.fullBuildingName(e.building) || 'TBC', description: e.description,
-          imageUrl: e.image_path ? posterUrl(e.image_path) : '', ecoTags: e.eco_tags || [],
+          imageUrl: e.image_path ? posterUrl(e.image_path) : '', ecoTags: e.eco_tags || [], cancelled: !!e.cancelled,
         };
       });
+    },
+    // Leaders mark an event cancelled (or bring it back); followers see a Cancelled tag.
+    async setEventCancelled(id, on) {
+      const { error } = await state.sb.from('events').update({ cancelled: on }).eq('id', id);
+      return { error };
+    },
+    // { societyId: date of its newest event post } for the "last event" line on society cards. Empty if the query fails.
+    async societyActivity() {
+      const { data, error } = await state.sb.from('events').select('society_id, created_at').not('society_id', 'is', null);
+      if (error) return {};
+      const last = {};
+      data.forEach((r) => { if (!last[r.society_id] || r.created_at > last[r.society_id]) last[r.society_id] = r.created_at; });
+      return last;
     },
     // `ev` uses the form fields; pass `id` to update an existing event.
     // `file` is an optional poster image; `ev.removeImage` drops the current one.

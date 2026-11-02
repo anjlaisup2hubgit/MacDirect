@@ -53,11 +53,21 @@ function toggleCardMenu(btn) {
 document.addEventListener('click', (e) => { if (!e.target.closest('.card-menu-wrap')) closeCardMenus(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCardMenus(); });
 
-function societyCard(s, following, imageUrl) {
+// "Last event posted ..." under a society's description, so out-of-date societies are easy to spot.
+// `last` is undefined while unknown, null when the society has never posted, or an ISO date.
+function freshnessLine(last) {
+  if (last === undefined) return '';
+  if (!last) return `<p class="society-fresh">${t('No events posted yet')}</p>`;
+  const days = Math.floor((Date.now() - new Date(last).getTime()) / 86400000);
+  return `<p class="society-fresh">${t('Last event posted')} ${esc(formatDate(last.slice(0, 10)))}` +
+    (days > 90 ? ` &middot; ${t('No new events in 90 days')}` : '') + '</p>';
+}
+
+function societyCard(s, following, imageUrl, last) {
   return `<li class="card card-society" data-id="${s.id}" tabindex="0">` +
     (imageUrl ? `<img class="society-cover" src="${esc(imageUrl)}" alt="${esc(s.name)}" loading="lazy">` : coverDiv(s.name)) +
     `<div class="card-body"><h2 title="${esc(s.name)}">${esc(s.name)}</h2>` +
-    `<p>${esc(s.description)}</p>` +
+    `<p>${esc(s.description)}</p>` + freshnessLine(last) +
     `<div class="card-foot">${hashtagLine(s)}` +
     (typeof s.id === 'number' ? `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button>` : '') +
     '</div>' +
@@ -194,6 +204,17 @@ function venueAccessLine(e) {
   return `<p class="event-access">${t('Venue access')}: ${esc(parts.length ? parts.join(' · ') : t('Not confirmed'))}</p>`;
 }
 
+// "Leave the station by ..." for a timed event, from the walk time events.js worked out (window.venueWalk, minutes).
+function leaveByLine(e) {
+  const mins = window.venueWalk && window.venueWalk[e.building];
+  const m = /^(\d{2}):(\d{2})/.exec(e.timeValue || '');
+  if (!mins || !m || e.cancelled) return '';
+  const total = Number(m[1]) * 60 + Number(m[2]) - mins;
+  if (total < 0) return '';
+  const h = Math.floor(total / 60);
+  return `<p class="event-access">${t('Leave the station by')} ${h % 12 || 12}:${String(total % 60).padStart(2, '0')}${h < 12 ? 'am' : 'pm'} (${t('about')} ${mins} ${t('min walk')})</p>`;
+}
+
 // Walk there, plus a lit route to the station for events that start at 5 pm or later.
 function eventWalkLinks(e) {
   if (!e.building || e.building === 'TBC') return '';
@@ -205,13 +226,13 @@ function eventWalkLinks(e) {
 }
 
 function eventCard(e) {
-  return `<li class="card card-society" data-id="${e.id}" tabindex="0">` +
+  return `<li class="card card-society${e.cancelled ? ' event-cancelled' : ''}" data-id="${e.id}" tabindex="0">` +
     (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : coverDiv(e.name)) +
-    `<div class="card-body"><span class="card-tag">${esc(e.category)}</span>` +
+    `<div class="card-body"><span class="card-tag">${esc(e.category)}</span>` + (e.cancelled ? ` <span class="card-tag cancelled-tag">${t('Cancelled')}</span>` : '') +
     `<h2 title="${esc(e.name)}">${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
-    `<p>${esc(e.description)}</p>` + ecoTagLine(e) + venueAccessLine(e) + eventWalkLinks(e) +
-    (e.mine ? '' : `<div class="card-actions"><button type="button" class="follow-btn" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? t('Going') : t("I'm going")}</button>` +
+    `<p>${esc(e.description)}</p>` + ecoTagLine(e) + venueAccessLine(e) + leaveByLine(e) + eventWalkLinks(e) +
+    (e.mine || e.cancelled ? '' : `<div class="card-actions"><button type="button" class="follow-btn" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? t('Going') : t("I'm going")}</button>` +
       `<span class="event-going">${e.goingCount ? e.goingCount + ' ' + t('going') : ''}</span></div>`) +
     `<p class="card-actions-label">${t('Add to calendar')}</p>` +
     `<div class="card-actions" role="group" aria-label="${t('Add to calendar')}"><button type="button" class="follow-btn" data-gcal>${t('Google')}</button>` +
@@ -219,6 +240,7 @@ function eventCard(e) {
     (e.mine ? `<div class="card-actions"><button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` +
       (auth.user && auth.approvedSocieties.length ? `<button type="button" class="follow-btn" data-post>${t('Post')}</button>` : '') + '</div>' : '') +
     (e.canEdit ? `<div class="card-actions"><button type="button" class="follow-btn" data-edit>${t('Edit')}</button>` +
+      `<button type="button" class="follow-btn" data-cancel>${t(e.cancelled ? 'Restore event' : 'Cancel event')}</button>` +
       `<button type="button" class="follow-btn" data-delete>${t('Delete')}</button></div>` : '') + '</div></li>';
 }
 

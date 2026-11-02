@@ -781,3 +781,6 @@ a.directions-btn {
 .auth-policy a { color: var(--mq-red); }
 .event-access { font-size: 12px; }
 .event-going { align-self: center; font-size: 12px; }
+.society-fresh { font-size: 12px; }
+.event-cancelled h2 { text-decoration: line-through; }
+.cancelled-tag { background: #76232F; color: #fff; }
