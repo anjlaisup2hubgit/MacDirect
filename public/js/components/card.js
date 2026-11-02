@@ -181,13 +181,38 @@ function restNote(count) {
     : '';
 }
 
+// One line about the venue's lifts and accessible toilets, from the map data events.js loads (window.venueAccess).
+function venueAccessLine(e) {
+  if (!window.venueAccess || !e.building || e.building === 'TBC') return '';
+  const a = window.venueAccess[e.building];
+  if (a === undefined) return '';
+  const parts = [];
+  if (a) {
+    if (a.lifts) parts.push(`${t('Lifts')}: ${a.lifts}`);
+    if (a.toilets) parts.push(`${t('Accessible toilets')}: ${a.toilets}`);
+  }
+  return `<p class="event-access">${t('Venue access')}: ${esc(parts.length ? parts.join(' · ') : t('Not confirmed'))}</p>`;
+}
+
+// Walk there, plus a lit route to the station for events that start at 5 pm or later.
+function eventWalkLinks(e) {
+  if (!e.building || e.building === 'TBC') return '';
+  const base = '/?directions=' + encodeURIComponent(e.building);
+  const hour = Number((e.timeValue || '').slice(0, 2));
+  const evening = e.timeValue && hour >= 17;
+  return `<div class="card-actions"><a class="follow-btn" href="${base}">${t('Walk there')}</a>` +
+    (evening ? `<a class="follow-btn" href="${base}&lit=1">${t('Lit route to the station')}</a>` : '') + '</div>';
+}
+
 function eventCard(e) {
   return `<li class="card card-society" data-id="${e.id}" tabindex="0">` +
     (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : coverDiv(e.name)) +
     `<div class="card-body"><span class="card-tag">${esc(e.category)}</span>` +
     `<h2 title="${esc(e.name)}">${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
-    `<p>${esc(e.description)}</p>` + ecoTagLine(e) +
+    `<p>${esc(e.description)}</p>` + ecoTagLine(e) + venueAccessLine(e) + eventWalkLinks(e) +
+    (e.mine ? '' : `<div class="card-actions"><button type="button" class="follow-btn" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? t('Going') : t("I'm going")}</button>` +
+      `<span class="event-going">${e.goingCount ? e.goingCount + ' ' + t('going') : ''}</span></div>`) +
     `<p class="card-actions-label">${t('Add to calendar')}</p>` +
     `<div class="card-actions" role="group" aria-label="${t('Add to calendar')}"><button type="button" class="follow-btn" data-gcal>${t('Google')}</button>` +
       `<button type="button" class="follow-btn" data-ics>${t('Apple / Outlook')}</button></div>` +

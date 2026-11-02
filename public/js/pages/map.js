@@ -315,7 +315,7 @@ api('/map').then((data) => {
   const askedRoute = new URLSearchParams(location.search).get('directions');
   const askedWater = new URLSearchParams(location.search).get('water'); // a drink point index: route from the building to it
   if (askedRoute) {
-    const feature = data.features.find((f) => String(f.id) === askedRoute);
+    const feature = data.features.find((f) => String(f.id) === askedRoute) || data.features.find((f) => f.properties.name === askedRoute); // an event passes the building name
     const layer = feature && layers.get(feature.id);
     if (layer) {
       layer.setStyle(outlineStyle);
@@ -323,6 +323,8 @@ api('/map').then((data) => {
       const routeLine = { lineCap: 'round', lineJoin: 'round', opacity: 1 };
       let preferLit = false;
       try { preferLit = localStorage.getItem('imcq-prefer-lit') === '1'; } catch (e) { /* storage blocked */ }
+      const askedLit = new URLSearchParams(location.search).get('lit') === '1'; // "lit route home" from an evening event
+      if (askedLit) preferLit = true;
       let casing = null;
       let line = null;
       let card = null;
@@ -376,6 +378,12 @@ api('/map').then((data) => {
         pref.appendChild(box);
         pref.appendChild(document.createTextNode(' ' + t('Prefer lit paths')));
         card.appendChild(pref);
+        if (askedLit) {
+          const home = document.createElement('p');
+          home.className = 'route-credit';
+          home.textContent = t('This route runs from the station to the building. Walk it in reverse to get back to the station.');
+          card.appendChild(home);
+        }
         if (preferLit) {
           const credit = document.createElement('p');
           credit.className = 'route-credit';

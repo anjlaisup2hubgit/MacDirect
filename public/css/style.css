@@ -779,3 +779,5 @@ a.directions-btn {
 .policy-back a, .auth-policy a { display: inline-block; padding: 12px 0; }
 .auth-policy { margin: 0; text-align: center; font-size: 14px; }
 .auth-policy a { color: var(--mq-red); }
+.event-access { font-size: 12px; }
+.event-going { align-self: center; font-size: 12px; }

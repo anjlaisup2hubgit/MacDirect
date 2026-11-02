@@ -135,6 +135,22 @@
     return true;
   }
 
+  // "I'm going" on a society event: saves it, then redraws so the count and button update; true if it handled the click.
+  async function goingAction(e, list) {
+    const btn = e.target.closest('[data-going]');
+    if (!btn) return false;
+    const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
+    if (!ev) return true;
+    btn.disabled = true;
+    const on = !ev.going;
+    const { error } = await auth.setGoing(ev.id, on);
+    if (error) { console.error(error); btn.disabled = false; await choose(t('Could not save.'), [], t('Close')); return true; }
+    ev.going = on;
+    ev.goingCount = Math.max(0, (ev.goingCount || 0) + (on ? 1 : -1));
+    render();
+    return true;
+  }
+
   // Handles Edit and Delete on a society event card; true if it handled the click.
   async function leaderAction(e, list) {
     const btn = e.target.closest('[data-edit], [data-delete]');
@@ -154,7 +170,8 @@
   }
 
   agendaEl.addEventListener('click', async (e) => {
-    if (calendarAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await postPlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
+    if (e.target.closest('a')) return; // Walk there links navigate on their own
+    if (calendarAction(e, agendaEvents) || await goingAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await postPlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = agendaEvents[[...agendaEl.querySelectorAll('.card')].indexOf(el)];
@@ -180,7 +197,8 @@
     render();
   });
   listEl.addEventListener('click', async (e) => {
-    if (calendarAction(e, dayEvents) || await removePlan(e, dayEvents) || await postPlan(e, dayEvents) || await leaderAction(e, dayEvents)) return;
+    if (e.target.closest('a')) return;
+    if (calendarAction(e, dayEvents) || await goingAction(e, dayEvents) || await removePlan(e, dayEvents) || await postPlan(e, dayEvents) || await leaderAction(e, dayEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = dayEvents[[...listEl.children].indexOf(el)];
@@ -198,10 +216,23 @@
   auth.ready.then(render);
   render();
   // Only events of followed societies are shown; own plans are not filtered. Guests load nothing.
-  const loadEvents = () => auth.ready.then(() => (auth.user ? Promise.all([auth.listEvents(), auth.myFollows()]) : [[], []]))
-    .then(([data, ids]) => { follows = new Set(ids); const own = new Set(auth.approvedSocieties.map((s) => s.id)); // leaders also see their own society's events
-      base = data.filter((e) => follows.has(e.societyId) || own.has(e.societyId)); render(); })
+  const loadEvents = () => auth.ready.then(() => (auth.user ? Promise.all([auth.listEvents(), auth.myFollows(), auth.listRsvps(), loadVenueAccess()]) : [[], [], null]))
+    .then(([data, ids, rsvps]) => { follows = new Set(ids); const own = new Set(auth.approvedSocieties.map((s) => s.id)); // leaders also see their own society's events
+      base = data.filter((e) => follows.has(e.societyId) || own.has(e.societyId));
+      if (rsvps) base.forEach((e) => { e.going = rsvps.mine.has(e.id); e.goingCount = rsvps.counts[e.id] || 0; });
+      render(); })
     .catch((err) => { console.error(err); emptyEl.textContent = t('Could not load events.'); emptyEl.hidden = false; });
+  // Lifts and accessible toilets per building name, for the Venue access line on event cards. Failure just hides the line.
+  let venueLoaded = false;
+  async function loadVenueAccess() {
+    if (venueLoaded) return;
+    try {
+      const data = await fetch('/api/map').then((r) => r.json());
+      window.venueAccess = {};
+      data.features.forEach((f) => { if (f.properties && f.properties.name) window.venueAccess[f.properties.name] = f.properties.accessibility || null; });
+      venueLoaded = true;
+    } catch (err) { console.error(err); }
+  }
   loadEvents();
   auth.ready.then(loadPlans);
 })();

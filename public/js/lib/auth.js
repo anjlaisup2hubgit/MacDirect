@@ -176,6 +176,25 @@ const auth = (function () {
         : await q.delete().eq('user_id', state.user.id).eq('society_id', societyId);
       return { error };
     },
+    // "I'm going": how many people are going to each event, and which events the user is going to.
+    // Returns empty answers until the event_rsvps SQL has been run.
+    async listRsvps() {
+      const [c, m] = await Promise.all([
+        state.sb.rpc('event_rsvp_counts'),
+        state.user ? state.sb.from('event_rsvps').select('event_id').eq('user_id', state.user.id) : Promise.resolve({ data: [] }),
+      ]);
+      if (c.error || m.error) return { counts: {}, mine: new Set() };
+      const counts = {};
+      (c.data || []).forEach((r) => { counts[r.event_id] = Number(r.going); });
+      return { counts, mine: new Set((m.data || []).map((r) => r.event_id)) };
+    },
+    async setGoing(eventId, on) {
+      const q = state.sb.from('event_rsvps');
+      const { error } = on
+        ? await q.insert({ user_id: state.user.id, event_id: eventId })
+        : await q.delete().eq('user_id', state.user.id).eq('event_id', eventId);
+      return { error };
+    },
     async unfollowMany(societyIds) {
       const { error } = await state.sb.from('follows').delete().eq('user_id', state.user.id).in('society_id', societyIds);
       return { error };

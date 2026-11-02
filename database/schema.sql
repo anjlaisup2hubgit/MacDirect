@@ -371,6 +371,29 @@ create policy "leaders re-request own rejected" on public.society_leaders
   using (user_id = auth.uid() and status = 'rejected')
   with check (user_id = auth.uid() and status = 'pending');
 
+-- "I'm going" on society events. People see only counts; each user sees and changes only their own rows. Safe to run again.
+create table if not exists public.event_rsvps (
+  event_id   bigint not null references public.events (id) on delete cascade,
+  user_id    uuid   not null references public.profiles (id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (event_id, user_id)
+);
+alter table public.event_rsvps enable row level security;
+drop policy if exists "rsvps read own" on public.event_rsvps;
+create policy "rsvps read own" on public.event_rsvps for select to authenticated using (user_id = auth.uid());
+drop policy if exists "rsvps add own" on public.event_rsvps;
+create policy "rsvps add own" on public.event_rsvps for insert to authenticated with check (user_id = auth.uid());
+drop policy if exists "rsvps remove own" on public.event_rsvps;
+create policy "rsvps remove own" on public.event_rsvps for delete to authenticated using (user_id = auth.uid());
+grant select, insert, delete on public.event_rsvps to authenticated;
+create or replace function public.event_rsvp_counts()
+returns table (event_id bigint, going bigint)
+language sql security definer set search_path = '' stable as $$
+  select r.event_id, count(*) from public.event_rsvps r group by r.event_id;
+$$;
+revoke all on function public.event_rsvp_counts() from public;
+grant execute on function public.event_rsvp_counts() to authenticated;
+
 -- Making yourself the first admin (SQL editor only, after signing up once):
 --   update public.profiles set role = 'admin' where id = '<your auth.users id>';
 -- Approving a leader request (the MVP "admin screen"):
