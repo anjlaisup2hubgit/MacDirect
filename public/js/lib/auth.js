@@ -408,6 +408,16 @@ const auth = (function () {
     // On error, error.userMessage is an English i18n key.
     async requestLeadership(societyId) {
       const { error } = await state.sb.from('society_leaders').insert({ user_id: state.user.id, society_id: societyId, status: 'pending' });
+      if (error && error.code === '23505') {
+        // A rejected request can be sent again; a pending or approved one cannot.
+        const again = await state.sb.from('society_leaders').update({ status: 'pending' })
+          .eq('user_id', state.user.id).eq('society_id', societyId).eq('status', 'rejected').select('id');
+        if (!again.error && again.data && again.data.length) {
+          await loadUserData();
+          listeners.forEach((cb) => cb());
+          return { error: null };
+        }
+      }
       if (error) {
         console.error(error);
         const key = error.code === '23505' ? 'You already asked to lead this society.' : 'Could not save.';

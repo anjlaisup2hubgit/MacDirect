@@ -382,6 +382,10 @@ api('/map').then((data) => {
           credit.textContent = t('Source: Macquarie University Accessibility Map, April 2026. Paths not marked there may still be lit.') + ' ';
           credit.insertAdjacentHTML('beforeend', mapLinkHtml());
           card.appendChild(credit);
+          const safety = document.createElement('p');
+          safety.className = 'route-credit';
+          safety.textContent = t('Lit is not the same as safe. MacDirect is not an emergency service. In an emergency call Campus Security on +61 2 9850 9999 or 000.');
+          card.appendChild(safety);
         }
         if (askedWater !== null) {
           const caveat = document.createElement('p');

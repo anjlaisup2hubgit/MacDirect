@@ -364,6 +364,13 @@ $$;
 revoke all on function public.public_society_leaders() from public;
 grant execute on function public.public_society_leaders() to anon, authenticated;
 
+-- Rejected leaders can ask again: a user may flip their OWN rejected request back to pending (nothing else). Safe to run again.
+drop policy if exists "leaders re-request own rejected" on public.society_leaders;
+create policy "leaders re-request own rejected" on public.society_leaders
+  for update to authenticated
+  using (user_id = auth.uid() and status = 'rejected')
+  with check (user_id = auth.uid() and status = 'pending');
+
 -- Making yourself the first admin (SQL editor only, after signing up once):
 --   update public.profiles set role = 'admin' where id = '<your auth.users id>';
 -- Approving a leader request (the MVP "admin screen"):

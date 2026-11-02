@@ -56,6 +56,7 @@
     '<section class="contact-box">' +
       `<h3>${t('Need help?')}</h3>` +
       `<p>${t('For stress, health or wellbeing, Macquarie\'s student support team can help. The MacDirect developers cannot give personal advice.')}</p>` +
+      `<p>${t('MacDirect is not an emergency service. In an emergency call Campus Security on +61 2 9850 9999 or 000.')}</p>` +
       `<p class="help-link"><a href="https://students.mq.edu.au/support/personal/wellbeing" target="_blank" rel="noopener">${t('Macquarie student wellbeing support')}</a></p>` +
     '</section>' +
     '<section class="contact-box">' +
