@@ -21,9 +21,13 @@
       '<label>' + t('Building') + '<input name="building" list="event-buildings" placeholder="' + t('e.g. 1 Central Courtyard') + '"></label>' +
       '<datalist id="event-buildings"></datalist>' +
       '<label>' + t('Description') + '<textarea name="description" rows="3" maxlength="200"></textarea></label>' +
+      '<label>' + t('Meeting spot (optional)') + '<input name="meetingNote" maxlength="80" placeholder="' + t('e.g. Look for the red banner') + '"></label>' +
       '<fieldset class="eco-field"><legend>' + t('Sustainability tags (optional)') + '</legend>' +
         '<label><input type="checkbox" name="eco" value="cup"> ' + t('Bring your own cup') + '</label>' +
         '<label><input type="checkbox" name="eco" value="plant"> ' + t('Plant-based food') + '</label></fieldset>' +
+      '<fieldset class="eco-field"><legend>' + t('More tags (optional)') + '</legend>' +
+        [['quiet', 'Quiet or low-sensory'], ['alcohol', 'Alcohol-free'], ['halal', 'Halal'], ['vegetarian', 'Vegetarian'], ['first', 'First-years welcome']]
+          .map(([v, l]) => '<label><input type="checkbox" name="eco" value="' + v + '"> ' + t(l) + '</label>').join('') + '</fieldset>' +
       '<img class="cover-preview" alt="" hidden>' +
       '<label class="ev-remove-photo" hidden><input type="checkbox" name="removeImage"> ' + t('Remove current photo') + '</label>' +
       '<label>' + t('Event photo (optional; JPEG, PNG or WebP, up to 5 MB)') + '<input name="photo" type="file" accept="image/jpeg,image/png,image/webp"></label>' +
@@ -66,7 +70,7 @@
   const tagPicker = cover.querySelector('.tag-picker');
   const tagOptions = tagPicker.querySelector('.tag-options');
   const tagsMsg = cover.querySelector('.tags-msg');
-  const TAG_CHOICES = ['social', 'games', 'sport', 'music', 'art', 'food', 'career', 'study', 'volunteering', 'culture', 'faith', 'science', 'tech', 'wellbeing', 'outdoors', 'networking'];
+  const TAG_CHOICES = ['social', 'games', 'sport', 'music', 'art', 'food', 'career', 'study', 'volunteering', 'culture', 'faith', 'science', 'tech', 'wellbeing', 'outdoors', 'networking', 'mandarin', 'cantonese', 'arabic', 'hindi', 'korean', 'vietnamese', 'greek', 'italian', 'filipino', 'nepali', 'punjabi'];
   const MAX_TAGS = 5;
   function pickedTags() {
     return [...tagOptions.querySelectorAll('input:checked')].map((i) => i.value);
@@ -215,6 +219,12 @@
     loaded = true;
     if (!leadersOnly()) return;
     renderGate();
+    // Gentle reminder when one of the leader's societies has not posted for 30 days.
+    auth.societyActivity().then((last) => {
+      const quiet = auth.approvedSocieties.filter((s) => !last[s.id] || Date.now() - new Date(last[s.id]).getTime() > 30 * 86400000);
+      if (!quiet.length) return;
+      form.insertAdjacentHTML('beforebegin', `<p class="empty-msg" role="status">${esc(quiet.map((s) => s.name).join(', '))}: ${t('has not posted an event in 30 days. Followers see a society as inactive after 90 days.')}</p>`);
+    }).catch(console.error);
     let raw = null;
     try { raw = sessionStorage.getItem('imcq-edit-event'); sessionStorage.removeItem('imcq-edit-event'); } catch (err) { /* storage blocked */ }
     if (!raw) return;
@@ -249,6 +259,7 @@
     form.elements.time.value = ev.timeValue;
     form.elements.building.value = ev.building === 'TBC' ? '' : ev.building;
     form.elements.description.value = ev.description;
+    form.elements.meetingNote.value = ev.meetingNote || '';
     form.querySelectorAll('input[name="eco"]').forEach((c) => { c.checked = (ev.ecoTags || []).includes(c.value); });
     preview.hidden = !ev.imageUrl;
     if (ev.imageUrl) { preview.src = ev.imageUrl; preview.alt = ev.name; }
@@ -278,7 +289,7 @@
     try {
       ({ error } = target === 'me'
         ? await auth.savePlan(fields, photo)
-        : await auth.saveEvent({ ...fields, id: editing ? editing.id : undefined, societyId: Number(target), ecoTags: f.getAll('eco'), removeImage: f.get('removeImage') === 'on' }, photo));
+        : await auth.saveEvent({ ...fields, id: editing ? editing.id : undefined, societyId: Number(target), ecoTags: f.getAll('eco'), meetingNote: f.get('meetingNote').trim(), hadMeetingNote: !!(editing && editing.meetingNote), removeImage: f.get('removeImage') === 'on' }, photo));
     } catch (err) { error = err; }
     submitBtn.disabled = false;
     msg.classList.toggle('error', !!error);

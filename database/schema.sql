@@ -397,6 +397,44 @@ grant execute on function public.event_rsvp_counts() to authenticated;
 -- Leaders can cancel an event without deleting it (the existing leader update policy covers it). Safe to run again.
 alter table public.events add column if not exists cancelled boolean not null default false;
 
+-- Meeting spot note on events, follower counts, route ratings and admin usage totals. Safe to run again.
+alter table public.events add column if not exists meeting_note text;
+
+create or replace function public.society_follower_counts()
+returns table (society_id bigint, followers bigint)
+language sql security definer set search_path = '' stable as $$
+  select f.society_id, count(*) from public.follows f group by f.society_id;
+$$;
+revoke all on function public.society_follower_counts() from public;
+grant execute on function public.society_follower_counts() to anon, authenticated;
+
+create table if not exists public.route_feedback (
+  id         bigint generated always as identity primary key,
+  helpful    boolean not null,
+  lit        boolean not null default false,
+  created_at timestamptz not null default now()
+);
+alter table public.route_feedback enable row level security;
+drop policy if exists "route feedback insert" on public.route_feedback;
+create policy "route feedback insert" on public.route_feedback for insert to anon, authenticated with check (true);
+grant insert on public.route_feedback to anon, authenticated;
+
+create or replace function public.admin_usage()
+returns json
+language sql security definer set search_path = '' stable as $$
+  select case when public.is_admin() then json_build_object(
+    'users', (select count(*) from public.profiles),
+    'follows', (select count(*) from public.follows),
+    'events', (select count(*) from public.events),
+    'going', (select count(*) from public.event_rsvps),
+    'plans', (select count(*) from public.event_plans),
+    'route_helpful', (select count(*) from public.route_feedback where helpful),
+    'route_not_helpful', (select count(*) from public.route_feedback where not helpful)
+  ) else null end;
+$$;
+revoke all on function public.admin_usage() from public;
+grant execute on function public.admin_usage() to authenticated;
+
 -- Making yourself the first admin (SQL editor only, after signing up once):
 --   update public.profiles set role = 'admin' where id = '<your auth.users id>';
 -- Approving a leader request (the MVP "admin screen"):

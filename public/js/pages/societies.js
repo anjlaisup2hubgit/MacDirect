@@ -24,6 +24,7 @@
   let images = {};
   let leaders = {};
   let activity = null; // newest event post per society; null until loaded
+  let followerCounts = {};
   let category = '';
 
   CATEGORIES.forEach((c, i) => {
@@ -76,6 +77,75 @@
     location.href = '/manage-societies.html';
   });
   grid.append(mBtn);
+
+  // Interest quiz: tick what you are into and see matching societies.
+  const qBtn = document.createElement('button');
+  qBtn.type = 'button';
+  qBtn.className = 'category-card category-wide';
+  qBtn.innerHTML = '<span class="category-copy"><span class="category-title"></span><span class="category-blurb"></span><span class="category-more"></span></span>';
+  qBtn.querySelector('.category-title').textContent = t('Find societies for me');
+  qBtn.querySelector('.category-blurb').textContent = t('Tick what you are into and see matching societies.');
+  qBtn.querySelector('.category-more').textContent = t('Find out more') + ' ›';
+  qBtn.addEventListener('click', (e) => { e.stopPropagation(); openQuiz(); });
+  grid.append(qBtn);
+
+  // A small in-page dialog listing societies, each with a Follow button (shared by the quiz and Similar societies).
+  function showMatches(heading, list) {
+    const d = document.createElement('dialog');
+    d.className = 'login-prompt';
+    d.innerHTML = `<p><strong>${esc(heading)}</strong></p>` +
+      (list.length ? '<ul class="match-list">' + list.map((s) => `<li data-id="${s.id}"><span>${esc(s.name)}<small>${esc(s.category)}</small></span>` +
+        `<button type="button" class="follow-btn${follows.has(s.id) ? ' following' : ''}" data-follow>${t(follows.has(s.id) ? 'Following' : 'Follow')}</button></li>`).join('') + '</ul>'
+        : `<p>${t('No matches yet.')}</p>`) +
+      `<div><button class="auth-guest" type="button" data-close>${t('Close')}</button></div>`;
+    d.addEventListener('click', async (e) => {
+      if (e.target.dataset.close !== undefined) { d.remove(); return; }
+      const btn = e.target.closest('[data-follow]');
+      if (!btn) return;
+      if (!auth.requireLogin('Log in to follow societies')) return;
+      const s = societies.find((x) => String(x.id) === btn.closest('li').dataset.id);
+      const on = !follows.has(s.id);
+      const { error } = await auth.setFollow(s.id, on);
+      if (error) { console.error(error); return; }
+      on ? follows.add(s.id) : follows.delete(s.id);
+      btn.textContent = t(on ? 'Following' : 'Follow');
+      btn.classList.toggle('following', on);
+      window.dispatchEvent(new Event('events-changed'));
+      render();
+    });
+    d.addEventListener('cancel', () => d.remove());
+    document.body.appendChild(d);
+    d.showModal();
+  }
+
+  function openQuiz() {
+    const d = document.createElement('dialog');
+    d.className = 'login-prompt';
+    d.innerHTML = `<p><strong>${t('What are you into?')}</strong></p><fieldset class="quiz-options">` +
+      CATEGORIES.map((c) => `<label><input type="checkbox" value="${esc(c.name)}"> ${esc(t(c.name))}</label>`).join('') + '</fieldset>' +
+      `<div><button class="form-submit" type="button" data-go>${t('Show societies')}</button>` +
+      `<button class="auth-guest" type="button" data-close>${t('Cancel')}</button></div>`;
+    d.addEventListener('click', (e) => {
+      if (e.target.dataset.close !== undefined) d.remove();
+      if (e.target.dataset.go === undefined) return;
+      const picked = [...d.querySelectorAll('input:checked')].map((i) => i.value);
+      d.remove();
+      const matches = societies.filter((s) => picked.includes(s.category) && typeof s.id === 'number')
+        .sort((a, b) => (followerCounts[b.id] || 0) - (followerCounts[a.id] || 0) || a.name.localeCompare(b.name)).slice(0, 8);
+      showMatches(t('Societies you might like'), picked.length ? matches : []);
+    });
+    d.addEventListener('cancel', () => d.remove());
+    document.body.appendChild(d);
+    d.showModal();
+  }
+
+  // Similar societies: shared hashtags count most, then the same category.
+  function similarTo(s) {
+    const mine = hashtagsOf(s);
+    return societies.filter((x) => x.id !== s.id && typeof x.id === 'number')
+      .map((x) => ({ x, score: hashtagsOf(x).filter((h) => mine.includes(h)).length * 3 + (x.category === s.category ? 1 : 0) }))
+      .filter((r) => r.score > 0).sort((a, b) => b.score - a.score || a.x.name.localeCompare(b.x.name)).slice(0, 6).map((r) => r.x);
+  }
 
   // Logged in users ask to lead a society here; guests are asked to log in first.
   const reqBtn = document.createElement('button');
@@ -140,7 +210,7 @@
       return (s.name + ' ' + s.description + ' ' + hashtagsOf(s).join(' ')).toLowerCase().includes(q);
     });
     shown.sort((a, b) => a.name.localeCompare(b.name) * (sortEl.value === 'za' ? -1 : 1));
-    listEl.innerHTML = shown.map((s) => societyCard(s, follows.has(s.id), images[s.id], activity && (activity[s.id] || null))).join('');
+    listEl.innerHTML = shown.map((s) => societyCard(s, follows.has(s.id), images[s.id], activity && (activity[s.id] || null), followerCounts[s.id])).join('');
     emptyEl.hidden = shown.length > 0;
   }
 
@@ -184,6 +254,19 @@
     results.scrollTop = 0;
   });
   sortEl.addEventListener('change', render);
+  // Short welcome line after following, so the student knows where the events will appear.
+  const followNote = document.createElement('p');
+  followNote.className = 'empty-msg';
+  followNote.setAttribute('role', 'status');
+  followNote.hidden = true;
+  listEl.before(followNote);
+  let followTimer = 0;
+  function flashFollow(name) {
+    followNote.textContent = `${t('Following')} ${name}. ${t('Its events now show in your Calendar.')}`;
+    followNote.hidden = false;
+    clearTimeout(followTimer);
+    followTimer = setTimeout(() => { followNote.hidden = true; }, 5000);
+  }
   listEl.addEventListener('click', async (e) => {
     const card = e.target.closest('.card');
     if (!card || card.classList.contains('card-info')) return;
@@ -191,14 +274,24 @@
     if (menuBtn) { toggleCardMenu(menuBtn); return; }
     const s = societies.find((x) => String(x.id) === card.dataset.id);
     if (!s) return;
+    if (e.target.closest('[data-join]')) {
+      closeCardMenus();
+      const site = /^https?:\/\//i.test(s.website || '') ? s.website : '';
+      if (site) window.open(site, '_blank', 'noopener');
+      else if (s.contact) location.href = 'mailto:' + s.contact;
+      return;
+    }
+    if (e.target.closest('[data-similar]')) { closeCardMenus(); showMatches(`${t('Similar to')} ${s.name}`, similarTo(s)); return; }
     if (e.target.closest('[data-follow]')) {
       if (!auth.requireLogin('Log in to follow societies')) return;
       const on = !follows.has(s.id);
       const { error } = await auth.setFollow(s.id, on);
       if (error) { console.error(error); return; }
       on ? follows.add(s.id) : follows.delete(s.id);
+      followerCounts[s.id] = Math.max(0, (followerCounts[s.id] || 0) + (on ? 1 : -1));
       window.dispatchEvent(new Event('events-changed'));
       render();
+      if (on) flashFollow(s.name);
       return;
     }
     showOnMap(s.building, s.name);
@@ -211,8 +304,9 @@
     auth.listSocietyImages().then((map) => { images = map; render(); }).catch(console.error);
   });
 
-  Promise.all([auth.ready.then(() => auth.listSocieties()), auth.ready.then(() => auth.myFollows()), auth.ready.then(() => auth.listSocietyImages()), auth.ready.then(() => auth.listPublicLeaders()), auth.ready.then(() => auth.societyActivity())]).then(([data, ids, imgs, people, last]) => {
+  Promise.all([auth.ready.then(() => auth.listSocieties()), auth.ready.then(() => auth.myFollows()), auth.ready.then(() => auth.listSocietyImages()), auth.ready.then(() => auth.listPublicLeaders()), auth.ready.then(() => auth.societyActivity()), auth.ready.then(() => auth.societyFollowerCounts())]).then(([data, ids, imgs, people, last, counts]) => {
     activity = last;
+    followerCounts = counts;
     societies = data;
     follows = new Set(ids);
     images = imgs;

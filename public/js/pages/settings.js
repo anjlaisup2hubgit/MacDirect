@@ -40,6 +40,9 @@
     '<section class="admin-feedback" hidden>' +
       `<h3>${t('Feedback')}</h3><ul class="card-list"></ul>` +
       `<p class="empty-msg" role="status" hidden>${t('No feedback yet.')}</p></section>` +
+    '<section class="admin-usage" hidden>' +
+      `<h3>${t('Usage')}</h3><ul class="usage-list"></ul>` +
+      `<div class="card-actions"><button type="button" class="follow-btn" data-csv>${t('Download CSV')}</button></div></section>` +
     '<div class="tab-panel" data-panel="data" hidden>' +
     '<section class="privacy-box">' +
       `<h3>${t('Your data')}</h3>` +
@@ -357,6 +360,30 @@
   });
   auth.onChange(renderFeedback);
   auth.ready.then(renderFeedback);
+  // Admin usage totals (no personal data) with a CSV download for the report.
+  const usageBox = p.results.querySelector('.admin-usage');
+  const USAGE_LABELS = { users: 'Accounts', follows: 'Society follows', events: 'Events posted', going: 'Going responses', plans: 'Private plans', route_helpful: 'Routes rated helpful', route_not_helpful: 'Routes rated not helpful' };
+  let usage = null;
+  async function renderUsage() {
+    const isAdmin = !!(auth.profile && auth.profile.role === 'admin');
+    usageBox.hidden = !isAdmin;
+    if (!isAdmin) return;
+    usage = await auth.adminUsage();
+    usageBox.hidden = !usage;
+    if (!usage) return;
+    usageBox.querySelector('.usage-list').innerHTML = Object.keys(USAGE_LABELS).map((k) => `<li>${esc(t(USAGE_LABELS[k]))}: ${esc(String(usage[k]))}</li>`).join('');
+  }
+  usageBox.querySelector('[data-csv]').addEventListener('click', () => {
+    if (!usage) return;
+    const csv = 'measure,count\r\n' + Object.keys(USAGE_LABELS).map((k) => `${USAGE_LABELS[k]},${usage[k]}`).join('\r\n') + '\r\n';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = 'macdirect-usage.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  auth.onChange(renderUsage);
+  auth.ready.then(renderUsage);
   auth.onChange(renderRequests);
   auth.ready.then(renderRequests);
   auth.onChange(renderAccount);

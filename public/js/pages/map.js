@@ -424,6 +424,23 @@ api('/map').then((data) => {
           card.appendChild(first);
           card.appendChild(list);
         }
+        // One tap rating, stored anonymously (no location, no account) so the trial has real usage data.
+        const rate = document.createElement('p');
+        rate.className = 'route-credit route-rate';
+        rate.append(document.createTextNode(t('Was this route helpful?') + ' '));
+        [[true, 'Yes'], [false, 'No']].forEach(([val, label]) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'follow-btn';
+          b.textContent = t(label);
+          b.addEventListener('click', async () => {
+            await auth.ready;
+            const { error } = await auth.sendRouteRating(val, preferLit);
+            rate.textContent = error ? t('Could not save.') : t('Thank you.');
+          });
+          rate.append(b);
+        });
+        card.appendChild(rate);
         document.body.appendChild(card);
         // Keep the X on the card's top right corner, also when the steps list opens.
         new ResizeObserver(() => {

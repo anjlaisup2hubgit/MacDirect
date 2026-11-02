@@ -257,10 +257,13 @@ const auth = (function () {
     async listEvents() {
       const cols = 'id, society_id, title, category, event_date, event_time, building, description';
       const order = (q) => q.order('event_date').order('event_time');
-      let { data, error } = await order(state.sb.from('events').select(cols + ', image_path, eco_tags, cancelled'));
-      if (error) ({ data, error } = await order(state.sb.from('events').select(cols + ', image_path, eco_tags'))); // cancelled column not added yet
-      if (error) ({ data, error } = await order(state.sb.from('events').select(cols + ', image_path'))); // eco_tags column not added yet
-      if (error) ({ data, error } = await order(state.sb.from('events').select(cols))); // image_path column not added yet
+      // Optional columns were added over time; drop the newest one until the query works (SQL not run yet).
+      const extras = ['image_path', 'eco_tags', 'cancelled', 'meeting_note'];
+      let { data, error } = await order(state.sb.from('events').select([cols, ...extras].join(', ')));
+      while (error && extras.length) {
+        extras.pop();
+        ({ data, error } = await order(state.sb.from('events').select([cols, ...extras].join(', '))));
+      }
       if (error) throw error;
       return data.map((e) => {
         const [h, m] = e.event_time ? e.event_time.split(':').map(Number) : [null, null];
@@ -269,7 +272,7 @@ const auth = (function () {
           timeValue: e.event_time ? e.event_time.slice(0, 5) : '',
           time: h === null ? '' : `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`,
           building: this.fullBuildingName(e.building) || 'TBC', description: e.description,
-          imageUrl: e.image_path ? posterUrl(e.image_path) : '', ecoTags: e.eco_tags || [], cancelled: !!e.cancelled,
+          imageUrl: e.image_path ? posterUrl(e.image_path) : '', ecoTags: e.eco_tags || [], cancelled: !!e.cancelled, meetingNote: e.meeting_note || '',
         };
       });
     },
@@ -286,6 +289,24 @@ const auth = (function () {
       data.forEach((r) => { if (!last[r.society_id] || r.created_at > last[r.society_id]) last[r.society_id] = r.created_at; });
       return last;
     },
+    // { societyId: number of followers } for the society cards. Empty if the SQL function is missing.
+    async societyFollowerCounts() {
+      const { data, error } = await state.sb.rpc('society_follower_counts');
+      if (error) return {};
+      const out = {};
+      data.forEach((r) => { out[r.society_id] = Number(r.followers); });
+      return out;
+    },
+    // Anonymous "was this route helpful" answer from the route card.
+    async sendRouteRating(helpful, lit) {
+      const { error } = await state.sb.from('route_feedback').insert({ helpful, lit });
+      return { error };
+    },
+    // Admin only: totals for the Usage section of Settings (null for anyone else or before the SQL runs).
+    async adminUsage() {
+      const { data, error } = await state.sb.rpc('admin_usage');
+      return error ? null : data;
+    },
     // `ev` uses the form fields; pass `id` to update an existing event.
     // `file` is an optional poster image; `ev.removeImage` drops the current one.
     async saveEvent(ev, file) {
@@ -294,6 +315,7 @@ const auth = (function () {
         event_time: ev.time || null, building: ev.building || null, description: ev.description,
       };
       if (ev.ecoTags) row.eco_tags = ev.ecoTags;
+      if (ev.meetingNote || ev.hadMeetingNote) row.meeting_note = ev.meetingNote || null; // only touched when used, so it works before the SQL runs
       const bucket = state.sb.storage.from('society-images');
       let path = null;
       if (file) {

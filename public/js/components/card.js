@@ -55,23 +55,26 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCardM
 
 // "Last event posted ..." under a society's description, so out-of-date societies are easy to spot.
 // `last` is undefined while unknown, null when the society has never posted, or an ISO date.
-function freshnessLine(last) {
-  if (last === undefined) return '';
-  if (!last) return `<p class="society-fresh">${t('No events posted yet')}</p>`;
-  const days = Math.floor((Date.now() - new Date(last).getTime()) / 86400000);
-  return `<p class="society-fresh">${t('Last event posted')} ${esc(formatDate(last.slice(0, 10)))}` +
-    (days > 90 ? ` &middot; ${t('No new events in 90 days')}` : '') + '</p>';
+function freshnessLine(last, followers) {
+  const parts = [];
+  if (last === null) parts.push(t('No events posted yet'));
+  else if (last) {
+    const days = Math.floor((Date.now() - new Date(last).getTime()) / 86400000);
+    parts.push(`${t('Last event posted')} ${esc(formatDate(last.slice(0, 10)))}` + (days > 90 ? ` &middot; ${t('No new events in 90 days')}` : ''));
+  }
+  if (followers) parts.push(`${followers} ${t(followers === 1 ? 'follower' : 'followers')}`);
+  return parts.length ? `<p class="society-fresh">${parts.join(' &middot; ')}</p>` : '';
 }
 
-function societyCard(s, following, imageUrl, last) {
+function societyCard(s, following, imageUrl, last, followers) {
   return `<li class="card card-society" data-id="${s.id}" tabindex="0">` +
     (imageUrl ? `<img class="society-cover" src="${esc(imageUrl)}" alt="${esc(s.name)}" loading="lazy">` : coverDiv(s.name)) +
     `<div class="card-body"><h2 title="${esc(s.name)}">${esc(s.name)}</h2>` +
-    `<p>${esc(s.description)}</p>` + freshnessLine(last) +
+    `<p>${esc(s.description)}</p>` + freshnessLine(last, followers) +
     `<div class="card-foot">${hashtagLine(s)}` +
     (typeof s.id === 'number' ? `<button type="button" class="follow-btn${following ? ' following' : ''}" data-follow>${t(following ? 'Following' : 'Follow')}</button>` : '') +
     '</div>' +
-    cardMenu([['data-map', 'Show on map']]) + '</div></li>';
+    cardMenu([['data-map', 'Show on map'], ['data-join', 'How to join'], ['data-similar', 'Similar societies']]) + '</div></li>';
 }
 
 // Society transparency: who leads a society and how to contact them. `leaders` is an array of names.
@@ -175,7 +178,10 @@ function downloadIcs(ev) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-const ECO_TAGS = { cup: 'Bring your own cup', plant: 'Plant-based food' };
+const ECO_TAGS = {
+  cup: 'Bring your own cup', plant: 'Plant-based food', quiet: 'Quiet or low-sensory', alcohol: 'Alcohol-free',
+  halal: 'Halal', vegetarian: 'Vegetarian', first: 'First-years welcome',
+};
 
 function ecoTagLine(e) {
   const tags = (e.ecoTags || []).filter((k) => ECO_TAGS[k]);
@@ -215,6 +221,22 @@ function leaveByLine(e) {
   return `<p class="event-access">${t('Leave the station by')} ${h % 12 || 12}:${String(total % 60).padStart(2, '0')}${h < 12 ? 'am' : 'pm'} (${t('about')} ${mins} ${t('min walk')})</p>`;
 }
 
+// Nearest drinking water to the venue, from the map data events.js loads (window.venueDrink).
+function waterLine(e) {
+  const d = window.venueDrink && window.venueDrink[e.building];
+  if (!d) return '';
+  const dist = d.metres < 20 ? t('Right next to this building') : `${t('About')} ${Math.round(d.metres / 10) * 10} m ${t('away')}`;
+  return `<p class="event-access">${t('Nearest water')}: ${t(d.label)}, ${dist}</p>`;
+}
+
+// For events that start at 5 pm or later: the real Campus Security escort and shuttle (students.mq.edu.au safety page).
+function eveningInfo(e) {
+  const hour = Number((e.timeValue || '').slice(0, 2));
+  if (!e.timeValue || hour < 17 || e.cancelled) return '';
+  return `<p class="event-access">${t('After dark, Campus Security can walk you to the station, bus stops or car parks: +61 2 9850 7112. A free shuttle bus runs Monday to Friday, 4 pm to 12.30 am, during session.')}</p>` +
+    (navigator.share ? `<div class="card-actions"><button type="button" class="follow-btn" data-share>${t('Share my walk home')}</button></div>` : '');
+}
+
 // Walk there, plus a lit route to the station for events that start at 5 pm or later.
 function eventWalkLinks(e) {
   if (!e.building || e.building === 'TBC') return '';
@@ -231,7 +253,8 @@ function eventCard(e) {
     `<div class="card-body"><span class="card-tag">${esc(e.category)}</span>` + (e.cancelled ? ` <span class="card-tag cancelled-tag">${t('Cancelled')}</span>` : '') +
     `<h2 title="${esc(e.name)}">${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
-    `<p>${esc(e.description)}</p>` + ecoTagLine(e) + venueAccessLine(e) + leaveByLine(e) + eventWalkLinks(e) +
+    `<p>${esc(e.description)}</p>` + ecoTagLine(e) + (e.meetingNote ? `<p class="event-access">${t('Meeting spot')}: ${esc(e.meetingNote)}</p>` : '') +
+    venueAccessLine(e) + waterLine(e) + leaveByLine(e) + eventWalkLinks(e) + eveningInfo(e) +
     (e.mine || e.cancelled ? '' : `<div class="card-actions"><button type="button" class="follow-btn" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? t('Going') : t("I'm going")}</button>` +
       `<span class="event-going">${e.goingCount ? e.goingCount + ' ' + t('going') : ''}</span></div>`) +
     `<p class="card-actions-label">${t('Add to calendar')}</p>` +

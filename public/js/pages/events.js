@@ -151,6 +151,17 @@
     return true;
   }
 
+  // Share my walk home: hands a short message to the phone's share sheet; true if it handled the click.
+  async function shareAction(e, list) {
+    const btn = e.target.closest('[data-share]');
+    if (!btn) return false;
+    const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
+    if (!ev) return true;
+    const text = `${t('I am going to')} ${ev.name} (${ev.building}, ${formatDate(ev.date)} ${ev.time}). ${t('Please check in with me when it ends.')}`;
+    try { await navigator.share({ title: ev.name, text }); } catch (err) { /* cancelled or not allowed */ }
+    return true;
+  }
+
   // Cancel or restore a society event (leaders only); true if it handled the click.
   async function cancelAction(e, list) {
     const btn = e.target.closest('[data-cancel]');
@@ -185,7 +196,7 @@
 
   agendaEl.addEventListener('click', async (e) => {
     if (e.target.closest('a')) return; // Walk there links navigate on their own
-    if (calendarAction(e, agendaEvents) || await goingAction(e, agendaEvents) || await cancelAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await postPlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
+    if (calendarAction(e, agendaEvents) || await shareAction(e, agendaEvents) || await goingAction(e, agendaEvents) || await cancelAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await postPlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = agendaEvents[[...agendaEl.querySelectorAll('.card')].indexOf(el)];
@@ -212,7 +223,7 @@
   });
   listEl.addEventListener('click', async (e) => {
     if (e.target.closest('a')) return;
-    if (calendarAction(e, dayEvents) || await goingAction(e, dayEvents) || await cancelAction(e, dayEvents) || await removePlan(e, dayEvents) || await postPlan(e, dayEvents) || await leaderAction(e, dayEvents)) return;
+    if (calendarAction(e, dayEvents) || await shareAction(e, dayEvents) || await goingAction(e, dayEvents) || await cancelAction(e, dayEvents) || await removePlan(e, dayEvents) || await postPlan(e, dayEvents) || await leaderAction(e, dayEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;
     const ev = dayEvents[[...listEl.children].indexOf(el)];
@@ -245,7 +256,15 @@
       const data = await fetch('/api/map').then((r) => r.json());
       window.venueAccess = {};
       venueIds = {};
-      data.features.forEach((f) => { if (f.properties && f.properties.name) { window.venueAccess[f.properties.name] = f.properties.accessibility || null; venueIds[f.properties.name] = f.id; } });
+      window.venueDrink = {};
+      data.features.forEach((f) => {
+        if (!f.properties || !f.properties.name) return;
+        window.venueAccess[f.properties.name] = f.properties.accessibility || null;
+        venueIds[f.properties.name] = f.id;
+        const d = f.properties.drink;
+        const near = d && [['tapit', 'Tap It refill tower'], ['fountain', 'Drinking fountain']].filter(([k]) => d[k]).map(([k, label]) => ({ label, metres: d[k].metres })).sort((a, b) => a.metres - b.metres)[0];
+        if (near) window.venueDrink[f.properties.name] = near;
+      });
       venueLoaded = true;
     } catch (err) { console.error(err); }
   }
