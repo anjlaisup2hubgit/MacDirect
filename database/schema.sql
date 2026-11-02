@@ -1,4 +1,4 @@
--- iMCQ schema for Supabase (Postgres). Run once on a fresh project in the SQL editor,
+-- MacDirect schema for Supabase (Postgres). Run once on a fresh project in the SQL editor,
 -- then run seed.sql. Row-level security decides who can read and write each table.
 
 -- Tables ---------------------------------------------------------------------

@@ -43,7 +43,7 @@
     '<div class="tab-panel" data-panel="data" hidden>' +
     '<section class="privacy-box">' +
       `<h3>${t('Your data')}</h3>` +
-      `<p class="privacy-guest">${t('You are browsing as a guest. iMCQ stores only your language choice and your guest choice in this browser. We do not store your location.')}</p>` +
+      `<p class="privacy-guest">${t('You are browsing as a guest. MacDirect stores only your language choice and your guest choice in this browser. We do not store your location.')}</p>` +
       '<ul class="privacy-list" hidden></ul>' +
       '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</section>' +
@@ -55,7 +55,7 @@
     '<div class="tab-panel" data-panel="contact" hidden>' +
     '<section class="contact-box">' +
       `<h3>${t('Need help?')}</h3>` +
-      `<p>${t('For stress, health or wellbeing, Macquarie\'s student support team can help. The iMCQ developers cannot give personal advice.')}</p>` +
+      `<p>${t('For stress, health or wellbeing, Macquarie\'s student support team can help. The MacDirect developers cannot give personal advice.')}</p>` +
       `<p class="help-link"><a href="https://students.mq.edu.au/support/personal/wellbeing" target="_blank" rel="noopener">${t('Macquarie student wellbeing support')}</a></p>` +
     '</section>' +
     '<section class="contact-box">' +
@@ -226,7 +226,7 @@
       const data = await auth.exportMyData();
       const a = document.createElement('a');
       a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
-      a.download = 'imcq-my-data.json';
+      a.download = 'macdirect-my-data.json';
       a.click();
       URL.revokeObjectURL(a.href);
       privacyMsg.classList.remove('error');

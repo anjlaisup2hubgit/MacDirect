@@ -1,12 +1,12 @@
 {
-  "name": "imcq",
+  "name": "macdirect",
   "version": "0.1.0",
   "private": true,
   "license": "UNLICENSED",
   "engines": {
     "node": ">=20.6"
   },
-  "description": "iMCQ: interactive Macquarie University campus map",
+  "description": "MacDirect: interactive Macquarie University campus map",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

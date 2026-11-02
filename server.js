@@ -133,4 +133,4 @@ app.get('/api/societies', (req, res) => {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(PORT, () => console.log(`iMCQ running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`MacDirect running at http://localhost:${PORT}`));

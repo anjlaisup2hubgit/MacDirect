@@ -176,7 +176,7 @@ function selectBuilding(id, label) {
   const p = selected.feature.properties;
   const c = selected.getBounds().getCenter();
   const here = societies.filter((s) => s.building === p.name);
-  document.title = p.name + ' · iMCQ';
+  document.title = p.name + ' · MacDirect';
   panel.innerHTML =
     '<div class="building-panel-head">' +
       '<div class="building-panel-handle"></div>' +
@@ -208,7 +208,7 @@ function selectBuilding(id, label) {
 function clearSelection() {
   if (selected) selected.setStyle(idleStyle);
   selected = null;
-  document.title = 'iMCQ';
+  document.title = 'MacDirect';
   panel.classList.remove('open');
   panel.style.transform = '';
 }

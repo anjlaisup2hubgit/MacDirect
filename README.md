@@ -1,12 +1,12 @@
-# iMCQ - Macquarie University campus map
+# MacDirect - Macquarie University campus map
 
-iMCQ is a mobile-first campus map for Macquarie University students. It shows buildings, lets students find and follow societies. Leader event posting is paused and currently has no UI (`auth.saveEvent`/`deleteEvent` remain, unused).
+MacDirect is a mobile-first campus map for Macquarie University students. It shows buildings, lets students find and follow societies. Leader event posting is paused and currently has no UI (`auth.saveEvent`/`deleteEvent` remain, unused).
 
 Current progress and the next task live in [CHANGELOG.md](CHANGELOG.md).
 
-**Disclaimer:** iMCQ is an unofficial student project. It is not affiliated with or endorsed by Macquarie University. "Macquarie" and its logos belong to the university.
+**Disclaimer:** MacDirect is an unofficial student project. It is not affiliated with or endorsed by Macquarie University. "Macquarie" and its logos belong to the university.
 
-**Licence:** Copyright (c) 2026 the iMCQ developers. All rights reserved. See [LICENSE](LICENSE).
+**Licence:** Copyright (c) 2026 the MacDirect developers. All rights reserved. See [LICENSE](LICENSE).
 
 **Data credits:** map data and building outlines are from OpenStreetMap, © OpenStreetMap contributors, available under the [ODbL](https://opendatacommons.org/licenses/odbl/1-0/). `data/map.geojson` is a derived database and stays under the ODbL.
 
