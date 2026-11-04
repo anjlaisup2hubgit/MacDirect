@@ -255,7 +255,7 @@ const auth = (function () {
   },
   // Events in the shape the UI uses; `time` is display text, `timeValue` is HH:MM for forms.
     async listEvents() {
-      const cols = 'id, society_id, title, category, event_date, event_time, building, description';
+      const cols = 'id, society_id, title, category, event_date, event_time, building, description, created_at';
       const order = (q) => q.order('event_date').order('event_time');
       // Optional columns were added over time; drop the newest one until the query works (SQL not run yet).
       const extras = ['image_path', 'eco_tags', 'cancelled', 'meeting_note'];
@@ -268,7 +268,7 @@ const auth = (function () {
       return data.map((e) => {
         const [h, m] = e.event_time ? e.event_time.split(':').map(Number) : [null, null];
         return {
-          id: e.id, societyId: e.society_id, name: e.title, category: e.category, date: e.event_date,
+          id: e.id, societyId: e.society_id, name: e.title, category: e.category, date: e.event_date, createdAt: e.created_at || '',
           timeValue: e.event_time ? e.event_time.slice(0, 5) : '',
           time: h === null ? '' : `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`,
           building: this.fullBuildingName(e.building) || 'TBC', description: e.description,
@@ -283,6 +283,7 @@ const auth = (function () {
     },
     // { societyId: date of its newest event post } for the "last event" line on society cards. Empty if the query fails.
     async societyActivity() {
+      if (!state.sb) return {};
       const { data, error } = await state.sb.from('events').select('society_id, created_at').not('society_id', 'is', null);
       if (error) return {};
       const last = {};
@@ -291,6 +292,7 @@ const auth = (function () {
     },
     // { societyId: number of followers } for the society cards. Empty if the SQL function is missing.
     async societyFollowerCounts() {
+      if (!state.sb) return {};
       const { data, error } = await state.sb.rpc('society_follower_counts');
       if (error) return {};
       const out = {};

@@ -131,6 +131,12 @@ app.get('/api/config', (req, res) => res.json({
   supabaseKey: process.env.SUPABASE_PUBLISHABLE_KEY || null,
 }));
 app.use('/api/food', require('./routes/food'));
+const askBuildings = buildings.features.map((f) => {
+  const source = raw.features.find((item) => item.id === f.id);
+  const also = source && source.properties && source.properties.old_name;
+  return { name: f.properties.name, also: also || null };
+});
+app.post('/api/ask', express.json({ limit: '8kb' }), require('./routes/ask').askHandler(askBuildings));
 app.get('/api/societies', (req, res) => {
   const file = path.join(__dirname, 'data', 'societies.json');
   res.json(JSON.parse(fs.readFileSync(file, 'utf8')));

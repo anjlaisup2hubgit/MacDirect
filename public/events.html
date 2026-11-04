@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Events · MacDirect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,650&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main id="events-board" class="societies-popup">
+    <div class="popup-island">
+      <div class="popup-head">
+        <h1>Events</h1>
+        <a class="popup-close" href="/" aria-label="Map">&larr;</a>
+      </div>
+      <button type="button" class="form-submit create-event-btn" id="create-event">Create an event (Society leaders and execs only)</button>
+      <p class="form-msg" id="create-note" hidden></p>
+      <div class="list-toolbar">
+        <input class="page-search" type="search" placeholder="Search by society, date or location" aria-label="Search by society, date or location" autocomplete="off">
+      </div>
+    </div>
+    <div class="popup-results">
+      <ul class="card-list"></ul>
+      <p class="empty-msg" role="status" hidden>No events found.</p>
+    </div>
+  </main>
+  <nav id="nav-mount"></nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
+  <script src="js/lib/i18n.js"></script>
+  <script src="js/lib/auth.js"></script>
+  <script src="js/lib/api.js"></script>
+  <script src="js/components/nav.js"></script>
+  <script src="js/components/card.js"></script>
+  <script src="js/pages/events-list.js"></script>
+</body>
+</html>

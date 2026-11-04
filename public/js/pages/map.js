@@ -239,6 +239,7 @@ function openBuilding(feature, label) {
   const q = new URLSearchParams({ id: feature.id });
   if (label) q.set('label', label);
   if (new URLSearchParams(location.search).get('directions')) { location.href = '/?' + q.toString(); return; }
+  if (window.clearChatWalk) window.clearChatWalk();
   const url = '/?' + q.toString();
   if (history.state && history.state.building) history.replaceState({ building: feature.id }, '', url);
   else history.pushState({ building: feature.id }, '', url);
@@ -252,6 +253,7 @@ function showBuilding(id, label) {
 }
 
 function closeBuilding() {
+  if (window.clearChatWalk) window.clearChatWalk();
   if (history.state && history.state.building) history.back(); // popstate clears the panel
   else {
     clearSelection();
@@ -314,7 +316,7 @@ api('/map').then((data) => {
     },
   }).addTo(map);
 
-  initSearchBar(data.features, (f) => openBuilding(f));
+  initSearchBar(data.features, (f) => openBuilding(f), (q) => window.askMcqai && window.askMcqai(q));
 
   allFeatures = data.features;
   window.focusBuildingByName = (name, label) => {
@@ -328,37 +330,62 @@ api('/map').then((data) => {
   const linked = wanted.get('directions') ? null : featureFromQuery(wanted);
   if (linked) showBuilding(linked.id, wanted.get('label'));
 
-  const askedRoute = new URLSearchParams(location.search).get('directions');
-  const askedWater = new URLSearchParams(location.search).get('water'); // a drink point index: route from the building to it
-  if (askedRoute) {
-    const feature = data.features.find((f) => String(f.id) === askedRoute) || data.features.find((f) => f.properties.name === askedRoute); // an event passes the building name
-    const layer = feature && layers.get(feature.id);
-    if (layer) {
-      layer.setStyle(outlineStyle);
-      layer.bringToFront();
-      const routeLine = { lineCap: 'round', lineJoin: 'round', opacity: 1 };
-      let preferLit = false;
-      try { preferLit = localStorage.getItem('imcq-prefer-lit') === '1'; } catch (e) { /* storage blocked */ }
-      const askedLit = new URLSearchParams(location.search).get('lit') === '1'; // "lit route home" from an evening event
-      if (askedLit) preferLit = true;
-      let casing = null;
-      let line = null;
-      let card = null;
+  let activeWalk = null;
+  let walkStay = false;
 
-      // Leave directions: back to the plain map with this building's panel open.
-      const exit = document.createElement('button');
-      exit.type = 'button';
-      exit.className = 'route-exit';
-      exit.setAttribute('aria-label', t('Close'));
-      exit.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
-      exit.addEventListener('click', () => { location.href = '/?id=' + encodeURIComponent(feature.id); });
+  // stay: the chat drew this walk, so closing it must not reload the page.
+  function startWalk(feature, askedWater, askedLit, stay) {
+    const layer = layers.get(feature.id);
+    if (!layer) return Promise.resolve(null);
+    if (activeWalk) activeWalk.destroy();
+    walkStay = !!stay;
+    layer.setStyle(outlineStyle);
+    layer.bringToFront();
+    const routeLine = { lineCap: 'round', lineJoin: 'round', opacity: 1 };
+    let preferLit = false;
+    try { preferLit = localStorage.getItem('imcq-prefer-lit') === '1'; } catch (e) { /* storage blocked */ }
+    if (askedLit) preferLit = true;
+    let casing = null;
+    let line = null;
+    let card = null;
+    let hereMarker = null;
+    let waterMarker = null;
+    let failNote = null;
+    let observer = null;
+    let dead = false;
+    let finish = () => {};
+
+    const exit = document.createElement('button');
+    exit.type = 'button';
+    exit.className = 'route-exit';
+    exit.setAttribute('aria-label', t('Close'));
+    exit.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+    const destroy = () => {
+      if (dead) return;
+      dead = true;
+      if (observer) observer.disconnect();
+      exit.remove();
+      if (line) { map.removeLayer(casing); map.removeLayer(line); }
+      if (card) card.remove();
+      if (hereMarker) map.removeLayer(hereMarker);
+      if (waterMarker) map.removeLayer(waterMarker);
+      if (failNote) failNote.remove();
+      layer.setStyle(idleStyle);
+      if (activeWalk && activeWalk.destroy === destroy) activeWalk = null;
+    };
+    activeWalk = { destroy };
+    exit.addEventListener('click', () => {
+      if (stay) { destroy(); walkStay = false; }
+      else location.href = '/?id=' + encodeURIComponent(feature.id);
+    });
       let waterSpot = null;
       if (askedWater !== null) {
         api('/drink').then((all) => {
           const w = all[Number(askedWater)];
           if (!w) return;
+          if (dead) return;
           waterSpot = w.kind === 'tapit' ? t('the Tap It tower') : t('the drinking fountain');
-          L.circleMarker([w.lat, w.lng], { radius: 8, color: '#fff', weight: 3, fillColor: '#1d6fe8', fillOpacity: 1 }).addTo(map).bindTooltip(waterSpot.replace(/^the /, ''), { permanent: true, direction: 'top', offset: [0, -8] });
+          waterMarker = L.circleMarker([w.lat, w.lng], { radius: 8, color: '#fff', weight: 3, fillColor: '#1d6fe8', fillOpacity: 1 }).addTo(map).bindTooltip(waterSpot.replace(/^the /, ''), { permanent: true, direction: 'top', offset: [0, -8] });
         }).catch(() => {});
       }
       document.body.appendChild(exit);
@@ -459,14 +486,15 @@ api('/map').then((data) => {
         card.appendChild(rate);
         document.body.appendChild(card);
         // Keep the X on the card's top right corner, also when the steps list opens.
-        new ResizeObserver(() => {
+        if (observer) observer.disconnect();
+        observer = new ResizeObserver(() => {
           exit.style.bottom = `calc(var(--nav-height) + 8px + ${card.offsetHeight}px + 8px)`;
-        }).observe(card);
+        });
+        observer.observe(card);
       }
 
       // Drink point walks start where the user is. here: undefined = not asked yet, null = not available.
       let here;
-      let hereMarker = null;
       let startNote = '';
       function findMe() {
         return new Promise((resolve) => {
@@ -487,6 +515,7 @@ api('/map').then((data) => {
           document.body.appendChild(wait);
           here = await findMe();
           wait.remove();
+          if (dead) return null;
         }
         if (here) {
           const res = await fetch('/api/route-from', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ water: Number(askedWater), lat: here.lat, lng: here.lng, night: preferLit }) });
@@ -504,16 +533,37 @@ api('/map').then((data) => {
 
       function loadRoute(firstTime) {
         fetchRoute().then((route) => {
+          if (dead || !route) { if (firstTime) finish(null); return; }
           showRoute(route, firstTime);
+          if (firstTime) finish(route);
         }).catch(() => {
-          if (card) return;
-          const note = document.createElement('p');
-          note.className = 'route-note';
-          note.textContent = askedWater !== null ? t('No walking route found.') : t('No walking route from the station.');
-          document.body.appendChild(note);
+          if (card) { if (firstTime) finish(null); return; }
+          failNote = document.createElement('p');
+          failNote.className = 'route-note';
+          failNote.textContent = askedWater !== null ? t('No walking route found.') : t('No walking route from the station.');
+          document.body.appendChild(failNote);
+          if (firstTime) finish(null);
         });
       }
-      loadRoute(true);
-    }
+      return new Promise((resolve) => { finish = resolve; loadRoute(true); });
   }
+
+  window.clearChatWalk = () => {
+    if (walkStay && activeWalk) activeWalk.destroy();
+    walkStay = false;
+  };
+
+  const askedRoute = new URLSearchParams(location.search).get('directions');
+  const askedWater = new URLSearchParams(location.search).get('water'); // a drink point index: route from the building to it
+  if (askedRoute) {
+    const feature = data.features.find((f) => String(f.id) === askedRoute) || data.features.find((f) => f.properties.name === askedRoute); // an event passes the building name
+    const askedLit = new URLSearchParams(location.search).get('lit') === '1'; // "lit route home" from an evening event
+    if (feature) startWalk(feature, askedWater, askedLit, false);
+  }
+  window.showStationWalk = (name) => {
+    const feature = allFeatures.find((f) => f.properties.name === name);
+    if (!feature) return Promise.resolve(null);
+    clearSelection();
+    return startWalk(feature, null, false, true);
+  };
 }).catch((err) => console.error(err));

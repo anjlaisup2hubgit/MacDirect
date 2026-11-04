@@ -72,7 +72,7 @@
 
     dayEvents = events[selected] || [];
     dayTitleEl.textContent = formatDate(selected);
-    listEl.innerHTML = dayEvents.map((e) => eventCard(e)).join('');
+    listEl.innerHTML = dayEvents.map((e) => eventCard(e, { calendar: true })).join('');
     nudgeEl.innerHTML = restNote(dayEvents.length);
 
     agendaEvents = [];

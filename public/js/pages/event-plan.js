@@ -240,11 +240,11 @@
     renderCover();
   }
   gate.querySelector('button').addEventListener('click', () => { location.href = '/login.html'; });
-  // Only approved society leaders use this page; everyone else goes back to the map.
+  // Only approved society leaders use this page; everyone else goes to the events list.
   let loaded = false;
   const leadersOnly = () => {
     if (auth.user && auth.approvedSocieties.length) return true;
-    location.replace('/');
+    location.replace('/events.html');
     return false;
   };
   auth.onChange(() => { if (!loaded || leadersOnly()) renderGate(); });

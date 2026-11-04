@@ -1,12 +1,13 @@
 // Builds a full page (header plus scrolling body) in the phone column. The header link returns to the map.
-function createPopup({ id, title, navHref, searchPlaceholder }) {
+function createPopup({ id, title, navHref, searchPlaceholder, backHref }) {
   const popup = document.createElement('main');
   popup.id = id;
   popup.className = 'societies-popup';
+  const back = backHref || '/';
   popup.innerHTML =
     '<div class="popup-island">' +
       `<div class="popup-head"><h1>${esc(t(title))}</h1>` +
-      `<a class="popup-close" href="/" aria-label="${esc(t('Map'))}">&larr;</a></div>` +
+      `<a class="popup-close" href="${esc(back)}" aria-label="${esc(backHref ? t('Events') : t('Map'))}">&larr;</a></div>` +
       (searchPlaceholder
         ? `<input class="page-search" type="search" placeholder="${esc(searchPlaceholder)}" aria-label="${esc(searchPlaceholder)}" autocomplete="off">` +
           `<div class="chips" role="group" aria-label="${esc(t('Filter by category'))}"></div>`

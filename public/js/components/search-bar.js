@@ -90,6 +90,7 @@ function initSearchBar(features, onSelect, onAsk) {
   };
   const ask = (q) => {
     list.innerHTML = '';
+    input.value = '';
     if (onAsk) Promise.resolve(onAsk(q)).then((answer) => answer && showPanel(answer));
   };
 
