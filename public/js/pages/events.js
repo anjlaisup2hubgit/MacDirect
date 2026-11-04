@@ -72,14 +72,14 @@
 
     dayEvents = events[selected] || [];
     dayTitleEl.textContent = formatDate(selected);
-    listEl.innerHTML = dayEvents.map((e) => eventCard(e)).join('');
+    listEl.innerHTML = dayEvents.map((e) => eventCard(e, { calendar: true })).join('');
     nudgeEl.innerHTML = restNote(dayEvents.length);
 
     agendaEvents = [];
     let agenda = '';
     Object.keys(events).sort().forEach((key) => {
       agenda += `<h2 class="cal-day-title">${esc(formatDate(key))}</h2>${restNote(events[key].length)}<ul class="card-list">` +
-        events[key].map((e) => { agendaEvents.push(e); return eventCard(e); }).join('') + '</ul>';
+        events[key].map((e) => { agendaEvents.push(e); return eventCard(e, { calendar: true }); }).join('') + '</ul>';
     });
     agendaEl.innerHTML = agenda || `<p class="empty-msg">${t('No events found.')}</p>`;
   }

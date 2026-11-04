@@ -247,13 +247,27 @@ function eventWalkLinks(e) {
     (evening ? `<a class="follow-btn" href="${base}&lit=1">${t('Lit route to the station')}</a>` : '') + '</div>';
 }
 
-function eventCard(e) {
-  return `<li class="card card-society${e.cancelled ? ' event-cancelled' : ''}" data-id="${e.id}" tabindex="0">` +
+function eventBox(label, text) {
+  return `<div class="event-box"><p class="event-box-label">${esc(label)}</p><p>${text}</p></div>`;
+}
+
+function eventCard(e, opts) {
+  const calendar = opts && opts.calendar;
+  const when = esc(formatDate(e.date)) + (e.time ? ' · ' + esc(e.time) : '');
+  const place = esc(e.building || '') + (e.meetingNote ? '. ' + esc(t('Meeting spot')) + ': ' + esc(e.meetingNote) : '');
+  const facts = calendar
+    ? `<div class="event-details">` +
+        eventBox(t('Date and time'), when) +
+        eventBox(t('Location'), place) +
+        (e.description ? eventBox(t('Description'), esc(e.description)) : '') +
+      `</div>`
+    : `<p>${when} &middot; ${esc(e.building)}</p><p>${esc(e.description)}</p>` +
+      (e.meetingNote ? `<p class="event-access">${t('Meeting spot')}: ${esc(e.meetingNote)}</p>` : '');
+  return `<li class="card card-society${calendar ? ' cal-event' : ''}${e.cancelled ? ' event-cancelled' : ''}" data-id="${e.id}" tabindex="0">` +
     (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : coverDiv(e.name)) +
     `<div class="card-body"><span class="card-tag">${esc(e.category)}</span>` + (e.cancelled ? ` <span class="card-tag cancelled-tag">${t('Cancelled')}</span>` : '') +
     `<h2 title="${esc(e.name)}">${esc(e.name)}</h2>` +
-    `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
-    `<p>${esc(e.description)}</p>` + ecoTagLine(e) + (e.meetingNote ? `<p class="event-access">${t('Meeting spot')}: ${esc(e.meetingNote)}</p>` : '') +
+    facts + ecoTagLine(e) +
     venueAccessLine(e) + waterLine(e) + leaveByLine(e) + eventWalkLinks(e) + eveningInfo(e) +
     (e.mine || e.cancelled ? '' : `<div class="card-actions"><button type="button" class="follow-btn" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? t('Going') : t("I'm going")}</button>` +
       `<span class="event-going">${e.goingCount ? e.goingCount + ' ' + t('going') : ''}</span></div>`) +

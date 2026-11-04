@@ -2,7 +2,7 @@
 // Both can carry a photo and show up in the Calendar. Leaders also get an Edit events tab (edit or delete the events
 // they posted) and a Cover photo tab (cover image and hashtags).
 (function () {
-  const p = createPopup({ id: 'event-plan-popup', title: 'Event', navHref: '/event-plan.html' });
+  const p = createPopup({ id: 'event-plan-popup', title: 'Event', navHref: '/event-plan.html', backHref: '/events.html' });
   p.results.innerHTML =
     '<div class="account guest-gate" hidden>' +
       '<p>' + t('Log in to add event plans. Guests can browse everything but cannot save.') + '</p>' +
@@ -207,11 +207,11 @@
     renderCover();
   }
   gate.querySelector('button').addEventListener('click', () => { location.href = '/login.html'; });
-  // Only approved society leaders use this page; everyone else goes back to the map.
+  // Only approved society leaders use this page; everyone else goes to the events list.
   let loaded = false;
   const leadersOnly = () => {
     if (auth.user && auth.approvedSocieties.length) return true;
-    location.replace('/');
+    location.replace('/events.html');
     return false;
   };
   auth.onChange(() => { if (!loaded || leadersOnly()) renderGate(); });
