@@ -11,3 +11,12 @@ ink             on mq-red           4.52  normal PASS  large/shape PASS   ink on
 mq-red          on ink              4.52  normal PASS  large/shape PASS   pink on ink (large/shape)
 white           on gradient-end    13.47  normal PASS  large/shape PASS   white on gradient dark end
 ink             on gradient-start  10.07  normal PASS  large/shape PASS   ink on gradient light end
+
+--- deck pairs
+paper    on ink    16.87  PASS (any size)   slide 1 title; slides 2 and 4 bands; slide 5 target list
+wash     on ink    15.65  PASS (any size)   slide 1 subtitle
+ink      on paper  16.87  PASS (any size)   titles on slides 2-5
+ink      on wash   15.65  PASS (any size)   labels, bug cards, today list
+mq-red   on wash    3.46  PASS (large/shape only)   48-54pt numbers (large)
+mq-red   on ink     4.52  PASS (any size)   30pt bold heading (large); slide 1 phone frame shape
+ink      on mq-red  4.52  PASS (any size)   24pt bold step numbers on pink circles
