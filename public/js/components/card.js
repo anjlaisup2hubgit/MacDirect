@@ -211,14 +211,14 @@ function venueAccessLine(e) {
 }
 
 // "Leave the station by ..." for a timed event, from the walk time events.js worked out (window.venueWalk, minutes).
-function leaveByLine(e) {
+function leaveByText(e) {
   const mins = window.venueWalk && window.venueWalk[e.building];
   const m = /^(\d{2}):(\d{2})/.exec(e.timeValue || '');
   if (!mins || !m || e.cancelled) return '';
   const total = Number(m[1]) * 60 + Number(m[2]) - mins;
   if (total < 0) return '';
   const h = Math.floor(total / 60);
-  return `<p class="event-access">${t('Leave the station by')} ${h % 12 || 12}:${String(total % 60).padStart(2, '0')}${h < 12 ? 'am' : 'pm'} (${t('about')} ${mins} ${t('min walk')})</p>`;
+  return `${t('Leave the station by')} ${h % 12 || 12}:${String(total % 60).padStart(2, '0')}${h < 12 ? 'am' : 'pm'} (${t('about')} ${mins} ${t('min walk')})`;
 }
 
 // Nearest drinking water to the venue, from the map data events.js loads (window.venueDrink).
@@ -229,22 +229,24 @@ function waterLine(e) {
   return `<p class="event-access">${t('Nearest water')}: ${t(d.label)}, ${dist}</p>`;
 }
 
-// For events that start at 5 pm or later: the real Campus Security escort and shuttle (students.mq.edu.au safety page).
+// One Get directions button; the leave-by time sits inside it.
+function eventWalkLinks(e) {
+  if (!e.building || e.building === 'TBC') return '';
+  const leave = leaveByText(e);
+  return `<a class="follow-btn event-directions" href="/?directions=${encodeURIComponent(e.building)}">${t('Get directions')}` +
+    (leave ? `<small>${esc(leave)}</small>` : '') + '</a>';
+}
+
+// For events that start at 5 pm or later: the real Campus Security escort and shuttle (students.mq.edu.au safety page),
+// a lit route to the station and, where the phone can share, a message to a friend.
 function eveningInfo(e) {
   const hour = Number((e.timeValue || '').slice(0, 2));
   if (!e.timeValue || hour < 17 || e.cancelled) return '';
-  return `<p class="event-access">${t('After dark, Campus Security can walk you to the station, bus stops or car parks: +61 2 9850 7112. A free shuttle bus runs Monday to Friday, 4 pm to 12.30 am, during session.')}</p>` +
-    (navigator.share ? `<div class="card-actions"><button type="button" class="follow-btn" data-share>${t('Share my walk home')}</button></div>` : '');
-}
-
-// Walk there, plus a lit route to the station for events that start at 5 pm or later.
-function eventWalkLinks(e) {
-  if (!e.building || e.building === 'TBC') return '';
-  const base = '/?directions=' + encodeURIComponent(e.building);
-  const hour = Number((e.timeValue || '').slice(0, 2));
-  const evening = e.timeValue && hour >= 17;
-  return `<div class="card-actions"><a class="follow-btn" href="${base}">${t('Walk there')}</a>` +
-    (evening ? `<a class="follow-btn" href="${base}&lit=1">${t('Lit route to the station')}</a>` : '') + '</div>';
+  const links = (e.building && e.building !== 'TBC' ? `<a class="event-link" href="/?directions=${encodeURIComponent(e.building)}&lit=1">${t('Lit route to the station')}</a>` : '') +
+    (navigator.share ? `<button type="button" class="event-link" data-share>${t("Tell a friend I'm walking")}</button>` : '');
+  return `<p class="card-actions-label">${t('Walking home later?')}</p>` +
+    `<p class="event-access event-safety">${t('After dark, Campus Security can walk you to the station, bus stops or car parks: +61 2 9850 7112. A free shuttle bus runs Monday to Friday, 4 pm to 12.30 am, during session.')}</p>` +
+    (links ? `<div class="event-links">${links}</div>` : '');
 }
 
 function eventCard(e) {
@@ -254,12 +256,12 @@ function eventCard(e) {
     `<h2 title="${esc(e.name)}">${esc(e.name)}</h2>` +
     `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
     `<p>${esc(e.description)}</p>` + ecoTagLine(e) + (e.meetingNote ? `<p class="event-access">${t('Meeting spot')}: ${esc(e.meetingNote)}</p>` : '') +
-    venueAccessLine(e) + waterLine(e) + leaveByLine(e) + eventWalkLinks(e) + eveningInfo(e) +
-    (e.mine || e.cancelled ? '' : `<div class="card-actions"><button type="button" class="follow-btn" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? t('Going') : t("I'm going")}</button>` +
-      `<span class="event-going">${e.goingCount ? e.goingCount + ' ' + t('going') : ''}</span></div>`) +
-    `<p class="card-actions-label">${t('Add to calendar')}</p>` +
+    venueAccessLine(e) + waterLine(e) + eventWalkLinks(e) +
+    (e.mine || e.cancelled ? '' : `<div class="event-going-row"><span class="event-going">${e.goingCount ? e.goingCount + ' ' + t(e.goingCount === 1 ? 'person is going' : 'people are going') : ''}</span>` +
+      `<button type="button" class="follow-btn${e.going ? '' : ' following'}" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? t('Going') : t("I'm going")}</button></div>`) +
+    `<details class="event-cal"><summary class="event-link">${t('Add to calendar')}</summary>` +
     `<div class="card-actions" role="group" aria-label="${t('Add to calendar')}"><button type="button" class="follow-btn" data-gcal>${t('Google')}</button>` +
-      `<button type="button" class="follow-btn" data-ics>${t('Apple / Outlook')}</button></div>` +
+      `<button type="button" class="follow-btn" data-ics>${t('Apple / Outlook')}</button></div></details>` + eveningInfo(e) +
     (e.mine ? `<div class="card-actions"><button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` +
       (auth.user && auth.approvedSocieties.length ? `<button type="button" class="follow-btn" data-post>${t('Post')}</button>` : '') + '</div>' : '') +
     (e.canEdit ? `<div class="card-actions"><button type="button" class="follow-btn" data-edit>${t('Edit')}</button>` +

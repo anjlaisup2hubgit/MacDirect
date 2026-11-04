@@ -188,3 +188,6 @@ Steps 0-14 are done; steps 15, 16, 17, 19 and 20 are Partly (see their NOT check
 * Event times in Supabase are `time` values (`12:00:00`); the UI expects strings like `12:00pm`, so format when Step 6 lands.
 * If email confirmation is on in Supabase, sign-up needs a confirm-then-login round trip; the leader request is filed on first login from sign-up metadata.
 * `.claude/launch.json` server name is still `mcq-imap`.
+
+
+Event card redesign (4 Nov 2026): the card now has one Get directions button (leave-by time inside it), a count with a single I'm going button, Add to calendar as a link that opens Google / Apple, and a Walking home later? block (Campus Security text, lit route link, Tell a friend I'm walking). Nav bar unchanged. Checked with an injected example card as a guest; the logged-in I'm going save is not tested.

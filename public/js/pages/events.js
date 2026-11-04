@@ -195,7 +195,7 @@
   }
 
   agendaEl.addEventListener('click', async (e) => {
-    if (e.target.closest('a')) return; // Walk there links navigate on their own
+    if (e.target.closest('a, summary')) return; // direction links navigate and Add to calendar opens on their own
     if (calendarAction(e, agendaEvents) || await shareAction(e, agendaEvents) || await goingAction(e, agendaEvents) || await cancelAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await postPlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;

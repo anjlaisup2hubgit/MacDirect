@@ -447,6 +447,14 @@ button, input, select, textarea { font-family: inherit; }
 .follow-btn.following { background: #fff; color: var(--mq-red); border: 1px solid var(--mq-red); }
 .card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .card-actions .follow-btn { flex: 1 1 auto; }
+.event-directions { display: block; text-align: center; text-decoration: none; padding: 12px 16px; font-size: 16px; font-weight: 600; margin-top: 12px; }
+.event-directions small { display: block; font-size: 12px; font-weight: 400; }
+.event-going-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.event-going-row .follow-btn { margin: 0; }
+.event-link { display: inline-flex; align-items: center; margin: 0; min-height: 48px; padding: 0; border: 0; background: none; color: var(--mq-red); font: inherit; font-size: 14px; font-weight: 500; text-decoration: underline; cursor: pointer; }
+.event-cal summary { display: flex; align-items: center; justify-content: center; list-style: none; }
+.event-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 16px; }
+.card .event-safety { display: block; -webkit-line-clamp: unset; }
 .post-btn { margin: 0 0 12px; }
 .post-btn[hidden] { display: none; }
 .leader-form { margin-bottom: 16px; }
