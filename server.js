@@ -141,6 +141,10 @@ app.get('/api/societies', (req, res) => {
   const file = path.join(__dirname, 'data', 'societies.json');
   res.json(JSON.parse(fs.readFileSync(file, 'utf8')));
 });
+app.get('/api/events', (req, res) => {
+  const file = path.join(__dirname, 'data', 'events.json');
+  res.json(JSON.parse(fs.readFileSync(file, 'utf8')));
+});
 // Vendor files never change (the version is in their path); pages and our own code revalidate every time.
 app.use('/vendor', express.static(path.join(__dirname, 'public', 'vendor'), { maxAge: '1y', immutable: true }));
 app.use(express.static(path.join(__dirname, 'public')));
