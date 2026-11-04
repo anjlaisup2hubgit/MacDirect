@@ -1,0 +1,74 @@
+<!doctype html><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,650&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+/* A: banner cards, same pattern as the Societies cards */
+.top{margin-bottom:0}
+.tabs{display:flex;gap:8px;margin:14px 12px 4px}
+.tabs span{padding:9px 16px;border-radius:999px;font-size:14px;font-weight:700;background:#fff;color:var(--muted);border:1px solid var(--line)}
+.tabs .on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.list{padding:8px 12px;display:flex;flex-direction:column;gap:14px}
+.card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(80,30,60,.08)}
+.banner{height:96px;position:relative;padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start}
+.b1{background:linear-gradient(135deg,#FF8FB5,#E23E7A)}
+.b2{background:linear-gradient(135deg,#B79BFF,#6A3FD0)}
+.date{background:#fff;border-radius:14px;padding:6px 12px;text-align:center;line-height:1}
+.date b{display:block;font-family:Fraunces,serif;font-size:26px;font-weight:650}
+.date span{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--link)}
+.pill{background:rgba(255,255,255,.92);color:var(--ink);font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px}
+.body{padding:14px 16px 16px}
+.body h3{font-size:22px;line-height:1.2}
+.meta{margin-top:6px;font-size:14.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.meta div{display:flex;gap:8px;align-items:center}
+.meta .ic{width:17px;height:17px;color:var(--link)}
+.meta b{color:var(--ink)}
+.row{display:flex;gap:10px;margin-top:14px}
+.btn{flex:1;text-align:center;padding:13px 0;border-radius:999px;font-size:15px;font-weight:700}
+.btn.p{background:var(--pink);color:#fff}
+.btn.s{border:2px solid var(--pink);color:var(--link)}
+.more{display:block;margin-top:12px;font-size:14px;font-weight:700;color:var(--link)}
+.detail{margin-top:12px;border-top:1px solid var(--line);padding-top:12px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
+.detail div{display:flex;gap:8px;align-items:center}
+.detail .ic{width:17px;height:17px;color:var(--link)}
+.detail b{color:var(--ink)}
+.hint{font-size:13px;margin-top:10px;background:var(--wash);border-radius:12px;padding:10px 12px;color:var(--ink)}
+.nav{height:78px}
+.nav i{border-color:var(--pink)}
+</style>
+<div class="top"><h1>Calendar</h1><svg class="ic" viewBox="0 0 24 24"><path d="M20 12H4M10 6l-6 6 6 6"/></svg></div>
+<div class="tabs"><span class="on">Upcoming</span><span>Month</span><span>Going</span></div>
+<div class="list">
+
+<div class="card">
+  <div class="banner b1"><div class="date"><b>9</b><span>MON</span></div><span class="pill">Social</span></div>
+  <div class="body">
+    <h3>Welcome BBQ</h3>
+    <div class="meta">
+      <div><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><b>12:00pm</b></div>
+      <div><svg class="ic" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>1 Central Courtyard</div>
+    </div>
+    <div class="row"><span class="btn p">Directions</span><span class="btn s">I'm going</span></div>
+    <span class="more">Less ˄</span>
+    <div class="detail">
+      <div><svg class="ic" viewBox="0 0 24 24"><path d="M12 8v5l3 2"/><circle cx="12" cy="13" r="8"/></svg><span>Leave the station by <b>11:52am</b> (8 min walk)</span></div>
+      <div><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="1.8"/><path d="M12 8v6h5l2 5M12 11h5M9 13a5 5 0 105 7"/></svg><span><b>3 lifts</b> and 1 accessible toilet</span></div>
+      <div><svg class="ic" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 01-12 0c0-4.5 6-11 6-11z"/></svg><span>Water <b>50 m</b> away</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="banner b2"><div class="date"><b>10</b><span>TUE</span></div><span class="pill">Careers</span></div>
+  <div class="body">
+    <h3>Careers Night</h3>
+    <div class="meta">
+      <div><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><b>6:00pm</b></div>
+      <div><svg class="ic" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>18 Wally's Walk</div>
+    </div>
+    <div class="row"><span class="btn p">Directions</span><span class="btn s">I'm going</span></div>
+    <span class="more">More ˅</span>
+  </div>
+</div>
+
+</div>
+<div class="nav"><div><i></i>Account</div><div class="on"><i></i>Calendar</div><div><i></i>Event</div><div><i></i>Food</div><div><i></i>Societies</div></div>

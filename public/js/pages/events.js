@@ -78,8 +78,11 @@
     agendaEvents = [];
     let agenda = '';
     Object.keys(events).sort().forEach((key) => {
-      agenda += `<h2 class="cal-day-title">${esc(formatDate(key))}</h2>${restNote(events[key].length)}<ul class="card-list">` +
-        events[key].map((e) => { agendaEvents.push(e); return eventCard(e, { calendar: true }); }).join('') + '</ul>';
+      const d = new Date(key + 'T00:00');
+      const loc = I18N_LOCALES[i18nLang()];
+      agenda += `<section class="agenda-day"><div class="agenda-rail${key === iso(today) ? ' today' : ''}"><b>${d.getDate()}</b>${esc(d.toLocaleDateString(loc, { weekday: 'short' }))}</div>` +
+        `<div class="agenda-col">${restNote(events[key].length)}<ul class="card-list">` +
+        events[key].map((e) => { agendaEvents.push(e); return eventCard(e); }).join('') + '</ul></div></section>';
     });
     agendaEl.innerHTML = agenda || `<p class="empty-msg">${t('No events found.')}</p>`;
   }
@@ -195,7 +198,7 @@
   }
 
   agendaEl.addEventListener('click', async (e) => {
-    if (e.target.closest('a')) return; // Walk there links navigate on their own
+    if (e.target.closest('a, summary')) return; // direction links navigate and Add to calendar opens on their own
     if (calendarAction(e, agendaEvents) || await shareAction(e, agendaEvents) || await goingAction(e, agendaEvents) || await cancelAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await postPlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
     const el = e.target.closest('.card');
     if (!el) return;

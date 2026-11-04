@@ -2,7 +2,18 @@
 // Both can carry a photo and show up in the Calendar. Leaders also get an Edit events tab (edit or delete the events
 // they posted) and a Cover photo tab (cover image and hashtags).
 (function () {
-  const p = createPopup({ id: 'event-plan-popup', title: 'Event', navHref: '/event-plan.html', backHref: '/events.html' });
+  const p = createPopup({ id: 'event-plan-popup', title: 'Add event', navHref: '/event-plan.html' });
+  const ico = (d) => '<svg class="ev-ic" viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>';
+  const chevron = ico('<path d="M6 15l6-6 6 6"/>');
+  const tile = (icon, label, control, cls) =>
+    '<label class="ev-tile' + (cls ? ' ' + cls : '') + '"><i>' + ico(icon) + '</i><span><small>' + t(label) + '</small>' + control + '</span></label>';
+  // The photo button sits in the banner at the top; its file input belongs to the form below via form="ev-form".
+  p.popup.querySelector('.popup-island').insertAdjacentHTML('beforeend',
+    '<div class="hero-photo"><label class="hero-photo-btn">' +
+      ico('<rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/>') +
+      '<span>' + t('Add a cover photo') + '</span>' +
+      '<input name="photo" type="file" form="ev-form" accept="image/jpeg,image/png,image/webp"></label>' +
+      '<small>' + t('JPG, PNG or WebP, up to 5 MB') + '</small></div>');
   p.results.innerHTML =
     '<div class="account guest-gate" hidden>' +
       '<p>' + t('Log in to add event plans. Guests can browse everything but cannot save.') + '</p>' +
@@ -11,28 +22,31 @@
       '<button type="button" class="chip active" data-mode="event">' + t('Add event') + '</button>' +
       '<button type="button" class="chip" data-mode="manage">' + t('Edit events') + '</button>' +
       '<button type="button" class="chip" data-mode="cover">' + t('Cover photo') + '</button></div>' +
-    '<form class="event-form" hidden>' +
-      '<label class="ev-target" hidden>' + t('Add for') + '<select name="target"></select></label>' +
-      '<label>' + t('Event name') + '<input name="name" required maxlength="80"></label>' +
-      '<label>' + t('Category') + '<select name="category">' +
-        ['Social', 'Academic', 'Career', 'Community'].map((c) => `<option value="${c}">${t(c)}</option>`).join('') + '</select></label>' +
-      '<label>' + t('Date') + '<input name="date" type="date" required></label>' +
-      '<label>' + t('Time') + '<input name="time" type="time" value="12:00"></label>' +
-      '<label>' + t('Building') + '<input name="building" list="event-buildings" placeholder="' + t('e.g. 1 Central Courtyard') + '"></label>' +
-      '<datalist id="event-buildings"></datalist>' +
-      '<label>' + t('Description') + '<textarea name="description" rows="3" maxlength="200"></textarea></label>' +
-      '<label>' + t('Meeting spot (optional)') + '<input name="meetingNote" maxlength="80" placeholder="' + t('e.g. Look for the red banner') + '"></label>' +
-      '<fieldset class="eco-field"><legend>' + t('Sustainability tags (optional)') + '</legend>' +
-        '<label><input type="checkbox" name="eco" value="cup"> ' + t('Bring your own cup') + '</label>' +
-        '<label><input type="checkbox" name="eco" value="plant"> ' + t('Plant-based food') + '</label></fieldset>' +
-      '<fieldset class="eco-field"><legend>' + t('More tags (optional)') + '</legend>' +
-        [['quiet', 'Quiet or low-sensory'], ['alcohol', 'Alcohol-free'], ['halal', 'Halal'], ['vegetarian', 'Vegetarian'], ['first', 'First-years welcome']]
-          .map(([v, l]) => '<label><input type="checkbox" name="eco" value="' + v + '"> ' + t(l) + '</label>').join('') + '</fieldset>' +
-      '<img class="cover-preview" alt="" hidden>' +
+    '<form id="ev-form" class="event-form ev-form" hidden>' +
+      '<label class="ev-target" hidden><span>' + t('Posting for') + '</span><select name="target"></select></label>' +
+      '<input class="ev-title" name="name" required maxlength="80" placeholder="' + t('Event name') + '" aria-label="' + t('Event name') + '">' +
+      '<div><div class="ev-lab">' + t('Category') + '</div><div class="ev-seg" role="radiogroup" aria-label="' + t('Category') + '">' +
+        ['Social', 'Academic', 'Career', 'Community'].map((c, i) =>
+          `<label><input type="radio" name="category" value="${c}"${i ? '' : ' checked'}><span>${t(c)}</span></label>`).join('') + '</div></div>' +
+      '<div><div class="ev-lab">' + t('When and where') + '</div><div class="ev-tiles">' +
+        tile('<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>', 'Date', '<input name="date" type="date" required>') +
+        tile('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 'Time', '<input name="time" type="time" value="12:00">') +
+        tile('<path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>', 'Building',
+          '<input name="building" list="event-buildings" placeholder="' + t('Search, e.g. 1 Central Courtyard') + '">', 'wide') +
+      '</div><datalist id="event-buildings"></datalist></div>' +
+      '<details class="ev-fold" open><summary><span>' + t('Details') + '<em>' + t('optional') + '</em></span>' + chevron + '</summary>' +
+        '<div class="ev-fold-body">' +
+          '<textarea name="description" rows="3" maxlength="200" placeholder="' + t('What should people know?') + '" aria-label="' + t('Description') + '"></textarea>' +
+          '<input name="meetingNote" maxlength="80" placeholder="' + t('Meeting spot, e.g. look for the red banner') + '" aria-label="' + t('Meeting spot (optional)') + '">' +
+        '</div></details>' +
+      '<details class="ev-fold" open><summary><span>' + t('Tags') + '<em class="ev-count">' + t('optional') + '</em></span>' + chevron + '</summary>' +
+        '<div class="ev-fold-body ev-tags">' +
+          [['cup', 'Bring your own cup'], ['plant', 'Plant-based food'], ['quiet', 'Quiet or low-sensory'], ['alcohol', 'Alcohol-free'], ['halal', 'Halal'], ['vegetarian', 'Vegetarian'], ['first', 'First-years welcome']]
+            .map(([v, l]) => '<label><input type="checkbox" name="eco" value="' + v + '"><span>' + t(l) + '</span></label>').join('') +
+        '</div></details>' +
       '<label class="ev-remove-photo" hidden><input type="checkbox" name="removeImage"> ' + t('Remove current photo') + '</label>' +
-      '<label>' + t('Event photo (optional; JPEG, PNG or WebP, up to 5 MB)') + '<input name="photo" type="file" accept="image/jpeg,image/png,image/webp"></label>' +
-      '<button class="form-submit" type="submit">' + t('Add event') + '</button>' +
-      '<button class="auth-guest" type="button" data-cancel hidden>' + t('Cancel') + '</button>' +
+      '<div class="ev-cta"><button class="form-submit" type="submit">' + t('Add event') + '</button>' +
+        '<button class="ev-cancel" type="button" data-cancel>' + t('Cancel') + '</button></div>' +
       '<p class="form-msg" aria-live="polite" hidden></p>' +
     '</form>' +
     '<section class="manage-section" hidden>' +
@@ -54,7 +68,25 @@
   const gate = p.results.querySelector('.guest-gate');
   const tabs = p.results.querySelector('.mode-tabs');
   const targetSelect = form.elements.target;
-  const preview = form.querySelector('.cover-preview');
+  const hero = p.popup.querySelector('.popup-island');
+  const heroPhoto = hero.querySelector('.hero-photo');
+  const photoInput = hero.querySelector('input[name="photo"]');
+  const ecoCount = form.querySelector('.ev-count');
+  // Shows the chosen (or current) photo as the banner background.
+  function setHero(url) {
+    hero.style.setProperty('--hero-img', url ? 'url("' + url + '")' : 'none');
+    hero.classList.toggle('has-photo', !!url);
+    heroPhoto.querySelector('span').textContent = url ? t('Change photo') : t('Add a cover photo');
+  }
+  function updateEcoCount() {
+    const n = form.querySelectorAll('input[name="eco"]:checked').length;
+    ecoCount.textContent = n ? n + ' ' + t('selected') : t('optional');
+  }
+  form.addEventListener('change', (e) => { if (e.target.name === 'eco') updateEcoCount(); });
+  photoInput.addEventListener('change', () => {
+    const file = photoInput.files[0];
+    setHero(file ? URL.createObjectURL(file) : (editing && editing.imageUrl) || null);
+  });
   const removeRow = form.querySelector('.ev-remove-photo');
   const cancelBtn = form.querySelector('[data-cancel]');
   const submitBtn = form.querySelector('.form-submit');
@@ -196,6 +228,7 @@
     tabs.hidden = !mine.length;
     tabs.querySelectorAll('.chip').forEach((b) => b.classList.toggle('active', b.dataset.mode === mode));
     form.hidden = !auth.user || mode !== 'event';
+    heroPhoto.hidden = form.hidden;
     cover.hidden = !mine.length || mode !== 'cover';
     manage.hidden = !mine.length || mode !== 'manage';
     if (mode === 'manage') renderManage();
@@ -239,13 +272,17 @@
   function resetForm() {
     editing = null;
     form.reset();
-    preview.hidden = true;
+    setHero(null);
+    updateEcoCount();
     removeRow.hidden = true;
-    cancelBtn.hidden = true;
     submitBtn.textContent = t('Add event');
     renderGate();
   }
-  cancelBtn.addEventListener('click', () => { resetForm(); msg.hidden = true; });
+  cancelBtn.addEventListener('click', () => {
+    if (!editing) { location.href = '/'; return; }
+    resetForm();
+    msg.hidden = true;
+  });
 
   // Used by the Calendar's Edit button on a society event.
   window.editSocietyEvent = (ev) => {
@@ -261,10 +298,9 @@
     form.elements.description.value = ev.description;
     form.elements.meetingNote.value = ev.meetingNote || '';
     form.querySelectorAll('input[name="eco"]').forEach((c) => { c.checked = (ev.ecoTags || []).includes(c.value); });
-    preview.hidden = !ev.imageUrl;
-    if (ev.imageUrl) { preview.src = ev.imageUrl; preview.alt = ev.name; }
+    updateEcoCount();
+    setHero(ev.imageUrl || null);
     removeRow.hidden = !ev.imageUrl;
-    cancelBtn.hidden = false;
     submitBtn.textContent = t('Save event');
     msg.hidden = true;
     p.setOpen(true);
