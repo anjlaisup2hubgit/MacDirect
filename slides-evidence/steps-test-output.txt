@@ -1,0 +1,3 @@
+buildings 63 | station route includes steps: 5 | no route 0
+buildings with accessibility entry 34 | lifts 33 | accessible toilets 38
+route with steps AND building has entry 4
