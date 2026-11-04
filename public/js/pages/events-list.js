@@ -7,116 +7,96 @@
   const noteEl = document.getElementById('create-note');
   let events = [];
 
-  function splitDescription(text) {
-    const clean = String(text || '').trim();
-    const cut = clean.search(/[.!?](\s|$)/);
-    if (!clean || cut === -1) return { intro: clean, further: '' };
-    return { intro: clean.slice(0, cut + 1).trim(), further: clean.slice(cut + 1).trim() };
-  }
-
-  function box(label, text) {
-    const section = document.createElement('div');
-    section.className = 'event-box';
-    const name = document.createElement('p');
-    name.className = 'event-box-label';
-    name.textContent = label;
-    const copy = document.createElement('p');
-    copy.textContent = text;
-    section.append(name, copy);
-    return section;
-  }
-
-  function row(e) {
-    const li = document.createElement('li');
-    li.className = 'card card-society';
-    li.tabIndex = 0;
-    li.setAttribute('aria-expanded', 'false');
-    const body = document.createElement('div');
-    body.className = 'card-body';
-    const society = document.createElement('span');
-    society.className = 'card-tag';
-    society.textContent = e.society || e.category;
-    const title = document.createElement('h2');
-    title.textContent = e.name;
-    const when = formatDate(e.date) + (e.time ? ' · ' + e.time : '');
-    const place = e.building && e.building !== 'TBC' ? e.building : 'Location to be confirmed';
-    const parts = splitDescription(e.description);
-    const preview = document.createElement('ul');
-    preview.className = 'event-preview';
-    [when, place, parts.intro].filter(Boolean).forEach((line) => {
-      const item = document.createElement('li');
-      item.textContent = line;
-      preview.append(item);
-    });
-    const full = document.createElement('div');
-    full.className = 'event-details';
-    full.hidden = true;
-    const meet = e.meetingNote ? place + '. ' + e.meetingNote : place;
-    full.append(box('Date and time', when));
-    full.append(box('Location', meet));
-    if (e.description) full.append(box('Description', e.description));
-    // Campus buildings start with a street number. A city address has no map pin.
-    if (/^\d+\s/.test(e.building || '')) {
-      const actions = document.createElement('div');
-      actions.className = 'card-actions';
-      const walk = document.createElement('a');
-      walk.className = 'follow-btn';
-      walk.href = '/?building=' + encodeURIComponent(e.building);
-      walk.textContent = 'Show on map';
-      actions.append(walk);
-      full.append(actions);
-    }
-    const more = document.createElement('p');
-    more.className = 'event-more';
-    more.textContent = 'Full details';
-    body.append(society, title, preview, full, more);
-    li.append(body);
-    li.insertAdjacentHTML('afterbegin', coverDiv(e.name));
-    function toggle() {
-      const open = full.hidden;
-      full.hidden = !open;
-      preview.hidden = open;
-      more.textContent = open ? 'Hide details' : 'Full details';
-      li.setAttribute('aria-expanded', open ? 'true' : 'false');
-    }
-    li.addEventListener('click', (ev) => {
-      if (ev.target.closest('a')) return;
-      toggle();
-    });
-    li.addEventListener('keydown', (ev) => {
-      if (ev.key !== 'Enter' && ev.key !== ' ') return;
-      ev.preventDefault();
-      toggle();
-    });
-    return li;
-  }
+  let shown = [];
 
   function render() {
     const q = searchEl.value.trim().toLowerCase();
-    const shown = events.filter((e) => {
+    const leaderIds = auth.approvedSocieties.map((s) => s.id);
+    shown = events.filter((e) => {
       if (e.cancelled) return false;
       if (!q) return true;
       const hay = [e.name, e.society, e.building, e.description, e.meetingNote, e.date, formatDate(e.date), e.time].join(' ').toLowerCase();
       return hay.includes(q);
     });
-    listEl.replaceChildren(...shown.map(row));
+    shown.forEach((e) => { e.canEdit = leaderIds.includes(e.societyId); });
+    listEl.innerHTML = shown.map((e) => eventCard(e)).join('');
     emptyEl.hidden = shown.length > 0;
     emptyEl.textContent = events.length ? 'No events found.' : 'No events yet.';
   }
 
+  function cardOf(target) {
+    const card = target.closest('.card');
+    return card ? shown[[...listEl.children].indexOf(card)] : null;
+  }
+
+  listEl.addEventListener('click', async (ev) => {
+    if (ev.target.closest('a')) return;
+    const btn = ev.target.closest('button');
+    if (!btn) {
+      const card = ev.target.closest('.card');
+      if (card) toggleEventDetails(card);
+      return;
+    }
+    const item = cardOf(btn);
+    if (!item) return;
+    if (btn.hasAttribute('data-gcal')) { window.open(googleCalendarUrl(item), '_blank', 'noopener'); return; }
+    if (btn.hasAttribute('data-ics')) { downloadIcs(item); return; }
+    if (btn.hasAttribute('data-share')) {
+      const text = 'I am going to ' + item.name + ' (' + item.building + ', ' + formatDate(item.date) + ' ' + item.time + '). Please check in with me when it ends.';
+      try { await navigator.share({ title: item.name, text }); } catch (err) { /* cancelled or not allowed */ }
+      return;
+    }
+    if (btn.hasAttribute('data-going')) {
+      if (!auth.user) {
+        noteEl.hidden = false;
+        noteEl.textContent = 'Log in to mark that you are going.';
+        return;
+      }
+      btn.disabled = true;
+      const on = !item.going;
+      const { error } = await auth.setGoing(item.id, on);
+      if (error) { console.error(error); btn.disabled = false; noteEl.hidden = false; noteEl.textContent = 'Could not save.'; return; }
+      item.going = on;
+      item.goingCount = Math.max(0, (item.goingCount || 0) + (on ? 1 : -1));
+      render();
+      return;
+    }
+    if (btn.hasAttribute('data-edit') && item.canEdit) {
+      try { sessionStorage.setItem('imcq-edit-event', JSON.stringify(item)); } catch (err) { console.error(err); }
+      location.href = '/event-plan.html';
+      return;
+    }
+    if (btn.hasAttribute('data-cancel') && item.canEdit) {
+      btn.disabled = true;
+      const { error } = await auth.setEventCancelled(item.id, !item.cancelled);
+      if (error) { console.error(error); btn.disabled = false; noteEl.hidden = false; noteEl.textContent = 'Could not save.'; return; }
+      item.cancelled = !item.cancelled;
+      render();
+      return;
+    }
+    if (btn.hasAttribute('data-delete') && item.canEdit) {
+      if (!(await choose('Delete this event?', [{ label: 'Delete', value: true, danger: true }]))) return;
+      const { error } = await auth.deleteEvent(item.id);
+      if (error) { console.error(error); noteEl.hidden = false; noteEl.textContent = 'Could not save.'; return; }
+      events = events.filter((e) => e.id !== item.id);
+      render();
+    }
+  });
+
   async function load() {
     try {
       if (!auth.configured) throw new Error('no database');
-      const [rows, societies, samples] = await Promise.all([
-        auth.listEvents(),
-        auth.listSocieties(),
-        api('/events').catch(() => []),
-      ]);
+      const jobs = [auth.listEvents(), auth.listSocieties(), api('/events').catch(() => [])];
+      if (auth.user) jobs.push(auth.listRsvps());
+      const result = await Promise.all(jobs);
+      const [rows, societies, samples] = result;
+      const rsvps = result[3];
       const names = new Map(societies.map((s) => [s.id, s.name]));
       events = rows
         .map((e) => ({ ...e, society: names.get(e.societyId) || e.society || '' }))
         .concat(Array.isArray(samples) ? samples : [])
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || (Number(b.id) || 0) - (Number(a.id) || 0));
+      if (rsvps) events.forEach((e) => { e.going = rsvps.mine.has(e.id); e.goingCount = rsvps.counts[e.id] || 0; });
       let keptActuarial = false;
       events = events.filter((e) => {
         if (e.society !== 'Actuarial Students Society') return true;
@@ -134,6 +114,12 @@
     }
   }
 
+  listEl.addEventListener('keydown', (ev) => {
+    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+    if (!ev.target.classList.contains('card')) return;
+    ev.preventDefault();
+    toggleEventDetails(ev.target);
+  });
   searchEl.addEventListener('input', render);
   createBtn.addEventListener('click', () => {
     if (auth.user && auth.approvedSocieties.length) {

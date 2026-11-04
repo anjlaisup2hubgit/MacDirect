@@ -121,14 +121,20 @@
   function openQuiz() {
     const d = document.createElement('dialog');
     d.className = 'login-prompt';
-    d.innerHTML = `<p><strong>${t('What are you into?')}</strong></p><fieldset class="quiz-options">` +
-      CATEGORIES.map((c) => `<label><input type="checkbox" value="${esc(c.name)}"> ${esc(t(c.name))}</label>`).join('') + '</fieldset>' +
-      `<div><button class="form-submit" type="button" data-go>${t('Show societies')}</button>` +
+    d.innerHTML = `<p><strong>${t('What are you into?')}</strong></p><div class="quiz-options">` +
+      CATEGORIES.map((c) => `<button type="button" class="quiz-choice" data-cat="${esc(c.name)}" aria-pressed="false">${esc(t(c.name))}</button>`).join('') + '</div>' +
+      '<hr class="quiz-rule">' +
+      `<div><button class="form-submit quiz-go" type="button" data-go>${t('Show societies')}</button>` +
       `<button class="auth-guest" type="button" data-close>${t('Cancel')}</button></div>`;
     d.addEventListener('click', (e) => {
+      const choice = e.target.closest('.quiz-choice');
+      if (choice) {
+        choice.setAttribute('aria-pressed', choice.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+        return;
+      }
       if (e.target.dataset.close !== undefined) d.remove();
       if (e.target.dataset.go === undefined) return;
-      const picked = [...d.querySelectorAll('input:checked')].map((i) => i.value);
+      const picked = [...d.querySelectorAll('.quiz-choice[aria-pressed="true"]')].map((b) => b.dataset.cat);
       d.remove();
       const matches = societies.filter((s) => picked.includes(s.category) && typeof s.id === 'number')
         .sort((a, b) => (followerCounts[b.id] || 0) - (followerCounts[a.id] || 0) || a.name.localeCompare(b.name)).slice(0, 8);

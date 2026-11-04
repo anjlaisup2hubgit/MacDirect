@@ -52,9 +52,9 @@
     calView.hidden = view !== 'cal';
     agendaEl.hidden = view !== 'list';
     hintEl.textContent = t('You are not following any societies.') + ' ' + t('Follow societies to see their events here.');
-    hintEl.hidden = !auth.user || follows.size > 0 || auth.approvedSocieties.length > 0;
+    hintEl.hidden = !auth.user || follows.size > 0 || auth.approvedSocieties.length > 0 || base.length > 0;
     const leaderIds = auth.approvedSocieties.map((s) => s.id);
-    base.forEach((e) => { e.canEdit = leaderIds.includes(e.societyId); });
+    base.concat(plans).forEach((e, i) => { e.canEdit = leaderIds.includes(e.societyId); e.banner = i; });
     const events = byDate();
     titleEl.textContent = month.toLocaleDateString(I18N_LOCALES[i18nLang()], { month: 'long', year: 'numeric' });
     let sunStart = false;
@@ -82,7 +82,7 @@
       const loc = I18N_LOCALES[i18nLang()];
       agenda += `<section class="agenda-day"><div class="agenda-rail${key === iso(today) ? ' today' : ''}"><b>${d.getDate()}</b>${esc(d.toLocaleDateString(loc, { weekday: 'short' }))}</div>` +
         `<div class="agenda-col">${restNote(events[key].length)}<ul class="card-list">` +
-        events[key].map((e) => { agendaEvents.push(e); return eventCard(e); }).join('') + '</ul></div></section>';
+        events[key].map((e) => { agendaEvents.push(e); return eventCard(e, { calendar: true }); }).join('') + '</ul></div></section>';
     });
     agendaEl.innerHTML = agenda || `<p class="empty-msg">${t('No events found.')}</p>`;
   }
@@ -197,16 +197,16 @@
     return true;
   }
 
-  agendaEl.addEventListener('click', async (e) => {
-    if (e.target.closest('a, summary')) return; // direction links navigate and Add to calendar opens on their own
-    if (calendarAction(e, agendaEvents) || await shareAction(e, agendaEvents) || await goingAction(e, agendaEvents) || await cancelAction(e, agendaEvents) || await removePlan(e, agendaEvents) || await postPlan(e, agendaEvents) || await leaderAction(e, agendaEvents)) return;
-    const el = e.target.closest('.card');
-    if (!el) return;
-    const ev = agendaEvents[[...agendaEl.querySelectorAll('.card')].indexOf(el)];
-    if (!ev) return;
-    const q = new URLSearchParams({ building: ev.building || '', label: ev.name || '' });
-    location.href = '/?' + q.toString();
-  });
+  async function cardClick(e, list) {
+    if (e.target.closest('a')) return;
+    if (!e.target.closest('button, summary')) {
+      const el = e.target.closest('.card');
+      if (el) toggleEventDetails(el);
+      return;
+    }
+    if (calendarAction(e, list) || await shareAction(e, list) || await goingAction(e, list) || await cancelAction(e, list) || await removePlan(e, list) || await postPlan(e, list) || await leaderAction(e, list)) return;
+  }
+  agendaEl.addEventListener('click', (e) => cardClick(e, agendaEvents));
   agendaEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
   });
@@ -224,16 +224,7 @@
     selected = day.dataset.date;
     render();
   });
-  listEl.addEventListener('click', async (e) => {
-    if (e.target.closest('a')) return;
-    if (calendarAction(e, dayEvents) || await shareAction(e, dayEvents) || await goingAction(e, dayEvents) || await cancelAction(e, dayEvents) || await removePlan(e, dayEvents) || await postPlan(e, dayEvents) || await leaderAction(e, dayEvents)) return;
-    const el = e.target.closest('.card');
-    if (!el) return;
-    const ev = dayEvents[[...listEl.children].indexOf(el)];
-    if (!ev) return;
-    const q = new URLSearchParams({ building: ev.building || '', label: ev.name || '' });
-    location.href = '/?' + q.toString();
-  });
+  listEl.addEventListener('click', (e) => cardClick(e, dayEvents));
   listEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.classList.contains('card')) e.target.click();
   });
@@ -243,12 +234,29 @@
   auth.onChange(loadPlans);
   auth.ready.then(render);
   render();
-  // Only events of followed societies are shown; a leader also sees their own society's events. Private plans stay per user. Guests see none.
-  const loadEvents = () => auth.ready.then(() => (auth.user ? Promise.all([auth.listEvents(), auth.myFollows(), auth.listRsvps(), loadVenueAccess()]) : [[], [], null]))
-    .then(([data, ids, rsvps]) => {
-      follows = new Set(ids);
+  // Followed societies, plus the detailed sample events, so a click can show the full write-up.
+  const loadEvents = () => auth.ready.then(() => {
+    const jobs = [api('/events').catch(() => [])];
+    if (auth.user) jobs.push(auth.listEvents(), auth.myFollows(), auth.listRsvps(), auth.listSocieties(), loadVenueAccess());
+    return Promise.all(jobs);
+  }).then((result) => {
+      const samples = Array.isArray(result[0]) ? result[0] : [];
+      follows = new Set();
+      let rows = [];
+      let rsvps = null;
+      let societies = [];
+      if (auth.user) {
+        rows = result[1] || [];
+        follows = new Set(result[2] || []);
+        rsvps = result[3];
+        societies = result[4] || [];
+      }
+      const names = new Map(societies.map((s) => [s.id, s.name]));
       const own = new Set(auth.approvedSocieties.map((s) => s.id));
-      base = data.filter((e) => follows.has(e.societyId) || own.has(e.societyId));
+      const followed = rows.filter((e) => follows.has(e.societyId) || own.has(e.societyId))
+        .map((e) => ({ ...e, society: names.get(e.societyId) || e.society || '' }));
+      const seen = new Set(followed.map((e) => e.name));
+      base = followed.concat(samples.filter((e) => !e.cancelled && !seen.has(e.name)));
       if (rsvps) base.forEach((e) => { e.going = rsvps.mine.has(e.id); e.goingCount = rsvps.counts[e.id] || 0; });
       return loadWalkTimes(base).then(render);
     })

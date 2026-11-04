@@ -270,28 +270,64 @@ function eventColour(e) {
   return EVENT_COLOURS[h % EVENT_COLOURS.length];
 }
 
-function eventCard(e) {
-  const facts = venueAccessLine(e) + waterLine(e);
-  return `<li class="card card-society event-card${e.cancelled ? ' event-cancelled' : ''}" data-id="${e.id}" style="border-left-color:${eventColour(e)}" tabindex="0">` +
-    (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : '') +
-    `<div class="card-body"><div class="event-top"><b>${esc(e.time)}</b><span><span class="card-tag">${esc(e.category)}</span>` +
-    (e.cancelled ? ` <span class="card-tag cancelled-tag">${t('Cancelled')}</span>` : '') + '</span></div>' +
-    `<h2>${esc(e.name)}</h2>` +
-    `<p class="event-desc">${esc(e.description)}</p>` +
-    `<p class="event-where">${evIcon('pin')}<span>${esc(e.building)}` + (e.meetingNote ? `<br><span class="event-note">${esc(e.meetingNote)}</span>` : '') + '</span></p>' +
-    (e.ecoTags && e.ecoTags.some((k) => ECO_TAGS[k]) ? ecoTagLine(e) : '') +
-    eventWalkLinks(e) + (facts ? `<div class="event-facts">${facts}</div>` : '') +
-    `<div class="event-going-row"><span class="event-going">${e.goingCount && !e.mine && !e.cancelled ? e.goingCount + ' ' + t(e.goingCount === 1 ? 'person going' : 'people going') : ''}</span>` +
-    `<details class="event-cal"><summary class="event-cal-btn" aria-label="${t('Add to calendar')}" title="${t('Add to calendar')}">${evIcon('cal')}</summary>` +
-    `<div class="card-actions" role="group" aria-label="${t('Add to calendar')}"><button type="button" class="follow-btn" data-gcal>${t('Google')}</button>` +
-      `<button type="button" class="follow-btn" data-ics>${t('Apple / Outlook')}</button></div></details>` +
-    (e.mine || e.cancelled ? '' : `<button type="button" class="follow-btn${e.going ? '' : ' following'}" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? '✓ ' + t('Going') : t("I'm going")}</button>`) +
-    '</div>' + eveningInfo(e) +
+function eventBox(label, text) {
+  return `<div class="event-box"><p class="event-box-label">${esc(t(label))}</p><p>${esc(text)}</p></div>`;
+}
+
+function firstSentence(text) {
+  const clean = String(text || '').trim();
+  const cut = clean.search(/[.!?](\s|$)/);
+  if (!clean || cut === -1) return clean;
+  return clean.slice(0, cut + 1).trim();
+}
+
+// Opens or closes the three detail boxes. Used by the Calendar and the Events page.
+function toggleEventDetails(card) {
+  const full = card.querySelector('.event-details');
+  const preview = card.querySelector('.event-preview');
+  const more = card.querySelector('.event-more');
+  if (!full) return;
+  const open = full.hidden;
+  full.hidden = !open;
+  if (preview) preview.hidden = open;
+  if (more) more.textContent = t(open ? 'Hide details' : 'Full details');
+  card.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+// Same card on the Calendar and the Events page: society name, title, three bullets, full details on click.
+function eventCard(e, opts) {
+  const society = e.society || (e.mine ? t('My plan') : (e.category || ''));
+  const when = [e.date ? formatDate(e.date) : '', e.time].filter(Boolean).join(' · ');
+  const place = e.building && e.building !== 'TBC' ? e.building : t('Location to be confirmed');
+  const intro = firstSentence(e.description);
+  const bullets = [when, place, intro].filter(Boolean).map((line) => `<li>${esc(line)}</li>`).join('');
+  const meet = e.meetingNote ? place + '. ' + e.meetingNote : place;
+  const map = /^\d+\s/.test(e.building || '')
+    ? `<a class="follow-btn" href="/?building=${encodeURIComponent(e.building)}">${t('Show on map')}</a>` : '';
+  const book = `<div class="card-actions event-book"><a class="follow-btn" href="https://www.mq.edu.au/about/about-the-university/events" target="_blank" rel="noopener">${t('Booking page')}</a>${map}</div>`;
+  const actions =
     (e.mine ? `<div class="card-actions"><button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` +
       (auth.user && auth.approvedSocieties.length ? `<button type="button" class="follow-btn" data-post>${t('Post')}</button>` : '') + '</div>' : '') +
-    (e.canEdit ? `<div class="card-actions"><button type="button" class="follow-btn" data-edit>${t('Edit')}</button>` +
+    ((!opts || !opts.calendar) && e.canEdit ? `<div class="card-actions"><button type="button" class="follow-btn" data-edit>${t('Edit')}</button>` +
       `<button type="button" class="follow-btn" data-cancel>${t(e.cancelled ? 'Restore event' : 'Cancel event')}</button>` +
-      `<button type="button" class="follow-btn" data-delete>${t('Delete')}</button></div>` : '') + '</div></li>';
+      `<button type="button" class="follow-btn" data-delete>${t('Delete')}</button></div>` : '');
+  const cover = e.imageUrl
+    ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="" loading="lazy">`
+    : (opts && opts.calendar
+      ? `<div class="society-cover calendar-cover" style="--banner:hsl(${((Number(e.banner) || 0) * 47) % 360} 62% 80%)"></div>`
+      : coverDiv(society || e.name));
+  return `<li class="card card-society event-directory${e.cancelled ? ' event-cancelled' : ''}" data-id="${esc(e.id)}" tabindex="0" aria-expanded="false">` +
+    cover +
+    `<div class="card-body"><span class="card-tag society-name">${esc(society)}</span>` +
+    (e.cancelled ? ` <span class="card-tag cancelled-tag">${t('Cancelled')}</span>` : '') +
+    `<h2>${esc(e.name)}</h2>` +
+    `<ul class="event-preview">${bullets}</ul>` +
+    `<div class="event-details" hidden>` +
+    (when ? eventBox('Date and time', when) : '') +
+    eventBox('Location', meet) +
+    (e.description ? eventBox('Description', e.description) : '') +
+    book + actions +
+    `</div><p class="event-more">${t('Full details')}</p></div></li>`;
 }
 
 // In-page dialog (native confirm/prompt are blocked in some browsers and then do nothing).
