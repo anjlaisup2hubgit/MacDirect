@@ -18,9 +18,10 @@ pres.theme = { headFontFace: HEAD, bodyFontFace: BODY };
 pres.title = 'MacDirect: a campus map for new Macquarie students';
 pres.author = 'MacDirect (iMCQ)';
 
-const title = (color) => ({ type: 'title', options: { name: 'title', x: 0.6, y: 0.45, w: 12.1, h: 1.0, fontFace: HEAD, fontSize: 38, bold: true, color, margin: 0, valign: 'top' } });
+const title = (color, o = {}) => ({ type: 'title', options: { name: 'title', x: 0.6, y: 0.45, w: 12.1, h: 1.0, fontFace: HEAD, fontSize: 38, bold: true, color, margin: 0, valign: 'top', ...o } });
 pres.defineSlideMaster({ title: 'LIGHT', background: { color: PAPER }, objects: [{ placeholder: { options: title(INK).options, text: '' } }] });
-pres.defineSlideMaster({ title: 'DARK', background: { color: INK }, objects: [{ placeholder: { options: title(PAPER).options, text: '' } }] });
+pres.defineSlideMaster({ title: 'DARK', background: { color: INK }, objects: [{ placeholder: { options: title(PAPER, { y: 1.0, w: 7.6, h: 3.8, fontSize: 46 }).options, text: '' } }] });
+pres.defineSlideMaster({ title: 'LIGHT NARROW', background: { color: PAPER }, objects: [{ placeholder: { options: title(INK, { w: 8.0 }).options, text: '' } }] });
 
 const R = pres.ShapeType.roundRect;
 const box = (s, name, shape, o) => s.addShape(shape, { objectName: name, line: { type: 'none' }, ...o });
@@ -30,7 +31,7 @@ const bullets = (items) => items.map((t, i, a) => ({ text: t, options: { bullet:
 // ---- 1 Hook
 {
   const s = pres.addSlide({ masterName: 'DARK' });
-  s.addText('How can a new student find a society, join one, and get to its events?', { placeholder: 'title', x: 0.6, y: 1.0, w: 7.6, h: 3.8, fontSize: 46 });
+  s.addText('How can a new student find a society, join one, and get to its events?', { placeholder: 'title' });
   text(s, 'Subtitle', 'MacDirect: a campus map for your first week at Macquarie', { x: 0.6, y: 5.2, w: 7.6, h: 1.2, fontSize: 28, color: WASH });
   box(s, 'Phone frame', R, { x: 9.15, y: 0.45, w: 3.21, h: 6.6, rectRadius: 0.35, fill: { color: PINK } });
   s.addImage({ path: f('a-map.png'), x: 9.3, y: 0.6, w: 2.91, h: 6.3, altText: 'MacDirect map of Macquarie University on a phone' });
@@ -44,19 +45,19 @@ const bullets = (items) => items.map((t, i, a) => ({ text: t, options: { bullet:
   const tiles = [['129', 'societies'], ['63', 'named buildings'], ['12', 'languages'], ['Guest', 'mode: browse with no account']];
   tiles.forEach(([n, l], i) => {
     const x = 0.6 + i * 3.093;
-    box(s, `Tile ${i + 1}`, R, { x, y: 1.9, w: 2.85, h: 3.0, rectRadius: 0.3, fill: { color: WASH } });
+    box(s, `Tile ${i + 1}`, R, { x, y: 1.9, w: 2.85, h: 3.15, rectRadius: 0.3, fill: { color: WASH } });
     text(s, `Number ${i + 1}`, n, { x: x + 0.25, y: 2.15, w: 2.35, h: 1.2, fontFace: HEAD, fontSize: 54, bold: true, color: PINK });
-    text(s, `Label ${i + 1}`, l, { x: x + 0.25, y: 3.5, w: 2.35, h: 1.2 });
+    text(s, `Label ${i + 1}`, l, { x: x + 0.25, y: 3.5, w: 2.35, h: 1.35 });
   });
-  box(s, 'Summary pill', R, { x: 0.6, y: 5.35, w: 12.13, h: 1.4, rectRadius: 0.7, fill: { color: INK } });
-  text(s, 'Summary', 'Pick a society, see where it meets, then get a walking route from the station.', { x: 1.1, y: 5.5, w: 11.1, h: 1.1, fontSize: 26, color: PAPER, valign: 'middle' });
+  box(s, 'Summary pill', R, { x: 0.6, y: 5.45, w: 12.13, h: 1.4, rectRadius: 0.7, fill: { color: INK } });
+  text(s, 'Summary', 'Pick a society, see where it meets, then get a walking route from the station.', { x: 1.1, y: 5.6, w: 11.1, h: 1.1, fontSize: 26, color: PAPER, valign: 'middle' });
   s.addNotes("TIME 0:30 to 1:15 (about 75 words)\n\nMacDirect is a mobile map of the Macquarie campus. It lists 129 societies and 63 named buildings, and it works in 12 languages. You do not need an account. Guest mode lets you browse the map, the societies and the food. Each society can be shown on the map, and every building has a Directions button that draws a walking route from the station. All of these are real counts from the app.");
 }
 
 // ---- 3 Demo
 {
-  const s = pres.addSlide({ masterName: 'LIGHT' });
-  s.addText("Priya's first week", { placeholder: 'title', w: 8.0 });
+  const s = pres.addSlide({ masterName: 'LIGHT NARROW' });
+  s.addText("Priya's first week", { placeholder: 'title' });
   text(s, 'Disclaimer', 'Priya is a made-up example. Clip recorded on the live site.', { x: 0.6, y: 1.35, w: 8.0, h: 0.9 });
   const steps = ['Opens MacDirect as a guest', 'Societies, Hobbies, A Cappella Society', "Show on map: it meets at 25 Wally's Walk", 'Directions: 759 m, about 9 min from the station'];
   steps.forEach((t, i) => {
@@ -65,8 +66,8 @@ const bullets = (items) => items.map((t, i, a) => ({ text: t, options: { bullet:
     text(s, `Step number ${i + 1}`, String(i + 1), { x: 0.6, y, w: 0.65, h: 0.65, align: 'center', valign: 'middle', bold: true });
     text(s, `Step ${i + 1}`, t, { x: 1.5, y: y - 0.05, w: 7.1, h: 0.95, valign: 'middle' });
   });
-  box(s, 'Phone frame', R, { x: 9.35, y: 0.45, w: 3.3, h: 6.6, rectRadius: 0.35, fill: { color: INK } });
-  s.addMedia({ type: 'video', path: f('demo.mp4'), cover: 'data:image/jpeg;base64,' + require('fs').readFileSync(f('route-frame.jpg')).toString('base64'), x: 9.5, y: 0.6, w: 3.0, h: 6.5 });
+  box(s, 'Phone frame', R, { x: 9.35, y: 0.45, w: 3.3, h: 6.75, rectRadius: 0.35, fill: { color: INK } });
+  s.addMedia({ type: 'video', path: f('demo.mp4'), cover: 'data:image/jpeg;base64,' + require('fs').readFileSync(f('route-frame.jpg')).toString('base64'), x: 9.51, y: 0.6, w: 2.98, h: 6.45 });
   s.addNotes("TIME 1:15 to 3:15 (about 215 words). Play the clip. If the video will not play, open demo-fallback.gif from the same folder.\n\nThis is Priya. She is an example student, not a real test participant. It is her first week and she wants a hobby group. She opens MacDirect as a guest, so there is no sign-up.\n\nShe taps Societies and chooses Hobbies. She sees the A Cappella Society. She opens the card menu and taps Show on map. The map moves to 25 Wally's Walk, and the panel says the society meets here.\n\nShe taps Directions. The route is 759 metres, about a nine minute walk from the station. Priya never had to type a building name or remember where anything was. The search bar can also find societies and restaurants directly, if she prefers to search. While the clip plays, I talk through each step, so nobody is watching a silent video.\n\nNotice that this whole story needs no login. Events are different. They live in the Calendar, which needs an account, and a society leader has to post them. So today I am showing how to find a society and walk to where it meets. I am not showing a real leader posting an event, because I have not tested that with a real leader account.\n\nI also did not show the mcqAI search. It is only a stub and does not answer yet.");
 }
 
@@ -86,8 +87,8 @@ const bullets = (items) => items.map((t, i, a) => ({ text: t, options: { bullet:
     text(s, `Speed number ${i + 1}`, n, { x: 9.15, y: y + 0.15, w: 3.4, h: 0.9, fontFace: HEAD, fontSize: 48, bold: true, color: PINK });
     text(s, `Speed label ${i + 1}`, l, { x: 9.15, y: y + 1.0, w: 3.4, h: 0.9 });
   });
-  box(s, 'Honesty band', R, { x: 0.6, y: 5.95, w: 12.13, h: 1.1, rectRadius: 0.3, fill: { color: INK } });
-  text(s, 'Honesty line', "I reverted the AI's colour change (85a85db). Never tested: logged-in accounts and the machine-written translations.", { x: 0.9, y: 6.0, w: 11.5, h: 1.0, color: PAPER, valign: 'middle' });
+  box(s, 'Honesty band', R, { x: 0.6, y: 6.1, w: 12.13, h: 1.0, rectRadius: 0.3, fill: { color: INK } });
+  text(s, 'Honesty line', "I reverted the AI's colour change (85a85db). Never tested: logged-in accounts and the machine-written translations.", { x: 0.9, y: 6.1, w: 11.5, h: 1.0, color: PAPER, valign: 'middle' });
   s.addNotes("TIME 3:15 to 4:15 (about 115 words)\n\nThis slide is an audit of how I used AI, not a claim that the app is perfect.\n\nThree real bugs. I found the Calendar bug myself, because the buttons did nothing. The AI tester agent found the display name bug: the screen said Saved when the database changed nothing. A script found that the walking steps were 34 metres short of the route total.\n\nThe AI was also wrong sometimes. It built my report around lit paths, and I told it to stop. I also reverted its colour change.\n\nFor speed, I measured one Lighthouse mobile run: performance 76, and 4.5 seconds to the largest paint. The map data call took about 0.35 seconds to the first byte.\n\nWhat I never tested: logged-in accounts, and the machine-written translations.");
 }
 
