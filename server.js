@@ -5,9 +5,11 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const helmet = require('helmet');
+const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
+app.use(compression());
 // Security headers. The CSP lists every outside host the pages use; inline styles stay allowed (Leaflet and the cards set them).
 app.set('trust proxy', 1);
 app.use(helmet({
@@ -96,8 +98,10 @@ const { buildGraph, routeTo, routeBetween } = require('./routes/walk');
 const graph = buildGraph(raw);
 if (buildings.features[0]) routeTo(graph, buildings.features[0]);
 
-app.get('/api/map', (req, res) => res.json(buildings));
-app.get('/api/drink', (req, res) => res.json(drinkPoints));
+// Building data only changes on a deploy, so let browsers and the CDN reuse it.
+const cacheDay = (req, res, next) => { res.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400'); next(); };
+app.get('/api/map', cacheDay, (req, res) => res.json(buildings));
+app.get('/api/drink', cacheDay, (req, res) => res.json(drinkPoints));
 app.get('/api/route', (req, res) => {
   const feature = buildings.features.find((f) => String(f.id) === req.query.id);
   if (!feature) return res.status(404).json({ error: 'unknown building' });
@@ -131,6 +135,8 @@ app.get('/api/societies', (req, res) => {
   const file = path.join(__dirname, 'data', 'societies.json');
   res.json(JSON.parse(fs.readFileSync(file, 'utf8')));
 });
+// Vendor files never change (the version is in their path); pages and our own code revalidate every time.
+app.use('/vendor', express.static(path.join(__dirname, 'public', 'vendor'), { maxAge: '1y', immutable: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(PORT, () => console.log(`MacDirect running at http://localhost:${PORT}`));
