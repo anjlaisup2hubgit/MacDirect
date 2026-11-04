@@ -1,0 +1,76 @@
+﻿<!doctype html><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,650&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+/* A: grouped sections, pill chips, sticky Add event button */
+body{height:1480px}
+.tabs{display:flex;gap:8px;margin:14px 12px 4px}
+.tabs span{padding:9px 16px;border-radius:999px;font-size:14px;font-weight:700;background:#fff;color:var(--muted);border:1px solid var(--line)}
+.tabs .on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.page{padding:8px 12px;display:flex;flex-direction:column;gap:12px}
+.as{background:var(--wash);border-radius:16px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:14px}
+.as .av{width:32px;height:32px;border-radius:50%;background:var(--grad);flex:none}
+.as small{display:block;font-size:12px;color:var(--muted);font-weight:600}
+.as b{font-size:15px}
+.as .ic{margin-left:auto;color:var(--link)}
+.card{background:#fff;border-radius:22px;padding:16px;box-shadow:0 8px 24px rgba(80,30,60,.08);display:flex;flex-direction:column;gap:12px}
+.card h3{font-size:19px;display:flex;align-items:center;gap:10px}
+.card h3 i{width:28px;height:28px;border-radius:50%;background:var(--pink);color:#fff;font:700 14px "Plus Jakarta Sans";display:grid;place-items:center;font-style:normal}
+label{display:block;font-size:13px;font-weight:700;color:var(--muted)}
+.in{margin-top:5px;height:46px;border:1.5px solid var(--line);border-radius:14px;padding:0 14px;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;color:var(--ink);background:#fff}
+.in .ic{color:var(--link);width:18px;height:18px}
+.in.ph{color:#8a7d8c;font-weight:500}
+.in.ta{height:78px;align-items:flex-start;padding-top:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chips span{padding:9px 14px;border-radius:999px;font-size:14px;font-weight:700;border:1.5px solid var(--line);color:var(--muted);background:#fff;display:flex;gap:6px;align-items:center}
+.chips .on{background:var(--pink);border-color:var(--pink);color:#fff}
+.chips .on2{background:var(--wash);border-color:#7a4fd0;color:#3B1A6E}
+.chips .ic{width:15px;height:15px;stroke-width:3}
+.drop{margin-top:5px;border:2px dashed #C9A8E8;background:#FBF6FF;border-radius:16px;height:84px;display:flex;align-items:center;gap:14px;padding:0 16px}
+.drop .ic{width:30px;height:30px;color:#7a4fd0}
+.drop b{display:block;font-size:15px;color:var(--ink)}
+.drop span{font-size:12.5px;color:var(--muted)}
+.opt{font-weight:600;color:#8a7d8c;font-size:12px}
+.cta{position:absolute;left:0;right:0;bottom:78px;padding:14px 12px 12px;background:linear-gradient(to top,var(--paper) 70%,rgba(255,244,238,0))}
+.cta div{background:var(--pink);color:#fff;border-radius:999px;height:54px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;box-shadow:0 8px 20px rgba(226,62,122,.35)}
+.nav{height:78px}.nav i{border-color:var(--pink)}
+</style>
+<div class="top"><h1>Add event</h1><svg class="ic" viewBox="0 0 24 24"><path d="M20 12H4M10 6l-6 6 6 6"/></svg></div>
+<div class="tabs"><span class="on">New event</span><span>Edit events</span><span>Cover photo</span></div>
+<div class="page">
+  <div class="as"><div class="av"></div><div><small>Posting for</small><b>Law Society</b></div><svg class="ic" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+
+  <div class="card">
+    <h3><i>1</i>The basics</h3>
+    <div><label>Event name</label><div class="in">Welcome BBQ</div></div>
+    <div><label>Category</label>
+      <div class="chips"><span class="on">Social</span><span>Academic</span><span>Career</span><span>Community</span></div></div>
+  </div>
+
+  <div class="card">
+    <h3><i>2</i>When and where</h3>
+    <div class="two">
+      <div><label>Date</label><div class="in"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>9 Nov 2026</div></div>
+      <div><label>Time</label><div class="in"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>12:00pm</div></div>
+    </div>
+    <div><label>Building</label><div class="in ph"><svg class="ic" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>e.g. 1 Central Courtyard</div></div>
+  </div>
+
+  <div class="card">
+    <h3><i>3</i>Details <span class="opt">optional</span></h3>
+    <div><label>About</label><div class="in ta ph">Tell people what to expect</div></div>
+    <div><label>Meeting spot</label><div class="in ph">e.g. Look for the red banner</div></div>
+    <div><label>Photo</label><div class="drop"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-8 8"/></svg><div><b>Add a photo</b><span>JPG, PNG or WebP, up to 5 MB</span></div></div></div>
+  </div>
+
+  <div class="card">
+    <h3><i>4</i>Tags <span class="opt">optional</span></h3>
+    <div class="chips" style="margin-top:0">
+      <span class="on2"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Bring your own cup</span>
+      <span>Plant-based food</span><span>Quiet</span><span>Alcohol-free</span><span>Halal</span><span>Vegetarian</span><span>First-years welcome</span>
+    </div>
+  </div>
+</div>
+<div class="cta"><div>Add event</div></div>
+<div class="nav"><div><i></i>Account</div><div><i></i>Calendar</div><div class="on"><i></i>Add event</div><div><i></i>Food</div><div><i></i>Societies</div></div>
