@@ -121,22 +121,28 @@ function mapLinkHtml() {
   return `<a href="${MQ_ACCESS_MAP}" target="_blank" rel="noopener">${t('Open the Macquarie University Accessibility Map')}</a>`;
 }
 
-// Accessibility block of the building panel; a building with no data says so instead of staying blank.
+const ICONS = {
+  pin: '<path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+  cal: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 11h18"/>',
+  go: '<path d="m3 11 18-8-8 18-2-8z"/>',
+  lift: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="m9 9 3-3 3 3M9 15l3 3 3-3"/>',
+  toilet: '<circle cx="12" cy="5" r="2"/><path d="M12 8v6h5l2 6M9 12a5 5 0 1 0 5 7"/>',
+  stairs: '<path d="M3 20h5v-5h5v-5h5V5h3"/>',
+  drop: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
+};
+const icon = (name, px) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true"${px ? ` style="width:${px}px;height:${px}px"` : ''}>${ICONS[name]}</svg>`;
+
+// Accessibility block of the building panel: one count tile per feature; a building with no data says so instead of staying blank.
 function accessibilityHtml(a) {
-  if (!a) return `<h3>${t('Accessibility')}</h3><p>${t('Not confirmed for this building. Check the Macquarie University Accessibility Map.')}</p>`;
-  const rows = [];
-  if (a.lifts) rows.push(`${t('Lifts')}: ${a.lifts}`);
-  if (a.toilets) {
-    const doors = [];
-    if (a.sliding) doors.push(`${t('Automatic sliding door')}: ${a.sliding}`);
-    if (a.swing) doors.push(`${t('Automatic swing door')}: ${a.swing}`);
-    rows.push(`${t('Accessible toilets')}: ${a.toilets}` + (doors.length ? ` (${doors.join('; ')})` : ''));
-  }
-  if (a.showers) rows.push(`${t('Accessible showers')}: ${a.showers}`);
-  if (a.stairs) rows.push(`${t('External stairs')}: ${a.stairs}`);
-  return `<h3>${t('Accessibility')}</h3><ul class="building-panel-access">${rows.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>` +
-    `<p class="building-panel-note">${t('Source: Macquarie University Accessibility Map, April 2026. Positions are approximate, so check before you rely on them.')}</p>` +
-    `<p class="building-panel-note">${mapLinkHtml()}</p>`;
+  if (!a) return `<h3>${t('Accessibility')}</h3><p class="building-panel-empty">${t('Not confirmed for this building. Check the Macquarie University Accessibility Map.')}</p>`;
+  const tiles = [['lift', a.lifts, 'Lifts'], ['toilet', a.toilets, 'Accessible toilets'], ['toilet', a.showers, 'Accessible showers'], ['stairs', a.stairs, 'External stairs']]
+    .filter(([, n]) => n)
+    .map(([ic, n, label]) => `<li class="building-panel-tile">${icon(ic)}<strong>${n}</strong><span>${t(label)}</span></li>`);
+  const doors = [];
+  if (a.sliding) doors.push(`${t('Automatic sliding door')}: ${a.sliding}`);
+  if (a.swing) doors.push(`${t('Automatic swing door')}: ${a.swing}`);
+  return `<h3>${t('Accessibility')}</h3><ul class="building-panel-tiles">${tiles.join('')}</ul>` +
+    (doors.length ? `<p class="building-panel-note">${esc(doors.join(' · '))}</p>` : '');
 }
 
 // Nearest drinking fountain and Tap It refill tower, each with a walking route from this building.
@@ -144,13 +150,22 @@ function drinkHtml(d, id) {
   if (!d || !(d.fountain || d.tapit)) return '';
   const rows = [['fountain', 'Drinking fountain'], ['tapit', 'Tap It refill tower']].filter(([k]) => d[k]).map(([k, label]) => {
     const p = d[k];
-    const dist = p.metres < 20 ? t('Right next to this building') : `${t('About')} ${Math.round(p.metres / 10) * 10} m ${t('away')}`;
+    const dist = p.metres < 20 ? t('Right next to this building') : `${t('About')} ${Math.round(p.metres / 10) * 10} m`;
     const floors = p.floors ? ` · ${t(/[,-]/.test(p.floors) ? 'Floors' : 'Floor')} ${p.floors}` : '';
-    return `<li><span><strong>${t(label)}</strong>: ${dist}${floors}</span>` +
-      `<a class="follow-btn" href="/?directions=${encodeURIComponent(id)}&water=${p.index}">${t('Directions')}</a></li>`;
+    return `<li class="building-panel-row"><span class="building-panel-row-icon">${icon('drop')}</span>` +
+      `<span class="building-panel-row-text"><strong>${t(label)}</strong>${dist}${floors}</span>` +
+      `<a class="pill-btn" href="/?directions=${encodeURIComponent(id)}&water=${p.index}">${t('Directions')}</a></li>`;
   });
-  return `<h3>${t('Drinking water')}</h3><ul class="building-panel-drink">${rows.join('')}</ul>` +
-    `<p class="building-panel-note">${t('Source: Macquarie University Drinking Water Map, September 2025. Positions are approximate. A Tap It tower refills bottles.')}</p>`;
+  return `<h3>${t('Drinking water')}</h3><ul class="building-panel-drink">${rows.join('')}</ul>`;
+}
+
+// One small "Sources" block instead of three separate notes.
+function sourcesHtml(a, d) {
+  const notes = [];
+  if (a) notes.push(t('Source: Macquarie University Accessibility Map, April 2026. Positions are approximate, so check before you rely on them.'));
+  if (d && (d.fountain || d.tapit)) notes.push(t('Source: Macquarie University Drinking Water Map, September 2025. Positions are approximate. A Tap It tower refills bottles.'));
+  return `<details class="building-panel-sources" open><summary>${t('Sources and accuracy')}</summary>` +
+    notes.map((n) => `<p>${n}</p>`).join('') + `<p>${mapLinkHtml()}</p></details>`;
 }
 
 let societies = [];
@@ -181,14 +196,14 @@ function selectBuilding(id, label) {
     '<div class="building-panel-head">' +
       '<div class="building-panel-handle"></div>' +
       `<h2>${esc(p.name)}</h2>` +
-      `<p class="building-panel-address">${p.address ? esc(p.address) + ' &middot; ' : ''}` +
-        `<a href="https://www.google.com/maps/search/?api=1&query=${c.lat},${c.lng}" target="_blank" rel="noopener">${t('Google Maps')}</a></p>` +
-      (label ? `<p><strong>${esc(label)}</strong> ${t('meets here.')}</p>` : '') +
-      `<a class="follow-btn directions-btn" href="/?directions=${encodeURIComponent(selected.feature.id)}">${t('Directions')}</a>` +
+      `<p class="building-panel-address">${icon('pin', 16)}${p.address ? `<span>${esc(p.address)}</span>` : ''}` +
+        `<a href="https://www.google.com/maps/search/?api=1&query=${c.lat},${c.lng}" target="_blank" rel="noopener">${t('Open in Google Maps')}</a></p>` +
+      (label ? `<p class="building-panel-meet">${icon('cal')}<span><strong>${esc(label)}</strong> ${t('meets here.')}</span></p>` : '') +
+      `<a class="follow-btn directions-btn" href="/?directions=${encodeURIComponent(selected.feature.id)}">${icon('go')}${t('Directions')}</a>` +
     '</div>' +
     '<div class="building-panel-body">' +
       `<div class="building-panel-image">${t('No photo available')}</div>` +
-      `<p>${esc(p.description)}</p>` +
+      (p.description ? `<p class="building-panel-about">${esc(p.description)}</p>` : '') +
       (p.website ? `<a href="${esc(p.website)}" target="_blank" rel="noopener">${t('Website')}</a>` : '') +
       accessibilityHtml(p.accessibility) +
       drinkHtml(p.drink, selected.feature.id) +
@@ -196,7 +211,8 @@ function selectBuilding(id, label) {
       (here.length
         ? '<ul class="building-panel-societies">' +
           here.map((s) => `<li><strong>${esc(s.name)}</strong><span>${esc(s.category)}</span></li>`).join('') + '</ul>'
-        : `<p>${t('No societies listed here.')}</p>`) +
+        : `<p class="building-panel-empty">${t('No societies meet here yet.')}</p>`) +
+      sourcesHtml(p.accessibility, p.drink) +
     '</div>';
   panel.querySelector('.building-panel-body').scrollTop = 0;
   panel.classList.add('open');
