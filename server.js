@@ -28,6 +28,8 @@ app.use(helmet({
   },
   referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 }));
+// Lets Chromium load the next page in the background on hover or tap, so moving between pages feels instant (rules in public/speculation.json).
+app.use((req, res, next) => { if (req.path === '/' || req.path.endsWith('.html')) res.set('Speculation-Rules', '"/speculation.json"'); next(); });
 app.use('/api', rateLimit({ windowMs: 60 * 1000, limit: 120 }));
 const PORT = process.env.PORT || 3000;
 

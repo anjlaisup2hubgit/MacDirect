@@ -1,0 +1,8 @@
+{
+  "prerender": [
+    {
+      "where": { "and": [{ "href_matches": "/*.html" }, { "not": { "href_matches": ["/login.html", "/privacy.html"] } }] },
+      "eagerness": "moderate"
+    }
+  ]
+}
