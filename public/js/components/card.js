@@ -178,6 +178,15 @@ function downloadIcs(ev) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
+// Line icons for the event card (inherit the text colour).
+const EV_ICON = {
+  pin: '<path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  acc: '<circle cx="12" cy="4.5" r="1.8"/><path d="M12 8v6h5l2 5M12 11h5M9 13a5 5 0 105 7"/>',
+  wat: '<path d="M12 3s6 6.5 6 11a6 6 0 01-12 0c0-4.5 6-11 6-11z"/>',
+  cal: '<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17M12 13v4M10 15h4"/>',
+};
+const evIcon = (k) => `<svg class="ev-ic" viewBox="0 0 24 24" aria-hidden="true">${EV_ICON[k]}</svg>`;
+
 const ECO_TAGS = {
   cup: 'Bring your own cup', plant: 'Plant-based food', quiet: 'Quiet or low-sensory', alcohol: 'Alcohol-free',
   halal: 'Halal', vegetarian: 'Vegetarian', first: 'First-years welcome',
@@ -207,7 +216,7 @@ function venueAccessLine(e) {
     if (a.lifts) parts.push(`${a.lifts} ${t(a.lifts === 1 ? 'lift' : 'lifts')}`);
     if (a.toilets) parts.push(`${a.toilets} ${t(a.toilets === 1 ? 'accessible toilet' : 'accessible toilets')}`);
   }
-  return `<div class="event-fact event-fact-access"><span aria-hidden="true">♿</span><div><b>${esc(parts.length ? parts[0] : t('Access'))}</b>` +
+  return `<div class="event-fact event-fact-access">${evIcon('acc')}<div><b>${esc(parts.length ? parts[0] : t('Access'))}</b>` +
     `${esc(parts.length ? parts.slice(1).join(', ') : t('Not confirmed'))}</div></div>`;
 }
 
@@ -227,7 +236,7 @@ function waterLine(e) {
   const d = window.venueDrink && window.venueDrink[e.building];
   if (!d) return '';
   const dist = d.metres < 20 ? t('Right next to this building') : `${Math.round(d.metres / 10) * 10} m ${t('away')}`;
-  return `<div class="event-fact event-fact-water" title="${esc(t(d.label))}"><span aria-hidden="true">💧</span><div><b>${t('Water')}</b>${dist}</div></div>`;
+  return `<div class="event-fact event-fact-water" title="${esc(t(d.label))}">${evIcon('wat')}<div><b>${t('Water')}</b>${dist}</div></div>`;
 }
 
 // The leave-by time with a Directions button beside it (a plain Get directions button when there is no walk time).
@@ -261,11 +270,11 @@ function eventCard(e) {
     (e.cancelled ? ` <span class="card-tag cancelled-tag">${t('Cancelled')}</span>` : '') + '</span></div>' +
     `<h2>${esc(e.name)}</h2>` +
     `<p class="event-desc">${esc(e.description)}</p>` +
-    `<p class="event-where"><span aria-hidden="true">📍</span><span>${esc(e.building)}` + (e.meetingNote ? `<br><span class="event-note">${esc(e.meetingNote)}</span>` : '') + '</span></p>' +
+    `<p class="event-where">${evIcon('pin')}<span>${esc(e.building)}` + (e.meetingNote ? `<br><span class="event-note">${esc(e.meetingNote)}</span>` : '') + '</span></p>' +
     (e.ecoTags && e.ecoTags.some((k) => ECO_TAGS[k]) ? ecoTagLine(e) : '') +
     eventWalkLinks(e) + (facts ? `<div class="event-facts">${facts}</div>` : '') +
     `<div class="event-going-row"><span class="event-going">${e.goingCount && !e.mine && !e.cancelled ? e.goingCount + ' ' + t(e.goingCount === 1 ? 'person going' : 'people going') : ''}</span>` +
-    `<details class="event-cal"><summary class="event-cal-btn" aria-label="${t('Add to calendar')}" title="${t('Add to calendar')}"><span aria-hidden="true">📅</span></summary>` +
+    `<details class="event-cal"><summary class="event-cal-btn" aria-label="${t('Add to calendar')}" title="${t('Add to calendar')}">${evIcon('cal')}</summary>` +
     `<div class="card-actions" role="group" aria-label="${t('Add to calendar')}"><button type="button" class="follow-btn" data-gcal>${t('Google')}</button>` +
       `<button type="button" class="follow-btn" data-ics>${t('Apple / Outlook')}</button></div></details>` +
     (e.mine || e.cancelled ? '' : `<button type="button" class="follow-btn${e.going ? '' : ' following'}" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? '✓ ' + t('Going') : t("I'm going")}</button>`) +

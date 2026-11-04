@@ -475,6 +475,9 @@ button, input, select, textarea { font-family: inherit; }
 .card-society.event-card h2 { margin: 4px 0 2px; font-size: 20px; line-height: 1.2; white-space: normal; overflow: visible; }
 .card .event-desc { color: var(--muted); font-size: 14px; }
 .card .event-where { display: flex; gap: 6px; margin: 6px 0 0; font-size: 14px; color: var(--muted); -webkit-line-clamp: unset; }
+.ev-ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.event-where .ev-ic { width: 16px; height: 16px; margin-top: 2px; }
+.event-cal-btn { color: var(--link); }
 .event-leave { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; padding: 12px 14px; border-radius: 16px; background: var(--grad); color: #fff; }
 .event-leave small { display: block; font-size: 12.5px; }
 .event-leave strong { font-size: 16px; }
