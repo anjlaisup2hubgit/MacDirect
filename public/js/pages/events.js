@@ -78,8 +78,11 @@
     agendaEvents = [];
     let agenda = '';
     Object.keys(events).sort().forEach((key) => {
-      agenda += `<h2 class="cal-day-title">${esc(formatDate(key))}</h2>${restNote(events[key].length)}<ul class="card-list">` +
-        events[key].map((e) => { agendaEvents.push(e); return eventCard(e); }).join('') + '</ul>';
+      const d = new Date(key + 'T00:00');
+      const loc = I18N_LOCALES[i18nLang()];
+      agenda += `<section class="agenda-day"><div class="agenda-rail${key === iso(today) ? ' today' : ''}"><b>${d.getDate()}</b>${esc(d.toLocaleDateString(loc, { weekday: 'short' }))}</div>` +
+        `<div class="agenda-col">${restNote(events[key].length)}<ul class="card-list">` +
+        events[key].map((e) => { agendaEvents.push(e); return eventCard(e); }).join('') + '</ul></div></section>';
     });
     agendaEl.innerHTML = agenda || `<p class="empty-msg">${t('No events found.')}</p>`;
   }

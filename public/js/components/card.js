@@ -197,7 +197,7 @@ function restNote(count) {
     : '';
 }
 
-// A box about the venue's lifts and accessible toilets, from the map data events.js loads (window.venueAccess).
+// A tile about the venue's lifts and accessible toilets, from the map data events.js loads (window.venueAccess).
 function venueAccessLine(e) {
   if (!window.venueAccess || !e.building || e.building === 'TBC') return '';
   const a = window.venueAccess[e.building];
@@ -207,34 +207,38 @@ function venueAccessLine(e) {
     if (a.lifts) parts.push(`${a.lifts} ${t(a.lifts === 1 ? 'lift' : 'lifts')}`);
     if (a.toilets) parts.push(`${a.toilets} ${t(a.toilets === 1 ? 'accessible toilet' : 'accessible toilets')}`);
   }
-  return `<p class="event-box"><span aria-hidden="true">♿</span> <b>${t('This building')}:</b> ${esc(parts.length ? parts.join(', ') : t('Not confirmed'))}</p>`;
+  return `<div class="event-fact event-fact-access"><span aria-hidden="true">♿</span><div><b>${esc(parts.length ? parts[0] : t('Access'))}</b>` +
+    `${esc(parts.length ? parts.slice(1).join(', ') : t('Not confirmed'))}</div></div>`;
 }
 
-// "Leave the station by ..." for a timed event, from the walk time events.js worked out (window.venueWalk, minutes).
-function leaveByText(e) {
+// "11:52am" and the walk minutes for a timed event, from the walk time events.js worked out (window.venueWalk, minutes).
+function leaveBy(e) {
   const mins = window.venueWalk && window.venueWalk[e.building];
   const m = /^(\d{2}):(\d{2})/.exec(e.timeValue || '');
-  if (!mins || !m || e.cancelled) return '';
+  if (!mins || !m || e.cancelled) return null;
   const total = Number(m[1]) * 60 + Number(m[2]) - mins;
-  if (total < 0) return '';
+  if (total < 0) return null;
   const h = Math.floor(total / 60);
-  return `${t('Leave the station by')} ${h % 12 || 12}:${String(total % 60).padStart(2, '0')}${h < 12 ? 'am' : 'pm'} (${t('about')} ${mins} ${t('min walk')})`;
+  return { time: `${h % 12 || 12}:${String(total % 60).padStart(2, '0')}${h < 12 ? 'am' : 'pm'}`, mins };
 }
 
-// Nearest drinking water to the venue, from the map data events.js loads (window.venueDrink).
+// Tile for the nearest drinking water to the venue, from the map data events.js loads (window.venueDrink).
 function waterLine(e) {
   const d = window.venueDrink && window.venueDrink[e.building];
   if (!d) return '';
-  const dist = d.metres < 20 ? t('Right next to this building') : `${t('About')} ${Math.round(d.metres / 10) * 10} m ${t('away')}`;
-  return `<p class="event-access">${t('Nearest water')}: ${t(d.label)}, ${dist}</p>`;
+  const dist = d.metres < 20 ? t('Right next to this building') : `${Math.round(d.metres / 10) * 10} m ${t('away')}`;
+  return `<div class="event-fact event-fact-water" title="${esc(t(d.label))}"><span aria-hidden="true">💧</span><div><b>${t('Water')}</b>${dist}</div></div>`;
 }
 
-// One Get directions button; the leave-by time sits inside it.
+// The leave-by time with a Directions button beside it (a plain Get directions button when there is no walk time).
 function eventWalkLinks(e) {
   if (!e.building || e.building === 'TBC') return '';
-  const leave = leaveByText(e);
-  return `<a class="follow-btn event-directions" href="/?directions=${encodeURIComponent(e.building)}">${t('Get directions')}` +
-    (leave ? `<small>${esc(leave)}</small>` : '') + '</a>';
+  const href = `/?directions=${encodeURIComponent(e.building)}`;
+  const leave = leaveBy(e);
+  return leave
+    ? `<div class="event-leave"><div><small>${t('Leave the station by')}</small><strong>${leave.time} · ${leave.mins} ${t('min walk')}</strong></div>` +
+      `<a class="event-directions" href="${href}">${t('Directions')}</a></div>`
+    : `<a class="follow-btn event-directions event-directions-solo" href="${href}">${t('Get directions')}</a>`;
 }
 
 // For events that start at 5 pm or later: the real Campus Security escort and shuttle (students.mq.edu.au safety page),
@@ -250,20 +254,22 @@ function eveningInfo(e) {
 }
 
 function eventCard(e) {
+  const facts = venueAccessLine(e) + waterLine(e);
   return `<li class="card card-society event-card${e.cancelled ? ' event-cancelled' : ''}" data-id="${e.id}" tabindex="0">` +
-    (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : coverDiv(e.name)) +
-    `<div class="card-body"><span class="card-tag">${esc(e.category)}</span>` + (e.cancelled ? ` <span class="card-tag cancelled-tag">${t('Cancelled')}</span>` : '') +
-    `<h2 title="${esc(e.name)}">${esc(e.name)}</h2>` +
+    (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : '') +
+    `<div class="card-body"><div class="event-top"><b>${esc(e.time)}</b><span><span class="card-tag">${esc(e.category)}</span>` +
+    (e.cancelled ? ` <span class="card-tag cancelled-tag">${t('Cancelled')}</span>` : '') + '</span></div>' +
+    `<h2>${esc(e.name)}</h2>` +
     `<p class="event-desc">${esc(e.description)}</p>` +
-    `<div class="event-row"><span aria-hidden="true">🕕</span><b>${esc(formatDate(e.date))}, ${esc(e.time)}</b></div>` +
-    `<div class="event-row"><span aria-hidden="true">📍</span><span>${esc(e.building)}` + (e.meetingNote ? `<br><span class="event-note">${esc(e.meetingNote)}</span>` : '') + '</span></div>' +
-    (e.ecoTags && e.ecoTags.some((k) => ECO_TAGS[k]) ? `<p class="card-actions-label">${t('Good to know')}</p>` + ecoTagLine(e) : '') +
-    venueAccessLine(e) + waterLine(e) + eventWalkLinks(e) +
-    (e.mine || e.cancelled ? '' : `<div class="event-going-row"><span class="event-going">${e.goingCount ? e.goingCount + ' ' + t(e.goingCount === 1 ? 'person is going' : 'people are going') : ''}</span>` +
-      `<button type="button" class="follow-btn${e.going ? '' : ' following'}" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? t('Going') : t("I'm going")}</button></div>`) +
-    `<details class="event-cal"><summary class="event-link">${t('Add to calendar')}</summary>` +
+    `<p class="event-where"><span aria-hidden="true">📍</span><span>${esc(e.building)}` + (e.meetingNote ? `<br><span class="event-note">${esc(e.meetingNote)}</span>` : '') + '</span></p>' +
+    (e.ecoTags && e.ecoTags.some((k) => ECO_TAGS[k]) ? ecoTagLine(e) : '') +
+    eventWalkLinks(e) + (facts ? `<div class="event-facts">${facts}</div>` : '') +
+    `<div class="event-going-row"><span class="event-going">${e.goingCount && !e.mine && !e.cancelled ? e.goingCount + ' ' + t(e.goingCount === 1 ? 'person going' : 'people going') : ''}</span>` +
+    `<details class="event-cal"><summary class="event-cal-btn" aria-label="${t('Add to calendar')}" title="${t('Add to calendar')}"><span aria-hidden="true">📅</span></summary>` +
     `<div class="card-actions" role="group" aria-label="${t('Add to calendar')}"><button type="button" class="follow-btn" data-gcal>${t('Google')}</button>` +
-      `<button type="button" class="follow-btn" data-ics>${t('Apple / Outlook')}</button></div></details>` + eveningInfo(e) +
+      `<button type="button" class="follow-btn" data-ics>${t('Apple / Outlook')}</button></div></details>` +
+    (e.mine || e.cancelled ? '' : `<button type="button" class="follow-btn${e.going ? '' : ' following'}" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? '✓ ' + t('Going') : t("I'm going")}</button>`) +
+    '</div>' + eveningInfo(e) +
     (e.mine ? `<div class="card-actions"><button type="button" class="follow-btn" data-remove>${t('Remove')}</button>` +
       (auth.user && auth.approvedSocieties.length ? `<button type="button" class="follow-btn" data-post>${t('Post')}</button>` : '') + '</div>' : '') +
     (e.canEdit ? `<div class="card-actions"><button type="button" class="follow-btn" data-edit>${t('Edit')}</button>` +
