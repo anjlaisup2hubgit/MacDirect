@@ -52,7 +52,7 @@
     calView.hidden = view !== 'cal';
     agendaEl.hidden = view !== 'list';
     hintEl.textContent = t('You are not following any societies.') + ' ' + t('Follow societies to see their events here.');
-    hintEl.hidden = !auth.user || follows.size > 0 || auth.approvedSocieties.length > 0 || base.length > 0;
+    hintEl.hidden = !auth.user || follows.size > 0 || auth.approvedSocieties.length > 0;
     const leaderIds = auth.approvedSocieties.map((s) => s.id);
     base.forEach((e) => { e.canEdit = leaderIds.includes(e.societyId); });
     const events = byDate();
@@ -243,46 +243,16 @@
   auth.onChange(loadPlans);
   auth.ready.then(render);
   render();
-  // The public directory (sample file plus database) is shown to everyone. Private plans stay per user.
-  const loadEvents = () => auth.ready.then(async () => {
-    const [samples] = await Promise.all([api('/events').catch(() => []), loadVenueAccess()]);
-    let rows = [];
-    let societies = [];
-    let rsvps = null;
-    follows = new Set();
-    if (auth.configured) {
-      try {
-        const jobs = [auth.listEvents(), auth.listSocieties()];
-        if (auth.user) jobs.push(auth.myFollows(), auth.listRsvps());
-        const result = await Promise.all(jobs);
-        rows = result[0] || [];
-        societies = result[1] || [];
-        if (auth.user) {
-          follows = new Set(result[2] || []);
-          rsvps = result[3];
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    const names = new Map(societies.map((s) => [s.id, s.name]));
-    let list = rows
-      .map((e) => ({ ...e, society: names.get(e.societyId) || e.society || '' }))
-      .concat(Array.isArray(samples) ? samples : [])
-      .filter((e) => !e.cancelled);
-    list.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')) || (Number(b.id) || 0) - (Number(a.id) || 0));
-    let keptActuarial = false;
-    list = list.filter((e) => {
-      if (e.society !== 'Actuarial Students Society') return true;
-      if (keptActuarial) return false;
-      keptActuarial = true;
-      return true;
-    });
-    if (rsvps) list.forEach((e) => { e.going = rsvps.mine.has(e.id); e.goingCount = rsvps.counts[e.id] || 0; });
-    base = list;
-    await loadWalkTimes(base);
-    render();
-  }).catch((err) => { console.error(err); emptyEl.textContent = t('Could not load events.'); emptyEl.hidden = false; });
+  // Only events of followed societies are shown; a leader also sees their own society's events. Private plans stay per user. Guests see none.
+  const loadEvents = () => auth.ready.then(() => (auth.user ? Promise.all([auth.listEvents(), auth.myFollows(), auth.listRsvps(), loadVenueAccess()]) : [[], [], null]))
+    .then(([data, ids, rsvps]) => {
+      follows = new Set(ids);
+      const own = new Set(auth.approvedSocieties.map((s) => s.id));
+      base = data.filter((e) => follows.has(e.societyId) || own.has(e.societyId));
+      if (rsvps) base.forEach((e) => { e.going = rsvps.mine.has(e.id); e.goingCount = rsvps.counts[e.id] || 0; });
+      return loadWalkTimes(base).then(render);
+    })
+    .catch((err) => { console.error(err); emptyEl.textContent = t('Could not load events.'); emptyEl.hidden = false; });
   // Lifts and accessible toilets per building name, for the Venue access line on event cards. Failure just hides the line.
   let venueLoaded = false;
   let venueIds = {};
