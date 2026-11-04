@@ -1,0 +1,5 @@
+buildings 63 water points 29 lit segments 636
+station routes ok 63 / 63 | night differs 41 | mean extra m 39.8 max 153
+lit share day 50% night 65%
+building x point x day/night total 3654 ok 3528 no route 126 points with no route 15 | ends >15 m from tap 0 | lit>total 0
+lit share weighted by metres: day 53% night 69%

@@ -1,0 +1,13 @@
+ink             on paper           16.87  normal PASS  large/shape PASS   body text
+ink             on wash            15.65  normal PASS  large/shape PASS   body text
+ink             on white           18.24  normal PASS  large/shape PASS   body text
+white           on ink             18.24  normal PASS  large/shape PASS   text on dark panel
+paper           on ink             16.87  normal PASS  large/shape PASS   text on dark panel
+mq-red          on paper            3.73  normal FAIL  large/shape PASS   pink heading (large only)
+mq-red          on wash             3.46  normal FAIL  large/shape PASS   pink heading (large only)
+mq-red          on white            4.04  normal FAIL  large/shape PASS   pink heading (large only)
+white           on mq-red           4.04  normal FAIL  large/shape PASS   white on pink pill
+ink             on mq-red           4.52  normal PASS  large/shape PASS   ink on pink pill
+mq-red          on ink              4.52  normal PASS  large/shape PASS   pink on ink (large/shape)
+white           on gradient-end    13.47  normal PASS  large/shape PASS   white on gradient dark end
+ink             on gradient-start  10.07  normal PASS  large/shape PASS   ink on gradient light end
