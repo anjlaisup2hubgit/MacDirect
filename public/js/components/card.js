@@ -262,9 +262,17 @@ function eveningInfo(e) {
     (links ? `<div class="event-links">${links}</div>` : '');
 }
 
+// Each event keeps its own stripe colour, picked from its id so it stays the same between visits.
+const EVENT_COLOURS = ['#5EC8B6', '#E23E7A', '#7A4FD0', '#F2A100', '#3B8FE0', '#E8602C', '#2E9E5B'];
+function eventColour(e) {
+  let h = 0;
+  for (const ch of String(e.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return EVENT_COLOURS[h % EVENT_COLOURS.length];
+}
+
 function eventCard(e) {
   const facts = venueAccessLine(e) + waterLine(e);
-  return `<li class="card card-society event-card${e.cancelled ? ' event-cancelled' : ''}" data-id="${e.id}" tabindex="0">` +
+  return `<li class="card card-society event-card${e.cancelled ? ' event-cancelled' : ''}" data-id="${e.id}" style="border-left-color:${eventColour(e)}" tabindex="0">` +
     (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : '') +
     `<div class="card-body"><div class="event-top"><b>${esc(e.time)}</b><span><span class="card-tag">${esc(e.category)}</span>` +
     (e.cancelled ? ` <span class="card-tag cancelled-tag">${t('Cancelled')}</span>` : '') + '</span></div>' +
