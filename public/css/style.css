@@ -447,6 +447,13 @@ button, input, select, textarea { font-family: inherit; }
 .follow-btn.following { background: #fff; color: var(--mq-red); border: 1px solid var(--mq-red); }
 .card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .card-actions .follow-btn { flex: 1 1 auto; }
+.event-card .society-cover:not(.event-poster) { height: 90px; }
+.card .event-desc { display: block; -webkit-line-clamp: unset; margin: 4px 0 0; }
+.event-row { display: flex; gap: 10px; margin: 8px 0; font-size: 14.5px; line-height: 1.35; }
+.event-row > span:first-child { width: 24px; text-align: center; font-size: 18px; }
+.card .eco-tags { display: flex; overflow: visible; -webkit-line-clamp: unset; }
+.event-note { color: #666; }
+.card .event-box { display: block; -webkit-line-clamp: unset; margin: 10px 0 0; padding: 10px 12px; border-radius: 14px; background: var(--wash); font-size: 14px; }
 .event-directions { display: block; text-align: center; text-decoration: none; padding: 12px 16px; font-size: 16px; font-weight: 600; margin-top: 12px; }
 .event-directions small { display: block; font-size: 12px; font-weight: 400; }
 .event-going-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }

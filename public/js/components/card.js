@@ -197,17 +197,17 @@ function restNote(count) {
     : '';
 }
 
-// One line about the venue's lifts and accessible toilets, from the map data events.js loads (window.venueAccess).
+// A box about the venue's lifts and accessible toilets, from the map data events.js loads (window.venueAccess).
 function venueAccessLine(e) {
   if (!window.venueAccess || !e.building || e.building === 'TBC') return '';
   const a = window.venueAccess[e.building];
   if (a === undefined) return '';
   const parts = [];
   if (a) {
-    if (a.lifts) parts.push(`${t('Lifts')}: ${a.lifts}`);
-    if (a.toilets) parts.push(`${t('Accessible toilets')}: ${a.toilets}`);
+    if (a.lifts) parts.push(`${a.lifts} ${t(a.lifts === 1 ? 'lift' : 'lifts')}`);
+    if (a.toilets) parts.push(`${a.toilets} ${t(a.toilets === 1 ? 'accessible toilet' : 'accessible toilets')}`);
   }
-  return `<p class="event-access">${t('Venue access')}: ${esc(parts.length ? parts.join(' · ') : t('Not confirmed'))}</p>`;
+  return `<p class="event-box"><span aria-hidden="true">♿</span> <b>${t('This building')}:</b> ${esc(parts.length ? parts.join(', ') : t('Not confirmed'))}</p>`;
 }
 
 // "Leave the station by ..." for a timed event, from the walk time events.js worked out (window.venueWalk, minutes).
@@ -250,12 +250,14 @@ function eveningInfo(e) {
 }
 
 function eventCard(e) {
-  return `<li class="card card-society${e.cancelled ? ' event-cancelled' : ''}" data-id="${e.id}" tabindex="0">` +
+  return `<li class="card card-society event-card${e.cancelled ? ' event-cancelled' : ''}" data-id="${e.id}" tabindex="0">` +
     (e.imageUrl ? `<img class="society-cover event-poster" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" loading="lazy">` : coverDiv(e.name)) +
     `<div class="card-body"><span class="card-tag">${esc(e.category)}</span>` + (e.cancelled ? ` <span class="card-tag cancelled-tag">${t('Cancelled')}</span>` : '') +
     `<h2 title="${esc(e.name)}">${esc(e.name)}</h2>` +
-    `<p>${esc(formatDate(e.date))} &middot; ${esc(e.time)} &middot; ${esc(e.building)}</p>` +
-    `<p>${esc(e.description)}</p>` + ecoTagLine(e) + (e.meetingNote ? `<p class="event-access">${t('Meeting spot')}: ${esc(e.meetingNote)}</p>` : '') +
+    `<p class="event-desc">${esc(e.description)}</p>` +
+    `<div class="event-row"><span aria-hidden="true">🕕</span><b>${esc(formatDate(e.date))}, ${esc(e.time)}</b></div>` +
+    `<div class="event-row"><span aria-hidden="true">📍</span><span>${esc(e.building)}` + (e.meetingNote ? `<br><span class="event-note">${esc(e.meetingNote)}</span>` : '') + '</span></div>' +
+    (e.ecoTags && e.ecoTags.some((k) => ECO_TAGS[k]) ? `<p class="card-actions-label">${t('Good to know')}</p>` + ecoTagLine(e) : '') +
     venueAccessLine(e) + waterLine(e) + eventWalkLinks(e) +
     (e.mine || e.cancelled ? '' : `<div class="event-going-row"><span class="event-going">${e.goingCount ? e.goingCount + ' ' + t(e.goingCount === 1 ? 'person is going' : 'people are going') : ''}</span>` +
       `<button type="button" class="follow-btn${e.going ? '' : ' following'}" data-going aria-pressed="${e.going ? 'true' : 'false'}">${e.going ? t('Going') : t("I'm going")}</button></div>`) +
