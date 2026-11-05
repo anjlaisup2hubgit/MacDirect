@@ -47,13 +47,13 @@
   const KEPT = ['email', 'displayName'];
   try {
     KEPT.forEach((name) => {
-      const saved = sessionStorage.getItem('imcq-login-' + name);
+      const saved = sessionStorage.getItem('macdirect-login-' + name);
       if (saved !== null) form.elements[name].value = saved;
-      sessionStorage.removeItem('imcq-login-' + name);
+      sessionStorage.removeItem('macdirect-login-' + name);
     });
   } catch (e) { /* storage unavailable */ }
   langSelect.addEventListener('change', () => {
-    try { KEPT.forEach((name) => sessionStorage.setItem('imcq-login-' + name, form.elements[name].value)); } catch (e) { /* storage unavailable */ }
+    try { KEPT.forEach((name) => sessionStorage.setItem('macdirect-login-' + name, form.elements[name].value)); } catch (e) { /* storage unavailable */ }
     setLang(langSelect.value);
     location.reload(); // reload rebuilds the page text in the new language
   });

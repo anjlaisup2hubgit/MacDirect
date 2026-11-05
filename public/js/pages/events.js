@@ -1,5 +1,5 @@
 // Calendar page: the month is visible to everyone. Followed events and private plans load after sign-in.
-// Month or Day view is chosen in User Settings (localStorage imcq-cal-view).
+// Month or Day view is chosen in User Settings (localStorage macdirect-cal-view).
 // Pressing a day lists its events; pressing an event shows its building on the map.
 // Approved society leaders can edit and delete their society's events here (posting is in the Add event plan popup).
 // Plans added through the Add event plan popup are private to the logged-in user (Supabase).
@@ -48,7 +48,7 @@
 
   function render() {
     let view = 'cal';
-    try { if (localStorage.getItem('imcq-cal-view') === 'list') view = 'list'; } catch (err) { /* storage blocked: Month */ }
+    try { if (localStorage.getItem('macdirect-cal-view') === 'list') view = 'list'; } catch (err) { /* storage blocked: Month */ }
     calView.hidden = view !== 'cal';
     agendaEl.hidden = view !== 'list';
     hintEl.textContent = t('You are not following any societies.') + ' ' + t('Follow societies to see their events here.');
@@ -58,7 +58,7 @@
     const events = byDate();
     titleEl.textContent = month.toLocaleDateString(I18N_LOCALES[i18nLang()], { month: 'long', year: 'numeric' });
     let sunStart = false;
-    try { sunStart = localStorage.getItem('imcq-week-start') === 'sun'; } catch (err) { /* storage blocked: Monday */ }
+    try { sunStart = localStorage.getItem('macdirect-week-start') === 'sun'; } catch (err) { /* storage blocked: Monday */ }
     const lead = sunStart ? month.getDay() : (month.getDay() + 6) % 7;
     const days = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
     let html = (sunStart ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']).map((d) => `<span class="cal-dow">${t(d)}</span>`).join('');
@@ -186,7 +186,7 @@
     const ev = list[[...btn.closest('.card-list').children].indexOf(btn.closest('.card'))];
     if (!ev || !ev.canEdit) return true;
     if (btn.hasAttribute('data-edit')) {
-      try { sessionStorage.setItem('imcq-edit-event', JSON.stringify(ev)); } catch (err) { console.error(err); }
+      try { sessionStorage.setItem('macdirect-edit-event', JSON.stringify(ev)); } catch (err) { console.error(err); }
       location.href = '/event-plan.html';
       return true;
     }

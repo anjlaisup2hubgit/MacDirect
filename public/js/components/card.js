@@ -160,7 +160,7 @@ function icsText(ev) {
   const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
   const when = c.allDay ? [`DTSTART;VALUE=DATE:${c.start}`, `DTEND;VALUE=DATE:${c.end}`] : [`DTSTART:${c.start}`, `DTEND:${c.end}`];
   return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//MacDirect//Calendar//EN', 'BEGIN:VEVENT',
-    `UID:${ev.id || c.start}-${c.start}@imcq`, `DTSTAMP:${stamp}`, ...when,
+    `UID:${ev.id || c.start}-${c.start}@macdirect`, `DTSTAMP:${stamp}`, ...when,
     `SUMMARY:${esc2(ev.name)}`, `DESCRIPTION:${esc2(ev.description)}`, `LOCATION:${esc2(ev.building)}`,
     'END:VEVENT', 'END:VCALENDAR'].join('\r\n') + '\r\n';
 }

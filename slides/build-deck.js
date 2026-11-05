@@ -16,7 +16,7 @@ const pres = new pptxgen();
 pres.layout = 'LAYOUT_WIDE'; // 13.33 x 7.5 in
 pres.theme = { headFontFace: HEAD, bodyFontFace: BODY };
 pres.title = 'MacDirect: a campus map for new Macquarie students';
-pres.author = 'MacDirect (iMCQ)';
+pres.author = 'MacDirect';
 
 const title = (color, o = {}) => ({ type: 'title', options: { name: 'title', x: 0.6, y: 0.45, w: 12.1, h: 1.0, fontFace: HEAD, fontSize: 38, bold: true, color, margin: 0, valign: 'top', ...o } });
 pres.defineSlideMaster({ title: 'LIGHT', background: { color: PAPER }, objects: [{ placeholder: { options: title(INK).options, text: '' } }] });

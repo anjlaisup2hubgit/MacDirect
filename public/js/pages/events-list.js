@@ -62,7 +62,7 @@
       return;
     }
     if (btn.hasAttribute('data-edit') && item.canEdit) {
-      try { sessionStorage.setItem('imcq-edit-event', JSON.stringify(item)); } catch (err) { console.error(err); }
+      try { sessionStorage.setItem('macdirect-edit-event', JSON.stringify(item)); } catch (err) { console.error(err); }
       location.href = '/event-plan.html';
       return;
     }

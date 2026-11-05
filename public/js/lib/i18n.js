@@ -11,10 +11,10 @@ const I18N = {};
   if (l !== 'en') document.write('<script src="js/lib/lang/' + l + '.js"></script>');
 })();
 function i18nLang() {
-  try { const l = localStorage.getItem('imcq-lang'); return I18N_LANGS[l] ? l : 'en'; } catch (err) { return 'en'; }
+  try { const l = localStorage.getItem('macdirect-lang'); return I18N_LANGS[l] ? l : 'en'; } catch (err) { return 'en'; }
 }
 function setLang(lang) {
-  try { localStorage.setItem('imcq-lang', lang); } catch (err) { console.error(err); }
+  try { localStorage.setItem('macdirect-lang', lang); } catch (err) { console.error(err); }
 }
 function t(key) {
   const d = I18N[i18nLang()];

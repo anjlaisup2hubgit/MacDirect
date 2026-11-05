@@ -343,7 +343,7 @@ api('/map').then((data) => {
     layer.bringToFront();
     const routeLine = { lineCap: 'round', lineJoin: 'round', opacity: 1 };
     let preferLit = false;
-    try { preferLit = localStorage.getItem('imcq-prefer-lit') === '1'; } catch (e) { /* storage blocked */ }
+    try { preferLit = localStorage.getItem('macdirect-prefer-lit') === '1'; } catch (e) { /* storage blocked */ }
     if (askedLit) preferLit = true;
     let casing = null;
     let line = null;
@@ -415,7 +415,7 @@ api('/map').then((data) => {
         box.checked = preferLit;
         box.addEventListener('change', () => {
           preferLit = box.checked;
-          try { localStorage.setItem('imcq-prefer-lit', preferLit ? '1' : '0'); } catch (e) { /* storage blocked */ }
+          try { localStorage.setItem('macdirect-prefer-lit', preferLit ? '1' : '0'); } catch (e) { /* storage blocked */ }
           loadRoute(false);
         });
         pref.appendChild(box);

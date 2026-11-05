@@ -259,7 +259,7 @@
       form.insertAdjacentHTML('beforebegin', `<p class="empty-msg" role="status">${esc(quiet.map((s) => s.name).join(', '))}: ${t('has not posted an event in 30 days. Followers see a society as inactive after 90 days.')}</p>`);
     }).catch(console.error);
     let raw = null;
-    try { raw = sessionStorage.getItem('imcq-edit-event'); sessionStorage.removeItem('imcq-edit-event'); } catch (err) { /* storage blocked */ }
+    try { raw = sessionStorage.getItem('macdirect-edit-event'); sessionStorage.removeItem('macdirect-edit-event'); } catch (err) { /* storage blocked */ }
     if (!raw) return;
     try { window.editSocietyEvent(JSON.parse(raw)); } catch (err) { console.error(err); }
   });

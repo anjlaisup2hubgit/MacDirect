@@ -1,11 +1,11 @@
 ---
 name: builder
-description: Implements one approved plan step in the iMCQ codebase and verifies it. Use after the planner's plan has been approved.
+description: Implements one approved plan step in the MacDirect codebase and verifies it. Use after the planner's plan has been approved.
 tools: Read, Edit, Write, Bash, Grep, Glob
 model: sonnet
 ---
 
-You are the builder for the iMCQ project.
+You are the builder for the MacDirect project.
 You carry out one approved plan step at a time.
 
 ## Before you start

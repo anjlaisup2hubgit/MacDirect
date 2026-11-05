@@ -69,7 +69,7 @@ The five views open as popups on the map page (`index.html`). The nav labels bel
 * Macquarie Red `#A6192E` for the accent and active nav item.
 * Dark red `#8B0000` for accents.
 
-**Icons.** The bottom-nav icons share one line weight and are inlined in `public/js/components/nav.js` using `currentColor`, so the active item turns Macquarie Red. The source artwork is [docs/MCQ iMap Assets Design.svg](docs/MCQ%20iMap%20Assets%20Design.svg).
+**Icons.** The bottom-nav icons share one line weight and are inlined in `public/js/components/nav.js` using `currentColor`, so the active item turns Macquarie Red. The source artwork is [docs/MacDirect Assets Design.svg](docs/MacDirect%20Assets%20Design.svg).
 
 ## 6. Tech stack
 
@@ -97,7 +97,7 @@ Security rules: anyone can read societies and events; users manage only their ow
 ## 8. File structure
 
 ```text
-MCQ iMap/
+MacDirect/
 ├── .env.example           # Template of required environment variables
 ├── CHANGELOG.md           # Current status and next step
 ├── CLAUDE.md              # Behavioural guidelines for AI assistants

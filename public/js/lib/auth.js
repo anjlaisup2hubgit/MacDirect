@@ -1,7 +1,7 @@
 // Supabase session, profile and guest mode. Load after the supabase-js script.
 // The map and the other pages open without an account. Sign-in is only for actions that save data.
 const auth = (function () {
-  const GUEST_KEY = 'imcq-guest';
+  const GUEST_KEY = 'macdirect-guest';
   const state = { sb: null, user: null, profile: null, leaderships: [] };
   const listeners = [];
 

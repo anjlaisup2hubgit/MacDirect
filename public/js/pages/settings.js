@@ -88,8 +88,8 @@
   const viewField = form.querySelector('.view-field');
   const weekField = form.querySelector('.weekstart-field');
   form.elements.lang.value = i18nLang();
-  try { form.elements.weekstart.value = localStorage.getItem('imcq-week-start') === 'sun' ? 'sun' : 'mon'; } catch (err) { /* storage blocked: keep Monday */ }
-  try { form.elements.view.value = localStorage.getItem('imcq-cal-view') === 'list' ? 'list' : 'cal'; } catch (err) { /* storage blocked: keep Month */ }
+  try { form.elements.weekstart.value = localStorage.getItem('macdirect-week-start') === 'sun' ? 'sun' : 'mon'; } catch (err) { /* storage blocked: keep Monday */ }
+  try { form.elements.view.value = localStorage.getItem('macdirect-cal-view') === 'list' ? 'list' : 'cal'; } catch (err) { /* storage blocked: keep Month */ }
 
   function flash(text, isError) {
     msg.textContent = text;
@@ -104,13 +104,13 @@
       location.href = '/settings.html'; // reload so the page is rebuilt in the new language
     } else if (e.target.name === 'view') {
       try {
-        localStorage.setItem('imcq-cal-view', e.target.value);
+        localStorage.setItem('macdirect-cal-view', e.target.value);
         flash(t('Saved.'));
         window.dispatchEvent(new Event('events-changed')); // Calendar switches to the chosen view
       } catch (err) { console.error(err); flash(t('Could not save.'), true); }
     } else if (e.target.name === 'weekstart') {
       try {
-        localStorage.setItem('imcq-week-start', e.target.value);
+        localStorage.setItem('macdirect-week-start', e.target.value);
         flash(t('Saved.'));
         window.dispatchEvent(new Event('events-changed')); // Calendar redraws with the chosen first day
       } catch (err) { console.error(err); flash(t('Could not save.'), true); }
