@@ -1,7 +1,7 @@
 {
   "headers": [
     { "source": "/vendor/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
-    { "source": "/(.*)\.html", "headers": [{ "key": "Speculation-Rules", "value": "\"/speculation.json\"" }] },
+    { "source": "/(.*)\\.html", "headers": [{ "key": "Speculation-Rules", "value": "\"/speculation.json\"" }] },
     { "source": "/", "headers": [{ "key": "Speculation-Rules", "value": "\"/speculation.json\"" }] }
   ]
 }
